@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: my-app-namespace
+  labels:
+    app: my-app
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: my-app
+        tier: backend
+    spec:
+      containers:
+      - name: backend-container
+        # !!! 重要: 将 'your-dockerhub-username/my-backend:latest' 替换为你的镜像 !!!
+        image: your-dockerhub-username/my-backend:latest
+        imagePullPolicy: Always # 或者 IfNotPresent / Never for local dev
+        ports:
+        - containerPort: 5000
+        # env:
+        # - name: SOME_CONFIG
+        #   value: "some_value"
+        # volumeMounts:
+        # - name: backend-data
+        #   mountPath: /app/data # Example if SQLite DB is in /app/data/app.db
+      # volumes:
+      # - name: backend-data
+      #   persistentVolumeClaim:
+      #     claimName: backend-pvc # You would need to create this PVC

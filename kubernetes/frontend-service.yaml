@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: my-app-namespace
+  labels:
+    app: my-app
+    tier: frontend
+spec:
+  type: LoadBalancer # Or NodePort for local/non-cloud K8s
+  selector:
+    app: my-app
+    tier: frontend
+  ports:
+  - protocol: TCP
+    port: 80 # External port
+    targetPort: 80 # Nginx container port
+    # nodePort: 30080 # If type: NodePort, optionally specify a port (30000-32767)

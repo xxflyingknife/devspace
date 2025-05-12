@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  namespace: my-app-namespace
+  labels:
+    app: my-app
+    tier: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: my-app
+        tier: frontend
+    spec:
+      containers:
+      - name: frontend-container
+        # !!! 重要: 将 'your-dockerhub-username/my-frontend:latest' 替换为你的镜像 !!!
+        image: your-dockerhub-username/my-frontend:latest
+        imagePullPolicy: Always # Or IfNotPresent / Never
+        ports:
+        - containerPort: 80 # Nginx port
