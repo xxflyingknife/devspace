@@ -1,0 +1,62 @@
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) var(--space-lg); /* Adjusted padding */
+  background-color: var(--background-light);
+  border-bottom: 1px solid var(--border-color);
+  height: 64px; /* Fixed height like many app headers */
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-page-title,
+.header-space-name {
+  font-size: 1.25rem; /* Larger title */
+  font-weight: 400; /* Normal weight */
+  color: var(--text-color-primary);
+  margin: 0 0 0 var(--space-lg); /* Space after logo */
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm); /* Space between buttons */
+}
+
+/* Style actual buttons/icons */
+.header-button,
+.header-icon-button {
+  background-color: transparent;
+  border: none;
+  padding: var(--space-sm);
+  border-radius: var(--border-radius-sm);
+  color: var(--text-color-secondary);
+  cursor: pointer;
+  font-size: var(--font-size-sm); /* Smaller font for buttons */
+  transition: background-color 0.2s ease;
+}
+.header-button {
+    border: 1px solid var(--border-color);
+    padding: 6px 12px; /* Smaller padding */
+}
+
+.header-icon-button {
+    font-size: 1.2rem; /* Make icon placeholders bigger */
+    padding: var(--space-xs);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.header-button:hover,
+.header-icon-button:hover {
+  background-color: var(--background-medium);
+}

@@ -1,0 +1,93 @@
+.space-detail-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Full viewport height */
+  overflow: hidden; /* Prevent scrolling at the page level */
+  background-color: var(--background-light); /* Base background */
+}
+
+/* Header is handled by Header.css */
+
+.three-column-layout {
+  display: flex;
+  flex-grow: 1; /* Take remaining vertical space */
+  overflow: hidden; /* Prevent layout scrolling, columns handle their own scroll */
+  border-top: 1px solid var(--border-color); /* Separator below header */
+}
+
+.column {
+  height: 100%; /* Make columns fill the layout height */
+  display: flex; /* Use flex for column content */
+  flex-direction: column; /* Stack elements vertically */
+  overflow: hidden; /* Hide overflow, inner containers will scroll */
+}
+
+.left-column {
+  flex: 0 0 280px; /* Slightly wider source panel */
+  background-color: var(--background-light);
+  border-right: 1px solid var(--border-color);
+}
+
+.middle-column {
+  flex: 1 1 auto; /* Flexible width, takes most space */
+  background-color: var(--background-medium); /* Chat background */
+  /* ChatInterface handles its own padding/scroll */
+}
+
+.right-column {
+  flex: 0 0 320px; /* Slightly wider studio panel */
+  background-color: var(--background-light);
+  border-left: 1px solid var(--border-color);
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-md);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+.panel-header h2 {
+  margin: 0;
+  font-size: var(--font-size-lg); /* Slightly larger panel titles */
+  font-weight: 500;
+  color: var(--text-color-primary);
+}
+
+.panel-controls {
+    display: flex;
+    gap: var(--space-sm);
+}
+.panel-controls .control-button {
+    margin-left: 0; /* Reset margin */
+    padding: 6px 10px; /* Smaller buttons */
+}
+
+
+/* Containers within columns for scrolling content */
+.source-list-container,
+.studio-content {
+  flex-grow: 1; /* Allow content to fill space */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding: 0 var(--space-md) var(--space-md) var(--space-md); /* Padding inside scroll area */
+}
+/* Chat interface container already handles its scroll */
+
+.source-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.error-message {
+    color: #dc3545;
+    padding: var(--space-md);
+}
+
+/* Ensure spinner is centered if used directly in panel */
+.column > .loading-spinner {
+    margin: var(--space-xl) auto;
+}
+

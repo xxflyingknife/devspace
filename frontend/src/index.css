@@ -1,3 +1,84 @@
+:root {
+  /* Colors */
+  --primary-color: #1a73e8; /* Google Blue */
+  --primary-light: #e8f0fe;
+  --text-color-primary: #202124;
+  --text-color-secondary: #5f6368;
+  --text-color-light: #ffffff;
+  --background-light: #ffffff;
+  --background-medium: #f1f3f4; /* Light gray */
+  --background-dark: #202124;
+  --border-color: #dadce0;
+
+  /* Pastel Card Colors (Examples) */
+  --card-color-1: #e0f7fa; /* Cyan */
+  --card-color-2: #fff9c4; /* Yellow */
+  --card-color-3: #e8f5e9; /* Green */
+  --card-color-4: #fce4ec; /* Pink */
+  --card-color-5: #ede7f6; /* Purple */
+  --card-color-6: #fff3e0; /* Orange */
+  --card-color-7: #e3f2fd; /* Blue */
+  --card-color-8: #f1f8e9; /* Lime */
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  /* Borders */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 16px;
+  --border-radius-pill: 999px;
+
+  /* Fonts */
+  --font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-md: 1rem;    /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+}
+
+/* Apply base styles */
+body {
+  margin: 0;
+  font-family: var(--font-family-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-medium); /* Use a default background */
+  color: var(--text-color-primary);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+}
+
+/* Generic button styles (can be overridden) */
+.control-button {
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--background-light);
+    color: var(--text-color-secondary);
+    font-size: var(--font-size-sm);
+    margin-left: var(--space-sm);
+    transition: background-color 0.2s ease;
+}
+.control-button:hover {
+    background-color: #eee; /* Slightly darker */
+}
+.control-button.active {
+    background-color: var(--primary-light);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,7 +86,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #282c34; /* Match App-header background for consistency */
+  /* background-color: #f9f9f9; Set a base background color */
 }
 
 code {

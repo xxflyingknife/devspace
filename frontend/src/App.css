@@ -1,71 +1,17 @@
+/* Keep existing styles or replace/add */
 .App {
-  text-align: center;
-}
-
-.App-header {
-  background-color: #282c34;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  /* Remove background if pages handle it */
 }
 
-.App-header ul {
-  list-style: none;
-  padding: 0;
-  text-align: left;
-  max-width: 500px; /* Or suitable width */
-}
-.App-header li {
-  margin: 8px 0;
-  padding: 10px;
-  background-color: #444a54;
-  border-radius: 4px;
-}
-
-.App-header form {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: stretch;
-  width: 320px; /* Or a suitable width */
-}
-
-.App-header form div {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.App-header form label {
-  margin-right: 10px;
-  flex-shrink: 0;
-}
-
-.App-header form input[type="text"] {
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  flex-grow: 1; /* Allow input to take remaining space */
-  background-color: #333842; /* Darker input field */
-  color: white;
-}
-
-.App-header form button {
-  padding: 10px 15px;
-  background-color: #61dafb; /* React blue */
-  border: none;
-  border-radius: 4px;
-  color: #282c34; /* Dark text for contrast */
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.App-header form button:hover {
-  background-color: #4fa8c0; /* Darker React blue */
+/* Add global keyframes if using LoadingSpinner */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

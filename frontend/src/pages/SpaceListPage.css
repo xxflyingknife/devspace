@@ -1,0 +1,74 @@
+.space-list-page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.space-list-main {
+  padding: var(--space-lg) var(--space-xl); /* More padding */
+  flex-grow: 1;
+  max-width: 1200px; /* Max width for content */
+  margin: 0 auto; /* Center content */
+  width: 100%;
+}
+
+.space-list-header {
+  margin-bottom: var(--space-xl);
+}
+
+.space-list-header h2 {
+  font-size: 1.8rem; /* Larger heading */
+  font-weight: 400;
+  margin: 0 0 var(--space-lg) 0;
+}
+
+.space-list-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.new-space-button {
+  background-color: var(--primary-color);
+  color: var(--text-color-light);
+  border: none;
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--border-radius-sm);
+  font-weight: 500;
+}
+.new-space-button:hover {
+    opacity: 0.9;
+}
+
+.view-controls {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden; /* Clip children */
+    display: inline-flex; /* Keep buttons together */
+}
+.view-controls .control-button {
+    margin-left: 0;
+    border: none;
+    border-radius: 0;
+    border-right: 1px solid var(--border-color);
+}
+.view-controls .control-button:last-child {
+    border-right: none;
+}
+
+
+.sort-dropdown {
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--background-light);
+    color: var(--text-color-secondary);
+    font-size: var(--font-size-sm);
+    margin-left: auto; /* Push sort to the right */
+}
+
+.space-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* Responsive grid */
+  gap: var(--space-lg); /* Gap between cards */
+}

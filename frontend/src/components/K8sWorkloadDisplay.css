@@ -1,0 +1,61 @@
+.k8s-workload-container {
+  font-size: 0.85em;
+  flex-grow: 1;
+  overflow-y: auto; /* Scroll if content overflows */
+}
+
+.k8s-section {
+  margin-bottom: 20px;
+}
+
+.k8s-section h4 {
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 1.1em;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+
+.k8s-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.k8s-list li {
+  display: flex;
+  justify-content: space-between; /* Space out elements */
+  align-items: center;
+  padding: 6px 5px;
+  margin-bottom: 5px;
+  background-color: #fdfdfd;
+  border-radius: 3px;
+  border: 1px solid #eee;
+  flex-wrap: wrap; /* Allow wrapping on small screens */
+  gap: 8px; /* Space between elements */
+}
+
+.k8s-list li span:first-child {
+  font-weight: 500; /* Make name slightly bolder */
+  margin-right: auto; /* Push other elements to the right */
+  padding-right: 10px; /* Space before next element */
+}
+
+.status-badge {
+  color: white;
+  padding: 2px 8px;
+  border-radius: 10px; /* Pill shape */
+  font-size: 0.8em;
+  display: inline-block; /* Needed for padding */
+  text-transform: capitalize;
+}
+
+.error-message {
+    color: #dc3545;
+}
+
+/* Wrapper class added via script */
+.k8s-workload-display-container {
+    /* Add padding or margins if needed inside the accordion */
+    padding-top: var(--space-sm);
+}
+

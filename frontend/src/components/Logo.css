@@ -1,0 +1,21 @@
+.logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  /* Add styles for SVG or Image if used */
+}
+
+.logo-text {
+  font-size: 1.8em; /* Larger size */
+  font-weight: 700; /* Bold */
+  color: var(--primary-color); /* Google Blue */
+  margin-right: 2px; /* Small space */
+}
+.logo-text-plus {
+  font-size: 1.2em;
+  font-weight: 400;
+  color: var(--text-color-secondary); /* Grey */
+  margin-left: 1px;
+  align-self: flex-end; /* Align slightly lower */
+  padding-bottom: 2px;
+}

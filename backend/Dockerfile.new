@@ -1,0 +1,40 @@
+# Use official Python slim image
+FROM python:3.10-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies (if any needed, e.g., git, kubectl)
+# RUN apt-get update && apt-get install -y --no-install-recommends git kubectl && rm -rf /var/lib/apt/lists/*
+# Note: Installing kubectl might be large. Alternatively, mount kubectl binary or config.
+
+# Copy dependency file
+COPY requirements.txt .
+
+# Install dependencies
+RUN pip install --no-cache-dir --upgrade pip &&     pip install --no-cache-dir -r requirements.txt
+
+# Copy the new backend application code
+# Copy individual files instead of the whole directory if needed
+COPY config.py .
+COPY tools.py .
+COPY agent_setup.py .
+COPY chat_handler.py .
+COPY git_handler.py .
+COPY k8s_handler.py .
+COPY server.py .
+# If you have a .env file for local dev, ensure it's NOT copied here. Use K8s secrets/configmaps in deployment.
+
+# Expose the port the app runs on
+EXPOSE 5000
+
+# Define environment variable for port (optional, defaults to 5000 in server.py)
+ENV PORT=5000
+# Define environment variable for GOOGLE_API_KEY (this MUST be set at runtime, e.g., via K8s secret)
+# ENV GOOGLE_API_KEY=your_key_here # DO NOT HARDCODE KEY HERE
+
+# Command to run the application using a production server like gunicorn
+# CMD ["gunicorn", "--workers", "4", "--bind", "0.0.0.0:5000", "server:app"]
+
+# For development/simplicity, use Flask's built-in server (NOT recommended for production)
+CMD ["python", "server.py"]

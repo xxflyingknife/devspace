@@ -1,0 +1,52 @@
+.file-tree-container {
+  font-size: 0.9em;
+  /* Allow scrolling if content overflows */
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.file-tree {
+  list-style: none;
+  padding-left: 0; /* Remove default padding */
+}
+
+.tree-node {
+  padding: 4px 0;
+  cursor: default; /* Indicate non-interactive for now */
+}
+
+.node-name {
+  display: flex;
+  align-items: center;
+}
+
+.node-name span { /* Style icons if needed */
+    margin-right: 5px;
+}
+
+/* Indentation for children */
+.node-children {
+  padding-left: 20px;
+  /* Add expand/collapse animations later */
+}
+
+.tree-node.folder .node-name {
+  font-weight: bold; /* Make folders bold */
+}
+
+.error-message {
+    color: #dc3545;
+}
+
+/* Basic Loading Spinner Style (Add LoadingSpinner.js or use a library) */
+.loading-spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+  margin: 10px auto;
+}
+
+/* Ensure @keyframes spin is defined in a global CSS like App.css or index.css */

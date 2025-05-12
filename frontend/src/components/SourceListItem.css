@@ -1,0 +1,66 @@
+.source-list-item {
+  display: flex;
+  align-items: center;
+  padding: var(--space-sm) 0; /* Padding top/bottom only */
+  margin-bottom: var(--space-xs);
+  border-radius: var(--border-radius-sm);
+  transition: background-color 0.15s ease;
+  position: relative; /* For menu positioning */
+}
+
+.source-list-item:hover {
+  background-color: var(--background-medium);
+}
+.source-list-item:hover .source-item-menu {
+    opacity: 1;
+}
+
+
+.source-checkbox {
+  margin-right: var(--space-md);
+  cursor: pointer;
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+.source-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  flex-grow: 1; /* Take remaining space */
+  overflow: hidden; /* Prevent name overflow */
+}
+
+.source-icon {
+  margin-right: var(--space-sm);
+  flex-shrink: 0;
+}
+
+.source-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: var(--font-size-sm);
+  color: var(--text-color-secondary);
+}
+
+.source-list-item.selected .source-name {
+  color: var(--text-color-primary);
+  font-weight: 500;
+}
+
+.source-item-menu {
+    background: transparent;
+    border: none;
+    color: var(--text-color-secondary);
+    cursor: pointer;
+    padding: 2px 4px;
+    margin-left: auto; /* Push to the right */
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.2s ease;
+    border-radius: var(--border-radius-sm);
+    flex-shrink: 0;
+}
+.source-item-menu:hover {
+    background-color: rgba(0,0,0, 0.08);
+}
+

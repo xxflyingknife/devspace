@@ -1,2 +1,9 @@
 Flask>=2.0
 Flask-CORS>=3.0
+python-dotenv>=1.0.0 # For loading .env file (optional)
+langchain>=0.1.0 # Or a more specific recent version
+langchain-google-genai>=1.0.0 # Or langchain-openai
+google-generativeai>=0.4.0 # Specific dependency for Gemini models
+GitPython>=3.1.0 # If using GitPython library in git_handler (optional, currently uses os.walk)
+kubernetes>=28.0.0 # Or a more specific recent version
+# gunicorn # Recommended for production WSGI server

@@ -1,0 +1,86 @@
+.space-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block; /* Fill grid area */
+  height: 100%;
+}
+
+.space-card {
+  border-radius: var(--border-radius-md);
+  padding: var(--space-md);
+  height: 180px; /* Fixed height for cards */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Push meta to bottom */
+  position: relative; /* For absolute positioning menu */
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  border: 1px solid transparent; /* Placeholder for potential hover border */
+  overflow: hidden; /* Ensure content fits */
+}
+
+.space-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-3px);
+  border-color: rgba(0,0,0,0.05);
+}
+
+.card-content {
+   /* Takes up most space */
+}
+
+.card-icon {
+  font-size: 1.8rem; /* Larger icon */
+  margin-bottom: var(--space-md);
+  /* Add background or specific styling if needed */
+  width: 40px; /* Ensure consistent icon area */
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-title {
+  font-size: var(--font-size-md);
+  font-weight: 500; /* Medium weight */
+  margin: 0 0 var(--space-sm) 0;
+  color: var(--text-color-primary);
+  /* Clamp text to 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 2.4em; /* Reserve space for two lines */
+}
+
+.card-meta {
+  font-size: var(--font-size-sm);
+  color: var(--text-color-secondary);
+  margin: 0;
+}
+
+.card-menu-button {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  background: rgba(255, 255, 255, 0.5); /* Semi-transparent background */
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-color-secondary);
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.space-card:hover .card-menu-button {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.8);
+}
+.card-menu-button:hover {
+    background: rgba(0, 0, 0, 0.1);
+}

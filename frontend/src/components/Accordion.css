@@ -1,0 +1,44 @@
+.accordion-section {
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: var(--space-sm);
+}
+
+.accordion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: var(--space-md) 0; /* Padding top/bottom only */
+  text-align: left;
+  font-size: var(--font-size-md);
+  font-weight: 500;
+  color: var(--text-color-primary);
+  cursor: pointer;
+}
+
+.accordion-title {
+  /* Styles for title if needed */
+}
+
+.accordion-icon {
+  font-size: 1.2em;
+  color: var(--text-color-secondary);
+  transition: transform 0.2s ease;
+}
+
+.accordion-section.closed .accordion-icon {
+  /* Rotate icon if needed */
+}
+.accordion-section.open .accordion-icon {
+  /* Rotate icon if needed */
+}
+
+
+.accordion-content {
+  padding: var(--space-sm) 0 var(--space-md) 0; /* Padding below header */
+  font-size: var(--font-size-sm);
+  color: var(--text-color-secondary);
+  /* Add fade-in animation if desired */
+}
