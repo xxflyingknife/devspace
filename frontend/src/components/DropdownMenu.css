@@ -1,0 +1,93 @@
+.dropdown-menu-container {
+  position: absolute;
+  top: calc(100% + 4px); /* Below the button */
+  z-index: 1010; /* Above header/other content */
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
+  min-width: 180px; /* Minimum width */
+  padding: var(--space-sm) 0; /* Padding top/bottom for list */
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: fadeInDrop 0.2s forwards;
+}
+.dropdown-menu-container.left {
+  left: 0;
+}
+.dropdown-menu-container.right {
+  right: 0;
+}
+
+.dropdown-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown-item {
+  padding: var(--space-sm) var(--space-md); /* 8px 16px */
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease;
+  position: relative; /* For submenu positioning */
+}
+.dropdown-item:hover {
+  background-color: var(--bg-tertiary);
+}
+.dropdown-item.danger {
+  color: #d93025; /* Error red */
+}
+.dropdown-item.danger:hover {
+  background-color: rgba(217, 48, 37, 0.1);
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: var(--border-secondary);
+  margin: var(--space-sm) 0;
+}
+
+/* Submenu styles */
+.dropdown-item.has-submenu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.dropdown-item.has-submenu:hover > .dropdown-submenu {
+    display: block; /* Show on hover */
+}
+.dropdown-submenu {
+    display: none; /* Hidden by default */
+    position: absolute;
+    left: 100%;
+    top: -1px; /* Align with parent item border */
+    min-width: 160px;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-sm) 0;
+    list-style: none;
+    margin: 0;
+}
+/* Submenu items inherit .dropdown-item styling */
+
+@keyframes fadeInDrop {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Submenu Left Positioning (Added by script 21) --- */
+.dropdown-submenu.opens-left {
+  left: auto; /* Override default left: 100% */
+  right: 100%; /* Position to the left of the parent item */
+  top: -1px; /* Align with parent item border */
+}
+
+/* Ensure parent item allows overflow for submenu */
+.dropdown-item.has-submenu {
+  position: relative; /* Needed for absolute positioning of submenu */
+}

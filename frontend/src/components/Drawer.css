@@ -1,0 +1,99 @@
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000; /* Same as modal overlay */
+  opacity: 0;
+  animation: fadeIn 0.3s forwards;
+}
+
+.drawer-container {
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  background-color: var(--bg-primary);
+  box-shadow: -2px 0 8px rgba(0,0,0,0.15); /* Shadow on the left side for right drawer */
+  z-index: 1001; /* Above overlay */
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease-out;
+  width: 90%; /* Responsive width */
+  max-width: 400px; /* Max width */
+}
+
+.drawer-container.right {
+  right: 0;
+  transform: translateX(100%);
+}
+.drawer-container.left {
+  left: 0;
+  transform: translateX(-100%);
+  box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+}
+
+.drawer-container.open.right {
+  transform: translateX(0);
+}
+.drawer-container.open.left {
+  transform: translateX(0);
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--border-primary);
+  flex-shrink: 0; /* Prevent header from shrinking */
+}
+.drawer-title {
+  font-size: 1.125rem; /* 18px */
+  font-weight: 500;
+  margin: 0;
+}
+.drawer-close-button {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  font-weight: 300;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+.drawer-close-button:hover {
+  color: var(--text-primary);
+}
+
+.drawer-body {
+  flex-grow: 1;
+  padding: var(--space-lg);
+  overflow-y: auto;
+}
+.drawer-content-placeholder h2 {
+    margin-top: 0;
+    margin-bottom: var(--space-md);
+    font-size: 1.25rem;
+}
+.drawer-content-placeholder p,
+.drawer-content-placeholder ul {
+    margin-bottom: var(--space-md);
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+.drawer-content-placeholder ul {
+    padding-left: var(--space-lg);
+}
+.drawer-content-placeholder strong {
+    color: var(--text-primary);
+}
+
+.feedback-form .form-group {
+    margin-bottom: var(--space-lg);
+}
+.feedback-form button[type="submit"] {
+    width: 100%;
+}

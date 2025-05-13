@@ -2,10 +2,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-sm) var(--space-lg); /* Adjusted padding */
-  background-color: var(--background-light);
-  border-bottom: 1px solid var(--border-color);
-  height: 64px; /* Fixed height like many app headers */
+  padding: 0 var(--space-lg); /* 0 top/bottom, more left/right */
+  background-color: var(--header-bg);
+  border-bottom: 1px solid var(--header-border);
+  height: 56px; /* Standard header height */
+  flex-shrink: 0;
+  position: relative; /* For dropdown positioning */
+  z-index: 100; /* Keep header on top */
 }
 
 .header-left {
@@ -13,50 +16,66 @@
   align-items: center;
 }
 
-.header-page-title,
-.header-space-name {
-  font-size: 1.25rem; /* Larger title */
-  font-weight: 400; /* Normal weight */
-  color: var(--text-color-primary);
-  margin: 0 0 0 var(--space-lg); /* Space after logo */
+.header-space-name { /* Used on Detail Page */
+  font-size: 1.125rem; /* 18px */
+  font-weight: 400;
+  color: var(--text-primary);
+  margin: 0 0 0 var(--space-lg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 400px; /* Prevent very long names from breaking layout */
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  gap: var(--space-sm); /* Space between buttons */
+  gap: var(--space-xs); /* Smaller gap for icon buttons */
 }
 
-/* Style actual buttons/icons */
-.header-button,
+.header-button { /* For text buttons like "Share" */
+  background-color: transparent;
+  border: 1px solid var(--border-primary);
+  padding: 6px 16px;
+  border-radius: var(--border-radius-pill); /* Pill shape */
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  margin-left: var(--space-sm);
+}
+.header-button:hover {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-secondary);
+}
+
 .header-icon-button {
   background-color: transparent;
   border: none;
-  padding: var(--space-sm);
-  border-radius: var(--border-radius-sm);
-  color: var(--text-color-secondary);
-  cursor: pointer;
-  font-size: var(--font-size-sm); /* Smaller font for buttons */
+  color: var(--text-secondary);
+  padding: var(--space-sm); /* 8px padding */
+  border-radius: 50%; /* Circular */
+  width: 30px;  /* Consistent size */
+  height: 30px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.25rem; /* For icon placeholders */
   transition: background-color 0.2s ease;
 }
-.header-button {
-    border: 1px solid var(--border-color);
-    padding: 6px 12px; /* Smaller padding */
-}
-
-.header-icon-button {
-    font-size: 1.2rem; /* Make icon placeholders bigger */
-    padding: var(--space-xs);
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-}
-
-
-.header-button:hover,
 .header-icon-button:hover {
-  background-color: var(--background-medium);
+  background-color: var(--bg-tertiary);
+}
+.user-avatar-button {
+    /* Add specific styles if using an image for avatar */
+    background-color: var(--text-accent); /* Example avatar color */
+    color: var(--text-on-primary-bg);
+    font-weight: bold;
+}
+.user-avatar-button:hover {
+    opacity: 0.9;
+}
+
+.dropdown-container {
+    position: relative; /* For positioning the dropdown menu */
 }

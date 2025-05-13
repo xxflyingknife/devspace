@@ -7,8 +7,8 @@ function Logo() {
   // Replace with SVG or image later if desired
   return (
     <Link to="/" className="logo-link">
-      <span className="logo-text">N</span>
-      <span className="logo-text-plus">Plus</span>
+      <span className="logo-text">Space+</span>
+      {/*<span className="logo-text-plus">Plus</span>*/}
        {/* Or use an SVG/Image */}
        {/* <img src="/path/to/your/logo.svg" alt="Logo" className="logo-image"/> */}
     </Link>

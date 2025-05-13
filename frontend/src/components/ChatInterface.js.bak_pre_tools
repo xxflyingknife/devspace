@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ChatInterface.css'; // Create this CSS file
-import ChatToolbar from './ChatToolbar';
 
-function ChatInterface({ spaceId,spaceType }) { // spaceId might be used for context
+function ChatInterface({ spaceId }) { // spaceId might be used for context
   const [messages, setMessages] = useState([
       { role: 'assistant', content: 'Hello! How can I help you with your DevOps tasks today?' }
   ]);
@@ -17,25 +16,6 @@ function ChatInterface({ spaceId,spaceType }) { // spaceId might be used for con
 
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
-  };
-
-  // Handler for when a tool is submitted from ChatToolbar
-  const handleToolSubmission = (toolId, formData, toolLabel) => {
-    setIsLoading(true);
-    // Add a user message indicating a tool was triggered
-    setMessages(prev => [...prev, { role: 'user', content: `Using Tool: ${toolLabel}` }]);
-
-    // Simulate backend processing for the tool
-    console.log(`Tool triggered: ${toolId}`, formData);
-    // TODO: Send this to your backend, which then instructs the LangChain agent
-    // to use the specified tool with the formData.
-    // The backend should then return the result from the tool execution.
-    // Example: const response = await fetch('/api/execute_tool', { ... body: { toolId, formData, spaceId, spaceType } ... });
-    setTimeout(() => {
-      const toolResult = `Mock result for ${toolLabel} with params ${JSON.stringify(formData)}. (Actual tool execution needed via backend & LangChain Agent).`;
-      setMessages(prev => [...prev, { role: 'assistant', content: toolResult }]);
-      setIsLoading(false);
-    }, 2000);
   };
 
   const handleSendMessage = async (event) => {
@@ -93,9 +73,6 @@ function ChatInterface({ spaceId,spaceType }) { // spaceId might be used for con
         <div ref={messagesEndRef} />
       </div>
       {isLoading && <div className="typing-indicator">Assistant is thinking...</div>}
-      {/* === ADDED CHAT TOOLBAR === */}
-      <ChatToolbar spaceType={spaceType} onToolSubmit={handleToolSubmission} spaceId={spaceId} />
-      {/* === END ADDED CHAT TOOLBAR === */}
       <form className="message-input-form" onSubmit={handleSendMessage}>
         <input
           type="text"

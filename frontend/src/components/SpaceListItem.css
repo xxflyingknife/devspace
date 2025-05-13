@@ -1,0 +1,66 @@
+.space-list-row {
+  display: flex;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--border-secondary);
+  background-color: var(--bg-primary);
+  transition: background-color 0.15s ease;
+}
+.space-list-row:hover {
+  background-color: var(--bg-tertiary);
+}
+.space-list-row:last-child {
+    border-bottom: none;
+}
+
+.space-list-row-link {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  text-decoration: none;
+  color: inherit;
+}
+
+.list-item-icon {
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+  width: 32px; /* Align with cards */
+  text-align: center;
+}
+.list-item-name {
+  font-weight: 500;
+  color: var(--text-primary);
+  flex-basis: 50%; /* Give it more space */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.list-item-type,
+.list-item-sources,
+.list-item-date {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  flex-basis: 25%;
+  white-space: nowrap;
+}
+.list-item-actions {
+  flex-shrink: 0;
+  position: relative; /* For dropdown */
+}
+.list-item-menu-button {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: var(--space-sm);
+  border-radius: 50%;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.list-item-menu-button:hover {
+  background-color: var(--bg-secondary);
+}

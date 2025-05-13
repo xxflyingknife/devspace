@@ -1,52 +1,207 @@
-.file-tree-container {
+/* --- FileTreeViewer.css - Refined for v3 Dev Space --- */
+.file-tree-viewer-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--bg-primary);
+  font-family: var(--font-family-sans);
+  font-size: 13px;
+  color: var(--text-primary);
+  /* border-right: 1px solid var(--border-primary); Removed, handled by .left-column */
+}
+
+/* Using global .panel-header styles, defined in index.css or SpaceDetailPage.css */
+/* .file-tree-panel-header class can be used if specific overrides are needed,
+   but ideally, it should inherit from the global .panel-header style.
+   The JSX uses <div className="file-tree-panel-header">, ensure this uses global styles.
+   If panel-header is already globally styled, this specific class might not need much.
+*/
+.file-tree-panel-header {
+  /* This ensures it uses the global panel-header look if defined */
+  /* If .panel-header is not globally available or needs override: */
+  /* display: flex; */
+  /* justify-content: space-between; */
+  /* align-items: center; */
+  /* padding: var(--space-md); */ /* From global panel-header */
+  /* border-bottom: 1px solid var(--border-primary); */ /* From global panel-header */
+  /* flex-shrink: 0; */
+}
+.file-tree-panel-header .panel-title { /* Inherits from global .panel-title */ }
+.file-tree-panel-header .panel-header-button { /* Inherits from global .panel-header-button */ }
+
+
+.file-tree-sub-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--border-primary);
+  background-color: var(--bg-tertiary);
+  flex-shrink: 0;
+}
+
+.branch-selector-container {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius-sm);
+  padding: 4px var(--space-sm);
+}
+
+.branch-icon {
+  margin-right: 6px;
+  color: var(--text-secondary);
   font-size: 0.9em;
-  /* Allow scrolling if content overflows */
+}
+
+.branch-select {
+  background-color: transparent;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  padding-right: var(--space-md);
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+.branch-select:focus {
+  outline: none;
+}
+
+.file-tree-viewer-container .action-buttons { /* Target action-buttons within this component */
+  display: flex;
+  gap: var(--space-sm);
+}
+.file-tree-viewer-container .action-buttons .action-button { /* More specific */
+  background-color: var(--bg-primary); /* Match GitHub more closely */
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius-sm);
+  color: var(--text-primary); /* Darker icon color */
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0; /* Remove padding if icon fills it */
+  font-size: 1em; /* For text icons like [+] */
+}
+.file-tree-viewer-container .action-buttons .action-button:hover {
+  border-color: var(--text-secondary);
+  background-color: var(--bg-tertiary);
+}
+
+
+.search-bar-container {
+  display: flex;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--border-primary);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.search-icon-input { /* For the icon inside the input */
+  position: absolute;
+  left: calc(var(--space-md) + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  pointer-events: none;
+  font-size: 0.9em; /* For [🔍] icon */
+}
+
+.search-input {
+  width: 100%;
+  padding: 7px var(--space-sm) 7px 32px; /* Adjusted padding for consistency */
+  font-size: 13px;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius-sm);
+  background-color: var(--bg-primary); /* GitHub style input */
+  color: var(--text-primary);
+}
+.search-input::placeholder { color: var(--text-secondary); opacity: 0.7; }
+.search-input:focus {
+  background-color: var(--bg-primary);
+  border-color: var(--text-accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+}
+
+.shortcut-hint {
+  position: absolute;
+  right: calc(var(--space-md) + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  font-size: 12px;
+  border: 1px solid var(--border-primary);
+  padding: 1px 5px; /* Slightly smaller */
+  border-radius: var(--border-radius-sm);
+  background-color: var(--bg-primary);
+}
+
+.file-tree-list-container {
   flex-grow: 1;
   overflow-y: auto;
+  padding: var(--space-sm) var(--space-md); /* Padding top/bottom for the list itself */
 }
 
 .file-tree {
   list-style: none;
-  padding-left: 0; /* Remove default padding */
+  padding: 0;
+  margin: 0;
 }
 
 .tree-node {
-  padding: 4px 0;
-  cursor: default; /* Indicate non-interactive for now */
+  display: flex;
+  align-items: center;
+  padding: 5px var(--space-md) 5px 0; /* Remove right padding, rely on item content */
+  /* Dynamic padding-left is applied inline by TreeItem component */
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-secondary);
+  transition: background-color 0.1s ease;
+  min-height: 28px; /* Ensure consistent row height */
+}
+.tree-node:hover {
+  background-color: var(--bg-accent);
+}
+.tree-node.folder .node-name {
+  color: var(--text-primary);
+}
+
+.node-toggle-icon {
+  margin-right: 4px;
+  color: var(--text-secondary);
+  width: 16px;
+  text-align: center;
+  flex-shrink: 0;
+  font-size: 0.7em; /* Chevrons */
+  line-height: 1; /* Ensure vertical centering */
+  user-select: none; /* Prevent text selection on icon */
+}
+
+.node-file-icon {
+  margin-right: 6px;
+  color: var(--text-secondary); /* GitHub file icon color */
+  width: 16px;
+  text-align: center;
+  flex-shrink: 0;
+  line-height: 1;
 }
 
 .node-name {
-  display: flex;
-  align-items: center;
-}
-
-.node-name span { /* Style icons if needed */
-    margin-right: 5px;
-}
-
-/* Indentation for children */
-.node-children {
-  padding-left: 20px;
-  /* Add expand/collapse animations later */
-}
-
-.tree-node.folder .node-name {
-  font-weight: bold; /* Make folders bold */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-left: 2px;
+  line-height: 1.5; /* Adjust for better vertical centering with icons */
 }
 
 .error-message {
-    color: #dc3545;
+  color: #cf222e; /* GitHub error red */
+  padding: var(--space-md);
 }
-
-/* Basic Loading Spinner Style (Add LoadingSpinner.js or use a library) */
-.loading-spinner {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #3498db;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  animation: spin 1s linear infinite;
-  margin: 10px auto;
-}
-
-/* Ensure @keyframes spin is defined in a global CSS like App.css or index.css */

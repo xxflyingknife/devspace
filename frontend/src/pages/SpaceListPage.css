@@ -2,73 +2,128 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: var(--bg-primary); /* Match NotebookLM list page bg */
 }
 
 .space-list-main {
-  padding: var(--space-lg) var(--space-xl); /* More padding */
+  padding: var(--space-lg) var(--space-xl);
   flex-grow: 1;
-  max-width: 1200px; /* Max width for content */
-  margin: 0 auto; /* Center content */
+  max-width: 1280px; /* Wider max width */
+  margin: 0 auto;
   width: 100%;
 }
 
 .space-list-header {
   margin-bottom: var(--space-xl);
-}
-
-.space-list-header h2 {
-  font-size: 1.8rem; /* Larger heading */
-  font-weight: 400;
-  margin: 0 0 var(--space-lg) 0;
+  /* Title h2 removed from here, part of Header now or not present */
 }
 
 .space-list-controls {
   display: flex;
   align-items: center;
   gap: var(--space-md);
+  padding: var(--space-sm) 0; /* Padding around controls */
 }
 
 .new-space-button {
-  background-color: var(--primary-color);
-  color: var(--text-color-light);
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-text);
   border: none;
   padding: var(--space-sm) var(--space-lg);
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--border-radius-sm); /* Match Google style */
   font-weight: 500;
+  font-size: var(--font-size-sm);
+  box-shadow: var(--shadow-sm);
 }
 .new-space-button:hover {
-    opacity: 0.9;
+  opacity: 0.9;
+  box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 2px 6px 2px rgba(60,64,67,0.15);
 }
 
 .view-controls {
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-sm);
-    overflow: hidden; /* Clip children */
-    display: inline-flex; /* Keep buttons together */
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  display: inline-flex;
 }
 .view-controls .control-button {
-    margin-left: 0;
-    border: none;
-    border-radius: 0;
-    border-right: 1px solid var(--border-color);
+  margin-left: 0;
+  border: none;
+  border-radius: 0;
+  padding: 6px 12px;
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
 }
-.view-controls .control-button:last-child {
-    border-right: none;
+.view-controls .control-button:not(:last-child) {
+  border-right: 1px solid var(--border-primary);
+}
+.view-controls .control-button.active {
+  background-color: var(--bg-accent);
+  color: var(--text-accent);
+}
+.view-controls .control-button:hover:not(.active) {
+    background-color: var(--bg-tertiary);
 }
 
 
-.sort-dropdown {
-    padding: var(--space-sm) var(--space-md);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-sm);
-    background-color: var(--background-light);
-    color: var(--text-color-secondary);
-    font-size: var(--font-size-sm);
-    margin-left: auto; /* Push sort to the right */
+.filter-dropdown {
+  padding: 7px var(--space-md); /* Match button height better */
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius-sm);
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  margin-left: auto; /* Push filter to the right */
 }
 
 .space-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* Responsive grid */
-  gap: var(--space-lg); /* Gap between cards */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Adjust card min-width */
+  gap: var(--space-lg);
 }
+
+.space-list-view {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--space-md);
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--border-radius-md);
+    overflow: hidden; /* For rounded corners on list items */
+    background-color: var(--bg-primary);
+}
+/* Optional: Header row for list view
+.space-list-header-row {
+    display: flex;
+    padding: var(--space-sm) var(--space-lg);
+    background-color: var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: var(--font-size-sm);
+    border-bottom: 1px solid var(--border-primary);
+}
+.space-list-header-row > div { flex: 1; }
+.space-list-header-row > div:first-child { flex-basis: 40px; flex-grow: 0; }
+.space-list-header-row > div:last-child { flex-basis: 60px; flex-grow: 0; text-align: right; }
+*/
+
+.no-spaces-message {
+    text-align: center;
+    padding: var(--space-xl);
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* Add this to SpaceListPage.css */
+.welcome-header {
+  text-align: left; /* Or left, depending on preference */
+  margin-bottom: var(--space-xl); /* e.g., 32px */
+}
+
+.welcome-header h1 {
+  font-size: 3.5rem; /* Large welcome text */
+  font-weight: 400; /* Lighter font weight like NotebookLM welcome */
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.2;
+}
+

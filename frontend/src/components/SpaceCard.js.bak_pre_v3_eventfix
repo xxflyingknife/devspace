@@ -7,10 +7,10 @@ function SpaceCard({ id, name, type, date, sourceCount, icon, color = '#e0f7fa',
   const displayIcon = icon || (type === 'dev' ? '💻' : '🛠️'); // Default icons based on type
   const [menuOpen, setMenuOpen] = useState(false);
 
-const menuItems = [
-  { label: '修改标题', onClick: (e) => { e.preventDefault(); e.stopPropagation(); onEditTitle(id, name); setMenuOpen(false); } },
-  { label: '删除空间', onClick: (e) => { e.preventDefault(); e.stopPropagation(); onDelete(id, name); setMenuOpen(false); }, danger: true },
-];
+  const menuItems = [
+    { label: '修改标题', onClick: () => { onEditTitle(id, name); setMenuOpen(false); } },
+    { label: '删除空间', onClick: () => { onDelete(id, name); setMenuOpen(false); }, danger: true }, // danger for styling
+  ];
 
   const handleMenuToggle = (e) => {
     e.preventDefault(); // Prevent link navigation
@@ -23,12 +23,11 @@ const menuItems = [
       <div className="space-card" style={{ backgroundColor: color }}>
         <div className="card-header">
             <div className="card-icon">{displayIcon}</div>
+            <div className="card-type-badge">{type === 'dev' ? 'DEV' : 'OPS'}</div>
         </div>
         <div className="card-content">
           <h3 className="card-title">{name}</h3>
-          <p className="card-meta">
-           {date}  ·  <span className={`card-type-meta-badge type-${type}`}>{type === 'dev' ? 'Dev Space' : 'Ops Space'}</span>
-          </p>
+          <p className="card-meta">{date} · {sourceCount}个来源</p>
         </div>
         <div className="card-menu-container">
             <button

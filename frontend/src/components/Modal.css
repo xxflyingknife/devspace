@@ -1,0 +1,106 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* High z-index */
+  opacity: 0;
+  animation: fadeIn 0.3s forwards;
+}
+
+.modal-content {
+  background-color: var(--bg-primary);
+  padding: var(--space-xl); /* 32px */
+  border-radius: var(--border-radius-md); /* 8px */
+  box-shadow: var(--shadow-md);
+  width: 100%;
+  max-width: 500px; /* Max width for modals */
+  transform: scale(0.95);
+  animation: scaleUp 0.3s forwards;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.modal-title {
+  font-size: 1.25rem; /* 20px */
+  font-weight: 500;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.modal-close-button {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  font-weight: 300;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+.modal-close-button:hover {
+  color: var(--text-primary);
+}
+
+.modal-body {
+  margin-bottom: var(--space-lg);
+  /* max-height: 60vh; */
+  /* overflow-y: auto; */ /* If content can be very long */
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--border-secondary);
+}
+
+.modal-button {
+    padding: var(--space-sm) var(--space-lg); /* 8px 24px */
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+    font-size: var(--font-size-sm);
+    transition: opacity 0.2s ease;
+}
+.modal-button.primary {
+    background-color: var(--button-primary-bg);
+    color: var(--button-primary-text);
+    border: none;
+}
+.modal-button.primary:hover { opacity: 0.85; }
+
+.modal-button.secondary {
+    background-color: var(--button-secondary-bg);
+    color: var(--button-secondary-text);
+    border: 1px solid var(--button-secondary-border);
+}
+.modal-button.secondary:hover { background-color: var(--border-secondary); }
+
+
+/* Modal Form specific styles */
+.modal-form .form-group {
+    /* Use global form-group styles */
+}
+.modal-form-actions { /* Alternative to modal-footer if form has its own actions */
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-md);
+    margin-top: var(--space-lg);
+}
+
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleUp { from { transform: scale(0.95); opacity: 0.8; } to { transform: scale(1); opacity: 1; } }

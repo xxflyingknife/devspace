@@ -10,12 +10,12 @@ import './SpaceListPage.css';
 const mockFetchSpaces = async () => {
   await new Promise(resolve => setTimeout(resolve, 300)); // Simulate delay
   return [
-    { id: 'music-dev', name: '音乐服务', type: 'dev', date: '2025年5月5日', sourceCount: 16, icon: '📦'  },
-    { id: 'music-cluster-monitor', name: '音乐服务维护 Ops', type: 'ops', date: '2025年5月6日', sourceCount: 22, icon: '🛠️' },
+    { id: 'proj-prefab-modular', name: '预制和模块化建筑市场概览', type: 'dev', date: '2025年5月5日', sourceCount: 16, icon: '📦', color: '#E0F2F7' },
+    { id: 'ops-cluster-monitor', name: '生产环境集群监控 Ops', type: 'ops', date: '2025年5月6日', sourceCount: 22, icon: '🛠️', color: '#E8F5E9' },
     { id: 'art-wheelwrighting', name: 'The Art and Craft of Wheelwrighting', type: 'dev', date: '2025年5月5日', sourceCount: 9, icon: '⚙️', color: '#FFF9C4' },
-    { id: 'play-benefits', name: '游戏空间', type: 'dev', date: '2025年5月11日', sourceCount: 15, icon: '🏡', color: '#E8F5E9' },
-    { id: 'sre-incident-response', name: 'SRE 异常事件应急', type: 'ops', date: '2025年5月12日', sourceCount: 18, icon: '🚨', color: '#FFEBEE' },
-    { id: 'disaster-recovery', name: '容灾流控切换', type: 'ops', date: '2025年5月11日', sourceCount: 12, icon: '⏱️', color: '#FCE4EC' },
+    { id: 'play-benefits', name: '户玩游戏对儿童成长的益处', type: 'dev', date: '2025年5月11日', sourceCount: 15, icon: '🏡', color: '#E8F5E9' },
+    { id: 'sre-incident-response', name: 'SRE 事件响应手册 Ops', type: 'ops', date: '2025年5月12日', sourceCount: 18, icon: '🚨', color: '#FFEBEE' },
+    { id: 'disaster-checklist', name: '灾害应急物品清单', type: 'dev', date: '2025年5月11日', sourceCount: 12, icon: '⏱️', color: '#FCE4EC' },
   ];
 };
 const mockCreateSpace = async (spaceData) => {
@@ -43,7 +43,7 @@ function SpaceListPage() {
 
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const [filterType, setFilterType] = useState('all'); // 'all', 'dev', 'ops'
-  const [searchTerm, _setSearchTerm] = useState(''); // For potential future search
+  const [searchTerm, setSearchTerm] = useState(''); // For potential future search
 
   const [showNewSpaceModal, setShowNewSpaceModal] = useState(false);
   const [showEditSpaceModal, setShowEditSpaceModal] = useState(false);
@@ -156,13 +156,6 @@ function SpaceListPage() {
         onShowFeedback={() => setShowFeedbackDrawer(true)}
       />
       <main className="space-list-main">
-        {/* === ADDED WELCOME MESSAGE === */}
-        <div className="welcome-header">
-          <h1>欢迎使用 Space+</h1>
-          <br/>
-          <h4>This is a Ideless&Vibe DevOps Platform</h4>
-        </div>
-        {/* === END ADDED WELCOME MESSAGE === */}
         <div className="space-list-header">
           {/* Title removed as per new design for list page header */}
           <div className="space-list-controls">
@@ -173,14 +166,14 @@ function SpaceListPage() {
                     onClick={() => setViewMode('grid')}
                     aria-label="Grid view"
                  >
-                    ▦ {/* Grid Icon */}
+                    [▦] {/* Grid Icon */}
                  </button>
                  <button
                     className={`control-button ${viewMode === 'list' ? 'active' : ''}`}
                     onClick={() => setViewMode('list')}
                     aria-label="List view"
                  >
-                    ≡ {/* List Icon */}
+                    [≡] {/* List Icon */}
                  </button>
              </div>
              <select
