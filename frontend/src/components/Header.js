@@ -12,7 +12,14 @@ function Header({
   onShowFeedback,
   onShowPluginMarket, // Prop to open plugin market
   // Props below might be derived from route or passed by parent page if Header is not global
-  spaceName // This would be passed by SpaceDetailPage
+  spaceName, // This would be passed by SpaceDetailPage
+  
+  // Props passed from SpaceDetailPage when this Header is rendered there
+  spaceId,          // Current spaceId if on detail page
+  spaceType,        // Current spaceType ('dev' or 'ops') if on detail page
+  onShowSpaceSettings, // Callback from SpaceDetailPage to open its SpaceSettingsModal
+
+
 }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
@@ -32,6 +39,8 @@ function Header({
     // or a more advanced context/routing solution provides it.
     // For now, we'll just use spaceName if provided for detail page.
   }
+
+  const isDetailPage = location.pathname.startsWith('/space/');
 
 
   const settingsMenuItems = [
@@ -58,12 +67,31 @@ function Header({
 
   return (
     <header className="app-header">
+
       <div className="header-left">
         <Logo />
-        {pageType === 'detail' && spaceName && ( // spaceName now passed as a prop
-          <h1 className="header-space-name">{spaceName}</h1>
+        {isDetailPage && spaceName && (
+          <>
+            <h1 className="header-space-name">{spaceName}</h1>
+            {/* Space Specific Settings Button - only if onShowSpaceSettings is passed */}
+            {onShowSpaceSettings && (
+                <button
+                    className="header-icon-button space-specific-settings-button"
+                    onClick={onShowSpaceSettings}
+                    title="空间设置"
+                >
+            <span className={`space-type-logo type-${spaceType}`}>
+              {spaceType === 'dev' ? ' Dev ' : (spaceType === 'ops' ? ' Ops ' : '')}
+            </span>
+                </button>
+            )}
+          </>
         )}
       </div>
+
+
+
+
       <div className="header-right">
         {pageType === 'detail' && (
           <>

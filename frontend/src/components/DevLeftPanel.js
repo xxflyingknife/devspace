@@ -217,10 +217,8 @@ function DevLeftPanel({ spaceId }) {
              <div className="panel-header"><span className="panel-title">Code</span></div>
              <div className="wizard-content">
                 <h4>你还没有关联开发项目</h4> <p>选择一个操作开始:</p>
-                <button className="wizard-button primary" onClick={() => setShowCreateProjectModal(true)}>[+] 创建新项目</button>
-                <p>根据向导选择项目类型、初始化代码库并推送到你的 Git 提供商。</p> <hr />
-                <button className="wizard-button secondary" onClick={() => { setExistingRepoUrlInput(devSpaceDetails?.git_repo_url || ''); setShowSetExistingRepoModal(true); }}> [⚙️] 设置已有项目 </button>
-                <p>如果你已经有一个 Git 仓库，请在此处配置其地址。</p>
+                <button className="wizard-button primary" onClick={() => setShowCreateProjectModal(true)}>创建新项目</button>
+                <button className="wizard-button secondary" onClick={() => { setExistingRepoUrlInput(devSpaceDetails?.git_repo_url || ''); setShowSetExistingRepoModal(true); }}> 设置已有项目 </button>
              </div>
           </div>
         ) : (

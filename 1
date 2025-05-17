@@ -1,11 +1,15 @@
 // frontend/src/pages/SpaceDetailPage.js
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+// REMOVE: import Header from '../components/Header'; // No longer rendering Header here
+
 import DevLeftPanel from '../components/DevLeftPanel';
 import DevRightPanel from '../components/DevRightPanel';
 import OpsLeftPanel from '../components/OpsLeftPanel';
 import OpsRightPanel from '../components/OpsRightPanel';
 import ChatInterface from '../components/ChatInterface';
+// REMOVE: import Drawer from '../components/Drawer'; // Handled by App.js
+// REMOVE: import SpaceSettingsModal from '../components/SpaceSettingsModal'; // Handled by App.js
 import LoadingSpinner from '../components/LoadingSpinner';
 import './SpaceDetailPage.css';
 
@@ -32,19 +36,17 @@ const fetchSpaceDetailsFromAPI = async (spaceId) => {
 };
 
 function SpaceDetailPage({ onSetHeaderProps }) { // Receive onSetHeaderProps as a prop
+  const { spaceId: spaceIdFromRoute } = useParams(); // Get spaceId from URL params
   const [spaceDetails, setSpaceDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const params = useParams(); // Get the whole params object
-  const { spaceIdFromRoute } = params; // Then destructure
 
   // Theme and global drawer states are managed by App.js
 
   useEffect(() => {
     setIsLoading(true);
     setError(null);
-    console.log(`SpaceDetailPage useEffect triggered for spaceIdFromRoute: ${spaceIdFromRoute}`);
+    console.log(`SpaceDetailPage useEffect triggered for spaceIdFromUrl: ${spaceIdFromRoute}`);
     
     if (spaceIdFromRoute) {
         fetchSpaceDetailsFromAPI(spaceIdFromRoute)
@@ -134,3 +136,5 @@ function SpaceDetailPage({ onSetHeaderProps }) { // Receive onSetHeaderProps as 
 }
 
 export default SpaceDetailPage;
+
+

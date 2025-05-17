@@ -66,7 +66,7 @@
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.25rem; /* For Unicode icons */
+  font-size: 1rem; /* For Unicode icons */
   transition: background-color 0.2s ease;
 }
 .header-icon-button:hover {
@@ -84,5 +84,40 @@
 .dropdown-container {
   position: relative;
 }
+
+/* frontend/src/components/Header.css */
+/* ... (existing .app-header, .header-left, .header-space-name, .header-right, .header-button, .header-icon-button, .dropdown-container styles) ... */
+
+.space-type-logo {
+  font-size: 0.8em; /* Smaller than space name */
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: var(--border-radius-sm);
+  margin-right: var(--space-sm);
+  margin-left: var(--space-sm); /* Space after Logo if spaceName is also shown */
+  line-height: 1;
+}
+.space-type-logo.type-dev {
+  background-color: var(--text-accent); /* Blue */
+  color: var(--text-on-primary-bg);
+}
+.space-type-logo.type-ops {
+  background-color: #28a745; /* Green */
+  color: var(--text-on-primary-bg);
+}
+
+.header-left .header-icon-button.space-specific-settings-button {
+    /* If this settings button is visually different from global one */
+    margin-left: var(--space-sm);
+    width: 32px; /* Slightly smaller */
+    height: 32px;
+    font-size: 1.1rem;
+}
+
+/* Ensure global settings icon is distinct if needed */
+.header-right .header-icon-button[title="平台设置"] { /* Example if settings icon for platform settings is different */
+    /* font-size: 1.3rem; */
+}
+
 
 

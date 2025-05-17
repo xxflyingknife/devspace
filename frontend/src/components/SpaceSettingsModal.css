@@ -1,0 +1,95 @@
+/* frontend/src/components/SpaceSettingsModal.css */
+.modal-content.space-settings-modal.wide .modal-body {
+    /* The modal body itself will contain accordions, allow it to scroll */
+    padding: 0; /* Accordions will provide their own padding */
+    max-height: calc(80vh - 120px); /* Adjust based on header/footer height */
+    overflow-y: auto;
+}
+
+.space-settings-form {
+    /* No specific padding needed if accordions handle it */
+}
+
+.space-settings-form .accordion-section {
+    margin-bottom: 0; /* Stack accordions tightly */
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+}
+.space-settings-form .accordion-section:first-child {
+    border-top: none; /* No top border for the first accordion in the list */
+}
+.space-settings-form .accordion-section:last-child {
+     border-bottom: none; /* No bottom border for the last accordion before footer */
+}
+
+
+.space-settings-form .accordion-header {
+    background-color: var(--bg-primary);
+    padding: var(--space-md) var(--space-lg); /* Match modal header padding */
+    border-bottom: 1px solid var(--border-primary); /* Always show border for header */
+}
+.space-settings-form .accordion-section.closed .accordion-header {
+    border-bottom: 1px solid var(--border-primary); /* Keep border even when closed */
+}
+.space-settings-form .accordion-section:not(:first-child) .accordion-header{
+    /* border-top: 1px solid var(--border-primary); */ /* Optional top border for non-first headers */
+}
+
+
+.space-settings-form .accordion-title {
+    font-size: 1rem; /* Slightly larger accordion titles */
+    font-weight: 500;
+}
+
+.space-settings-form .accordion-content {
+    padding: var(--space-lg); /* Generous padding inside accordion */
+    background-color: var(--bg-secondary); /* Slight contrast for content area */
+}
+
+.space-settings-form .form-group {
+    margin-bottom: var(--space-lg); /* More space between form groups */
+}
+.space-settings-form .form-group:last-child {
+    margin-bottom: 0;
+}
+.space-settings-form .form-group label {
+    font-weight: 500;
+    color: var(--text-primary); /* Stronger label color */
+}
+.space-settings-form .form-group small { /* Help text for API keys etc. */
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    display: block;
+    margin-top: var(--space-xs);
+}
+
+
+.modal-loading-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(255,255,255,0.7); /* Light overlay */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10; /* Above form content */
+}
+html[data-theme="dark"] .modal-loading-overlay {
+    background-color: rgba(0,0,0,0.7);
+}
+.modal-loading-overlay p {
+    margin-top: var(--space-sm);
+    font-style: italic;
+}
+
+.modal-error { /* For errors within the modal */
+    color: #d93025;
+    background-color: #fce8e6;
+    padding: var(--space-sm);
+    border-radius: var(--border-radius-sm);
+    margin-bottom: var(--space-md);
+    text-align: center;
+}
+
+
