@@ -1,9 +1,29 @@
-Flask>=2.0
-Flask-CORS>=3.0
-python-dotenv>=1.0.0 # For loading .env file (optional)
-langchain>=0.1.0 # Or a more specific recent version
-langchain-google-genai>=1.0.0 # Or langchain-openai
-google-generativeai>=0.4.0 # Specific dependency for Gemini models
-GitPython>=3.1.0 # If using GitPython library in git_handler (optional, currently uses os.walk)
-kubernetes>=28.0.0 # Or a more specific recent version
-# gunicorn # Recommended for production WSGI server
+Flask>=2.3.0 # Or latest 2.x / 3.x
+Flask-CORS>=4.0.0
+SQLAlchemy-Utils>=0.41.1 # Or latest version
+SQLAlchemy>=1.4.0,<2.0.0 # Sticking to 1.4 for now, 2.0 has API changes
+# For SQLAlchemy 2.0, use SQLAlchemy>=2.0.0
+# alembic>=1.7.0 # For database migrations (recommended)
+python-dotenv>=1.0.0 # For loading .env file
+
+passlib[bcrypt]>=1.7.4
+PyJWT>=2.0.0
+
+# LangChain and LLM dependencies
+langchain>=0.1.0 # Or a more specific recent LangChain version
+langchain-google-genai>=1.0.0 # For Gemini
+# langchain-openai # If using OpenAI
+
+# Kubernetes client
+kubernetes>=28.0.0 # Or latest stable
+PyYAML>=6.0       # Or latest stable
+
+# Git interaction (if not using system calls exclusively)
+# GitPython>=3.1.0
+
+# For production WSGI server (optional here, but good for Dockerfile)
+# gunicorn>=20.0.0
+
+# Other utilities you might need:
+# requests>=2.25.0 # For making HTTP requests to MCP servers etc.
+# APScheduler>=3.6.0 # If implementing scheduled tasks within Flask

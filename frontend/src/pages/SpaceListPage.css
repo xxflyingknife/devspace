@@ -1,28 +1,49 @@
-.space-list-page-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: var(--bg-primary); /* Match NotebookLM list page bg */
+/* frontend/src/pages/SpaceListPage.css */
+.space-list-main-content.only-loader { /* For centering full page loader/error */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-secondary); /* Match body bg for full screen */
 }
 
-.space-list-main {
-  padding: var(--space-lg) var(--space-xl);
-  flex-grow: 1;
-  max-width: 1280px; /* Wider max width */
-  margin: 0 auto;
-  width: 100%;
-}
 
-.space-list-header {
-  margin-bottom: var(--space-xl);
-  /* Title h2 removed from here, part of Header now or not present */
+.welcome-header {
+  text-align: left;
+  margin-bottom: var(--space-xl); /* e.g., 32px */
 }
+.welcome-header h1 {
+  font-size: 2.25rem; /* Adjusted size */
+  font-weight: 400;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-xs) 0;
+  line-height: 1.2;
+}
+.welcome-header h4 {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin: 0;
+}
+.welcome-header .bouncing-plus { /* Copied from previous if still used */
+  display: inline-block;
+  position: relative;
+  color: var(--text-accent);
+  font-weight: bold;
+  animation-name: drop-bounce-cycle;
+  animation-duration: 5s;
+  animation-timing-function: ease-out;
+  animation-iteration-count: infinite;
+}
+/* Ensure @keyframes drop-bounce-cycle is defined (e.g., in App.css or index.css) */
 
-.space-list-controls {
+
+.space-list-controls-header { /* Was space-list-controls */
   display: flex;
   align-items: center;
   gap: var(--space-md);
-  padding: var(--space-sm) 0; /* Padding around controls */
+  padding: var(--space-sm) 0 var(--space-lg) 0; /* More bottom padding */
+  border-bottom: 1px solid var(--border-primary); /* Separator */
+  margin-bottom: var(--space-lg); /* Space before grid/list */
 }
 
 .new-space-button {
@@ -30,10 +51,11 @@
   color: var(--button-primary-text);
   border: none;
   padding: var(--space-sm) var(--space-lg);
-  border-radius: var(--border-radius-sm); /* Match Google style */
+  border-radius: var(--border-radius-sm);
   font-weight: 500;
   font-size: var(--font-size-sm);
   box-shadow: var(--shadow-sm);
+  white-space: nowrap;
 }
 .new-space-button:hover {
   opacity: 0.9;
@@ -50,80 +72,76 @@
   margin-left: 0;
   border: none;
   border-radius: 0;
-  padding: 6px 12px;
+  padding: 7px 12px; /* Adjusted for visual balance with select */
   background-color: var(--bg-primary);
   color: var(--text-secondary);
+  font-size: 1.1rem; /* For Unicode icons */
 }
 .view-controls .control-button:not(:last-child) {
   border-right: 1px solid var(--border-primary);
 }
 .view-controls .control-button.active {
-  background-color: var(--bg-accent);
+  background-color: var(--primary-light);
   color: var(--text-accent);
 }
 .view-controls .control-button:hover:not(.active) {
-    background-color: var(--bg-tertiary);
+  background-color: var(--bg-tertiary);
 }
 
-
 .filter-dropdown {
-  padding: 7px var(--space-md); /* Match button height better */
+  padding: var(--space-sm) var(--space-md);
   border: 1px solid var(--border-primary);
   border-radius: var(--border-radius-sm);
   background-color: var(--bg-primary);
   color: var(--text-secondary);
   font-size: var(--font-size-sm);
   margin-left: auto; /* Push filter to the right */
+  min-width: 150px;
 }
 
 .space-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Adjust card min-width */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--space-lg);
 }
 
 .space-list-view {
-    list-style: none;
-    padding: 0;
-    margin-top: var(--space-md);
-    border: 1px solid var(--border-secondary);
-    border-radius: var(--border-radius-md);
-    overflow: hidden; /* For rounded corners on list items */
-    background-color: var(--bg-primary);
+  list-style: none;
+  padding: 0;
+  /* margin-top: var(--space-md); */ /* No top margin, direct after controls header */
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  background-color: var(--bg-primary);
 }
-/* Optional: Header row for list view
-.space-list-header-row {
-    display: flex;
-    padding: var(--space-sm) var(--space-lg);
-    background-color: var(--bg-tertiary);
-    color: var(--text-secondary);
-    font-weight: 500;
-    font-size: var(--font-size-sm);
-    border-bottom: 1px solid var(--border-primary);
-}
-.space-list-header-row > div { flex: 1; }
-.space-list-header-row > div:first-child { flex-basis: 40px; flex-grow: 0; }
-.space-list-header-row > div:last-child { flex-basis: 60px; flex-grow: 0; text-align: right; }
-*/
 
 .no-spaces-message {
+  text-align: center;
+  padding: var(--space-xl) var(--space-lg);
+  color: var(--text-secondary);
+  font-style: italic;
+  background-color: var(--bg-tertiary); /* Slight background for message area */
+  border-radius: var(--border-radius-md);
+  margin-top: var(--space-lg);
+}
+
+.loading-inline {
     text-align: center;
-    padding: var(--space-xl);
+    padding: var(--space-lg);
     color: var(--text-secondary);
-    font-style: italic;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
 }
 
-/* Add this to SpaceListPage.css */
-.welcome-header {
-  text-align: left; /* Or left, depending on preference */
-  margin-bottom: var(--space-xl); /* e.g., 32px */
+.space-list-main-content {
+  flex-grow: 1;
+  width: 100%;
+  /* REMOVE max-width and margin: 0 auto to make it full width */
+   max-width: calc(100% - 400px); 
+   margin: 0 auto; 
+  padding: var(--space-xl) var(--space-lg); /* Add side padding directly, e.g., 24px or 32px */
+  background-color: var(--bg-primary); /* This should be white in light, dark in dark */
+  box-sizing: border-box; /* Ensure padding is included in width calculation */
 }
-
-.welcome-header h1 {
-  font-size: 3.5rem; /* Large welcome text */
-  font-weight: 400; /* Lighter font weight like NotebookLM welcome */
-  color: var(--text-primary);
-  margin: 0;
-  line-height: 1.2;
-}
-

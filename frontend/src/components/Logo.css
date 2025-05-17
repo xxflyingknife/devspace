@@ -1,3 +1,8 @@
+.logo-link:hover {
+  text-decoration: none;
+  /* Add styles for SVG or Image if used */
+}
+
 .logo-link {
   display: flex;
   align-items: center;
@@ -19,3 +24,56 @@
   align-self: flex-end; /* Align slightly lower */
   padding-bottom: 2px;
 }
+
+/* frontend/src/components/Logo.css */
+.logo-link {
+  display: flex;
+  align-items: center; /* Helps vertically align the text and the plus */
+  text-decoration: none;
+  white-space: nowrap; /* Prevent wrapping if space is tight */
+}
+
+.logo-text {
+  font-size: 1.8em;
+  font-weight: 700;
+  color: var(--primary-color);
+  /* No margin-right needed if the plus icon handles spacing */
+}
+
+.logo-plus-icon {
+  display: inline-block; /* Important for transform to work correctly */
+  font-size: 1.7em;       /* Adjust size to match .logo-text or be slightly smaller/larger */
+  font-weight: 300;       /* Lighter weight for a thinner plus */
+  color: var(--text-accent); /* Or var(--primary-color) or var(--text-secondary) */
+  margin-left: 1px;      /* Small space after "Space" */
+  line-height: 1;         /* Helps with vertical alignment */
+  position: relative;     /* If you need to fine-tune position */
+  top: -0.05em;            /* Example: Slight vertical adjustment */
+}
+
+.rotating-plus {
+  animation: spin 4s linear infinite; /* 'spin' is animation name, 4s duration, linear timing, infinite loop */
+}
+
+/* Define the spin animation */
+/* Ensure this @keyframes spin is not already defined globally in App.css or index.css from LoadingSpinner */
+/* If it is, you can rename this one, e.g., @keyframes spin-logo-plus */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* If you already have a global @keyframes spin and want to avoid collision: */
+/*
+.rotating-plus {
+  animation: spin-logo-plus 4s linear infinite;
+}
+@keyframes spin-logo-plus {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+*/

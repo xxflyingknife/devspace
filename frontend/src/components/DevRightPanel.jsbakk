@@ -1,0 +1,316 @@
+// frontend/src/components/DevRightPanel.js
+import React, { useState, useEffect } from 'react';
+import Modal from './Modal';
+import Accordion from './Accordion';
+import Drawer from './Drawer';
+import LoadingSpinner from './LoadingSpinner';
+import { debugToolsConfig } from '../config/toolConfigs'; // Assuming this path is correct
+import './DevRightPanel.css'; // Ensure this CSS file exists and is styled
+
+
+// Mock function to simulate fetching current dev environment status
+const mockFetchDevEnvStatus = async (spaceId) => {
+    console.log(`DEV_RIGHT_PANEL: Fetching dev env status for space ${spaceId}`);
+    await new Promise(resolve => setTimeout(resolve, 400));
+    const statuses = ['healthy', 'warning', 'error', 'unknown']; // possible statuses
+    return statuses[Math.floor(Math.random() * statuses.length)];
+};
+
+// Mock function to get drawer content (can be expanded with real components)
+const getDrawerContentForDebugType = (debugType, toolConfig) => {
+    const title = toolConfig ? toolConfig.drawerTitle || toolConfig.label : debugType.replace(/([A-Z](?=[a-z]))/g, ' $1').trim().replace(/^./, str => str.toUpperCase());
+    let content = <p>Debug content for {title} will appear here. This might involve fetching real-time data or providing interactive debugging tools.</p>;
+    
+    if (debugType === 'frontendLogs') content = <pre><code>[INFO] Frontend App Initialized {new Date().toLocaleTimeString()}\n[DEBUG] User navigated to DevSpace\n[WARN] Image component on card XYZ took 300ms to render</code></pre>;
+    if (debugType === 'backendLogs') content = <pre><code>[INFO] Backend API Server started successfully.\n[DEBUG] Request to /api/spaces received.\n[ERROR] Connection to external_service_abc timed out.</code></pre>;
+    if (debugType === 'variableInspector') content = <div><p>Connect to a running debug session to inspect variables. (Placeholder UI)</p><button>Attach to Process</button></div>;
+    if (debugType === 'dbViewer') content = <div><p>Database viewer interface would be here. (Placeholder UI)</p><select><option>users</option><option>spaces</option></select><button>Query Table</button></div>;
+    if (debugType === 'cacheViewer') content = <div><p>Cache viewer interface. (Placeholder UI)</p><input placeholder="Enter cache key"/><button>View Key</button></div>;
+
+    return (<div><h3>{title}</h3>{content}</div>);
+};
+
+
+function DevRightPanel({ spaceId, isRepoConfigured, projectType, openPluginMarket }) {
+  // --- State for Deployments Section ---
+  const [showDeploySettingsModal, setShowDeploySettingsModal] = useState(false);
+  const [k8sEnvConfigs, setK8sEnvConfigs] = useState({
+    test: { url: 'test-context-or-url', name: 'Test Environment' },
+    grayscale: { url: 'gray-context-or-url', name: 'Grayscale Environment' },
+    production: { url: 'prod-context-or-url', name: 'Production Environment' },
+  });
+  // Mock deployments - in a real app, this would be fetched based on k8sEnvConfigs and spaceId
+  const [deploymentsData, setDeploymentsData] = useState({
+    test: [{ id: 'test-dep1', name: `${spaceId}-backend-test`, status: 'Running', replicas: '1/1', lastDeployed: '3h ago'}],
+    grayscale: [],
+    production: [{ id: 'prod-dep1', name: `${spaceId}-main-app-prod`, status: 'Running', replicas: '5/5', lastDeployed: '1d ago'}]
+  });
+  const [isLoadingDeployments, setIsLoadingDeployments] = useState(false);
+  const [openDeployEnvs, setOpenDeployEnvs] = useState({ test: true, grayscale: false, production: false });
+
+  // --- State for Debug Section ---
+  const [activeDebugDrawer, setActiveDebugDrawer] = useState(null); // Stores the ID of the tool for the open drawer
+  const [activeDebugTool, setActiveDebugTool] = useState(null); // Stores the full config of the active tool
+  const [showDevEnvControlModal, setShowDevEnvControlModal] = useState(false);
+  const [devEnvStatus, setDevEnvStatus] = useState('unknown');
+  const [currentDebugTools, setCurrentDebugTools] = useState([]);
+  // Fetch/Update Dev Environment Status & Determine Debug Tools
+  useEffect(() => {
+    if (isRepoConfigured) {
+      setIsLoadingDeployments(true); // Can use a separate loading for dev env status
+      mockFetchDevEnvStatus(spaceId).then(status => {
+        setDevEnvStatus(status);
+        setIsLoadingDeployments(false); // Assuming status fetch is quick
+      });
+
+      let toolsToDisplay = [];
+      const genericToolIds = debugToolsConfig.generic.map(t => t.id); // Assuming generic is array of tool objects
+
+      if (projectType && debugToolsConfig.projectTypeDefaults[projectType]) {
+        const typeDefaultIds = debugToolsConfig.projectTypeDefaults[projectType];
+        toolsToDisplay = debugToolsConfig.allAvailable.filter(
+          tool => typeDefaultIds.includes(tool.id) || genericToolIds.includes(tool.id)
+        );
+        // Ensure no duplicates if a generic tool is also a type default
+        const uniqueToolIds = new Set(toolsToDisplay.map(t => t.id));
+        toolsToDisplay = Array.from(uniqueToolIds).map(id => toolsToDisplay.find(t => t.id === id));
+
+      } else { // Existing repo or unknown project type, show generic tools
+        toolsToDisplay = debugToolsConfig.allAvailable.filter(
+          tool => genericToolIds.includes(tool.id)
+        );
+      }
+      setCurrentDebugTools(toolsToDisplay);
+    } else {
+      setDevEnvStatus('not_configured');
+      setCurrentDebugTools([]);
+    }
+  }, [spaceId, isRepoConfigured, projectType]);
+
+  const handleSaveDeploySettings = (e) => {
+    e.preventDefault();
+    console.log("Saving K8s Environment configurations:", k8sEnvConfigs);
+    alert(`K8s Deploy Environment configurations saved (mocked).`);
+    // TODO: API call to backend to save these configurations for the spaceId
+    setShowDeploySettingsModal(false);
+  };
+
+  const toggleDeployEnvAccordion = (envKey) => {
+    setOpenDeployEnvs(prev => ({ ...prev, [envKey]: !prev[envKey] }));
+  };
+  
+  const openDebugDrawerWithTool = (toolConfig) => {
+    setActiveDebugTool(toolConfig);
+    setActiveDebugDrawer(toolConfig.id);
+  };
+  const closeDebugDrawer = () => {
+    setActiveDebugDrawer(null);
+    setActiveDebugTool(null);
+  };
+
+  const handleDevEnvAction = (action) => {
+    alert(`Dev Environment Action: ${action} for space ${spaceId} (mocked).\nThis would trigger a backend call.`);
+    // TODO: Implement backend call
+    // Example: mockFetchDevEnvStatus(spaceId).then(setDevEnvStatus); // To simulate status change
+    setShowDevEnvControlModal(false);
+  };
+
+  const getStatusIndicatorClass = () => {
+    if (!isRepoConfigured || devEnvStatus === 'not_configured') return 'status-grey';
+    if (devEnvStatus === 'healthy') return 'status-healthy';
+    if (devEnvStatus === 'warning') return 'status-warning';
+    if (devEnvStatus === 'error') return 'status-error';
+    return 'status-unknown';
+  };
+  const getStatusIndicatorTitle = () => {
+    if (!isRepoConfigured || devEnvStatus === 'not_configured') return '项目未配置或未就绪';
+    const statusText = devEnvStatus.charAt(0).toUpperCase() + devEnvStatus.slice(1);
+    return `开发环境状态: ${statusText}`;
+  };
+
+  return (
+    <div className="dev-right-panel-container">
+      {/* === DEBUG SECTION === */}
+      <div className="debug-section panel-section">
+        <div className="panel-header">
+          <span className="panel-title">Debug</span>
+          <div className="panel-header-actions">
+            <span 
+              className={`dev-env-status-indicator ${getStatusIndicatorClass()}`} 
+              title={getStatusIndicatorTitle()}
+            ></span>
+            <button 
+              className="panel-header-button" 
+              onClick={() => setShowDevEnvControlModal(true)}
+              title="Development Environment Controls"
+              disabled={!isRepoConfigured}
+            >▶️</button>
+          </div>
+        </div>
+        <div className="debug-tools-grid-wrapper"> {/* Added wrapper for padding */}
+          {!isRepoConfigured ? (
+            <p className="debug-wizard-prompt">
+              请先在左侧“代码区”创建新项目或设置现有 Git 仓库以启用 Debug 工具。
+            </p>
+          ) : (
+            <div className="debug-tools-grid">
+              {currentDebugTools.map(tool => (
+                <button
+                  key={tool.id}
+                  className="debug-tool-button"
+                  onClick={() => openDebugDrawerWithTool(tool)}
+                  title={tool.description || tool.label}
+                >
+                  <span className="debug-tool-icon">{tool.icon || '🔧'}</span>
+                  {tool.label}
+                </button>
+              ))}
+               <button
+                className="debug-tool-button add-more-tools-button"
+                onClick={() => { // <--- MODIFIED onClick
+                  if (typeof openPluginMarket === 'function') {
+                    openPluginMarket({
+                      mainCategory: '平台功能插件', // Or the key from your mainPluginCategories
+                      spaceTypeFilter: 'dev',     // Pre-filter to dev tools
+                      // Alternatively, if you have subCategory in your debug tools config:
+                      // subCategory: 'Debug 面板工具'
+                    });
+                  } else {
+                    console.warn("openPluginMarket function not provided to DevRightPanel");
+                    alert('Plugin Market opener not available.');
+                  }
+                }}
+                title="添加或配置更多 Debug 工具"
+              >
+		 
+               <span className="debug-tool-icon">➕</span>
+                添加工具
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* === DEPLOYMENTS SECTION === */}
+      <div className={`deployments-section panel-section ${!isRepoConfigured ? 'disabled-section' : ''}`}>
+        <div className="panel-header">
+          <span className="panel-title">Deployments</span>
+          <div className="panel-header-actions">
+            <button 
+              className="panel-header-button" 
+              onClick={() => setShowDeploySettingsModal(true)} 
+              title="Configure K8s Environments"
+              disabled={!isRepoConfigured}
+            >⚙️</button>
+          </div>
+        </div>
+        {!isRepoConfigured ? (
+            <p className="deploy-wizard-prompt">项目配置完成后，此处将显示部署环境。</p>
+        ) : (
+          <div className="deploy-environments-container">
+            {isLoadingDeployments && <div className="panel-loading-container"><LoadingSpinner/> <p>Loading deployments...</p></div>}
+            {!isLoadingDeployments && Object.entries(k8sEnvConfigs).map(([key, envConfig]) => (
+                <Accordion
+                key={key}
+                title={envConfig.name}
+                initialOpen={openDeployEnvs[key]} // Accordion manages its own state after initialOpen
+                headerClassName="environment-accordion-header"
+                // onToggle={() => toggleDeployEnvAccordion(key)} // Only if Accordion needs external control
+                >
+                {deploymentsData[key] && deploymentsData[key].length > 0 ? (
+                    <ul className="deploy-list">
+                    {deploymentsData[key].map(dep => (
+                        <li key={dep.id} className="deploy-list-item">
+                        <strong className="deploy-name">{dep.name}</strong>
+                        <span className={`deploy-status ${dep.status?.toLowerCase()}`}>{dep.status}</span>
+                        <span className="deploy-replicas">{dep.replicas}</span>
+                        <span className="deploy-time">{dep.lastDeployed}</span>
+                        <button className="deploy-action-button" onClick={() => alert(`Actions for ${dep.name}`)}>…</button>
+                        </li>
+                    ))}
+                    </ul>
+                ) : <p className="no-deployments-in-env">No deployments in this environment.</p>}
+                </Accordion>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Modal for K8s Deploy Environment Settings */}
+      {showDeploySettingsModal && (
+        <Modal isOpen={showDeploySettingsModal} onClose={() => setShowDeploySettingsModal(false)} title="Configure K8s Deploy Environments">
+          <form onSubmit={handleSaveDeploySettings} className="modal-form">
+            <p><em>Manage K8s contexts or API endpoints for each environment.</em></p>
+            {Object.entries(k8sEnvConfigs).map(([key, envConfig]) => (
+                 <div className="form-group" key={key}>
+                    <label htmlFor={`k8s-env-${key}-url`}>{envConfig.name} K8s Context/URL:</label>
+                    <input
+                        type="text"
+                        id={`k8s-env-${key}-url`}
+                        name={key} // For potential form handling
+                        value={envConfig.url}
+                        onChange={(e) => {
+                            const newUrl = e.target.value;
+                            setK8sEnvConfigs(prev => ({
+                                ...prev,
+                                [key]: { ...prev[key], url: newUrl }
+                            }));
+                        }}
+                    />
+                 </div>
+            ))}
+            <div className="modal-form-actions">
+              <button type="button" className="modal-button secondary" onClick={() => setShowDeploySettingsModal(false)}>Cancel</button>
+              <button type="submit" className="modal-button primary">Save Settings</button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {/* Modal for Dev Environment Controls */}
+      {showDevEnvControlModal && (
+        <Modal
+          isOpen={showDevEnvControlModal}
+          onClose={() => setShowDevEnvControlModal(false)}
+          title="Development Environment Controls"
+        >
+          <div className="dev-env-controls-modal-content">
+            <p>These actions interact with your project's development scripts.</p>
+            <div className="dev-env-action-buttons">
+              <button className="modal-button action primary" onClick={() => handleDevEnvAction('deploy')}>
+                <span className="action-icon">🚀</span> Deploy/Build
+              </button>
+              <button className="modal-button action" onClick={() => handleDevEnvAction('reset')}>
+                <span className="action-icon">🔄</span> Reset
+              </button>
+              <button className="modal-button action success" onClick={() => handleDevEnvAction('start')}>
+                <span className="action-icon">▶️</span> Start
+              </button>
+              <button className="modal-button action danger" onClick={() => handleDevEnvAction('stop')}>
+                <span className="action-icon">⏹️</span> Stop
+              </button>
+            </div>
+          </div>
+           <div className="modal-footer">
+                <button type="button" className="modal-button secondary" onClick={() => setShowDevEnvControlModal(false)}>Close</button>
+           </div>
+        </Modal>
+      )}
+
+      {/* Drawer for Active Debug Tool */}
+      <Drawer
+        isOpen={!!activeDebugDrawer}
+        onClose={closeDebugDrawer}
+        title={activeDebugTool ? activeDebugTool.drawerTitle || activeDebugTool.label : "Debug"}
+        position="right"
+        // Example for dynamic width, Drawer needs to support 'size' prop:
+        // size={activeDebugTool && (activeDebugTool.id === 'frontendLogs' || activeDebugTool.id === 'backendLogs') ? "large" : "default"}
+      >
+        {activeDebugDrawer && activeDebugTool && getDrawerContentForDebugType(activeDebugDrawer, activeDebugTool)}
+      </Drawer>
+    </div>
+  );
+}
+export default DevRightPanel;
+
+

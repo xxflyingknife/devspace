@@ -1,3 +1,7 @@
+.space-card-link:hover {
+  text-decoration: none; /* Remove underline on hover */
+}
+
 .space-card-link {
   text-decoration: none;
   color: inherit;
@@ -15,7 +19,7 @@
   position: relative;
   transition: box-shadow 0.25s ease, transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
   border: 1px solid var(--border-secondary); /* Softer border */
-  background-color: var(--bg-primary); /* Card background */
+  background-color: var(--bg-primary); transition: box-shadow 0.25s ease, transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease; /* Card background */
   overflow: hidden;
 }
 .space-card:hover {
@@ -39,7 +43,7 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--border-radius-md);
-  background-color: rgba(0,0,0,0.05); /* Placeholder icon background */
+  background-color: var(--bg-tertiary); /* Placeholder icon background */
   color: var(--text-secondary);
 }
 /* Individual card colors will be set via inline style on space-card div */
@@ -129,4 +133,31 @@
 }
 .card-menu-button:hover {
   background-color: var(--bg-tertiary); /* Use theme variable if exists */
+}
+
+/* Dark Mode Overrides for SpaceCard (script 24) */
+html[data-theme="dark"] .space-card {
+  background-color: var(--bg-tertiary) !important; /* Or another dark theme card bg */
+  border-color: var(--border-primary) !important;
+}
+
+html[data-theme="dark"] .space-card .card-title,
+html[data-theme="dark"] .space-card .card-meta,
+html[data-theme="dark"] .space-card .card-icon {
+  color: var(--text-primary); /* Ensure text uses dark theme primary/secondary */
+}
+html[data-theme="dark"] .space-card .card-icon {
+  background-color: var(--bg-secondary); /* Darker icon bg */
+}
+
+html[data-theme="dark"] .card-type-meta-badge.type-dev {
+  background-color: #2c3a4f; /* Example: Darker blue variant */
+  color: #90caf9; /* Example: Lighter blue text */
+}
+html[data-theme="dark"] .card-type-meta-badge.type-ops {
+  background-color: #2e4b30; /* Example: Darker green variant */
+  color: #a5d6a7; /* Example: Lighter green text */
+}
+html[data-theme="dark"] .card-menu-button:hover {
+  background-color: var(--bg-secondary); /* Consistent hover for dark mode */
 }

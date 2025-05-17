@@ -1,24 +1,26 @@
-.space-detail-page {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+/* frontend/src/pages/SpaceDetailPage.css */
+.space-detail-page-main-content { /* Was .space-detail-page, now assuming it's the <main> element */
+  display: flex; /* This is for the three-column-layout directly */
+  flex-direction: row; /* Should be row for three-column */
+  flex-grow: 1;
+  height: calc(100vh - 56px); /* Full height minus header */
   overflow: hidden;
-  background-color: var(--bg-secondary); /* Main background for the app area */
+  /* background-color: var(--bg-secondary); Removed, columns handle their own BG */
 }
 
-.three-column-layout {
+/* Reverted: three-column-layout is now the <main> tag itself */
+/* .three-column-layout {
   display: flex;
   flex-grow: 1;
   overflow: hidden;
-  /* border-top: 1px solid var(--border-primary); Removed, header has border */
-}
+} */
 
 .column {
-  height: 100%; /* Fill the layout height */
+  height: 100%; 
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Top-level column overflow hidden, children scroll */
-  background-color: var(--bg-primary); /* Default column background */
+  overflow: hidden; /* Top-level column overflow hidden */
+  background-color: var(--bg-primary);
 }
 
 .left-column {
@@ -27,140 +29,87 @@
 }
 
 .middle-column {
-  flex: 1 1 0px; /* Allow shrinking and growing, start from 0 base */
-  min-width: 400px; /* Minimum width for chat */
-  background-color: var(--bg-tertiary); /* NotebookLM chat area color */
-  /* ChatInterface will handle its own padding/scroll */
+  flex: 1 1 0px;
+  min-width: 400px;
+  background-color: var(--bg-tertiary); /* Chat area background */
+  border-left: 1px solid var(--border-primary); /* Add border if no left column */
+  border-right: 1px solid var(--border-primary);/* Add border if no right column */
 }
+/* If left/right columns are always present, middle column might not need these borders */
+.left-column + .middle-column { border-left: none; }
+.middle-column + .right-column { border-right: none; }
+
 
 .right-column {
   flex: 0 0 320px;
   border-left: 1px solid var(--border-primary);
 }
 
-/* Panel content containers for scrolling */
-.source-list-container, /* For left panel (Dev) */
-.ops-workload-list-container, /* For left panel (Ops) */
-.deploy-list-container, /* For right panel (Dev) */
-.ops-right-panel-content /* For right panel (Ops) */
+/* Panel content containers for scrolling (re-confirming these from script 22) */
+.source-list-container, 
+.ops-workload-list-container,
+.deploy-environments-container, /* Used in DevRightPanel */
+.ops-right-panel-content, /* Used in OpsRightPanel */
+.studio-content /* Generic class if used inside accordions in right panel */
 {
   flex-grow: 1;
   overflow-y: auto;
-  padding: 0 var(--space-md) var(--space-md) var(--space-md); /* No top padding, header provides */
+  /* Padding is applied more specifically now by child components or panel specific CSS */
+  /* padding: 0 var(--space-md) var(--space-md) var(--space-md); */
 }
-/* Specific for Studio content which might have multiple accordions */
-.studio-content {
-    padding: var(--space-md); /* Padding around accordions */
-    flex-grow: 1;
-    overflow-y: auto;
+
+.studio-content { /* For OpsRightPanel accordions */
+    padding: var(--space-md);
 }
 
 
-/* Deploy List specific styles (Dev Right Panel) */
-.deploy-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-.deploy-list-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--space-sm) 0;
-    border-bottom: 1px solid var(--border-secondary);
-    font-size: var(--font-size-sm);
-}
-.deploy-list-item:last-child { border-bottom: none; }
-.deploy-name { font-weight: 500; color: var(--text-primary); flex-grow: 1; }
-.deploy-status { padding: 2px 6px; border-radius: var(--border-radius-pill); margin: 0 var(--space-sm); }
-.deploy-status.running { background-color: #CEEAD6; color: #0D652D; } /* Greenish */
-.deploy-status.pending { background-color: #FEEFC3; color: #514100; } /* Yellowish */
-.deploy-status.failed { background-color: #FAD2D2; color: #A50E0E; } /* Reddish */
-.deploy-replicas, .deploy-time { color: var(--text-secondary); margin: 0 var(--space-sm); }
-.deploy-action-button {
-    background: none; border: none; color: var(--text-secondary); cursor: pointer; padding: var(--space-xs);
-    border-radius: 50%; width: 28px; height: 28px;
-}
-.deploy-action-button:hover { background-color: var(--bg-tertiary); }
+/* Ensure global panel header styles from index.css apply correctly */
+/* .column > .panel-header { ... } */
+/* .panel-title { ... } */
+/* .panel-header-actions { ... } */
+/* .panel-header-button { ... } */
 
-
-/* Ops Left Panel (Workload List) */
-.ops-workload-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+/* Styles for DevRightPanel's Deployments section (from script 22, refined) */
+.deploy-environments-container .accordion-section:not(:first-child) {
+   border-top: 1px solid var(--border-secondary); /* Separator between env accordions */
 }
-.ops-workload-item {
-    display: flex;
-    align-items: center;
-    padding: var(--space-sm) 0;
-    border-bottom: 1px solid var(--border-secondary);
-    font-size: var(--font-size-sm);
-    gap: var(--space-sm);
+.deploy-environments-container .accordion-header {
+  padding: var(--space-md); /* Consistent padding for accordion headers */
+  background-color: var(--bg-primary); /* Match panel header */
 }
-.ops-workload-item:last-child { border-bottom: none; }
-.workload-icon { width: 20px; text-align: center; color: var(--text-secondary); }
-.workload-name { flex-grow: 1; font-weight: 500; color: var(--text-primary); }
-.workload-status { /* Reuse deploy-status styles or create new ones */ }
-.workload-status.healthy { background-color: #CEEAD6; color: #0D652D; padding: 2px 6px; border-radius: var(--border-radius-pill); }
-.workload-status.scaling { background-color: #FEEFC3; color: #514100; padding: 2px 6px; border-radius: var(--border-radius-pill); }
-.workload-status.degraded { background-color: #FAD2D2; color: #A50E0E; padding: 2px 6px; border-radius: var(--border-radius-pill); }
-.workload-status.scheduled { background-color: #D1E7FD; color: #0A58CA; padding: 2px 6px; border-radius: var(--border-radius-pill); }
-.workload-count { color: var(--text-secondary); }
-
-/* Ops Right Panel (AIOps Studio) */
-.ops-right-panel-content .accordion-section {
-    border-bottom: none; /* Remove default accordion border if stacking */
-    margin-bottom: 0;
-}
-.ops-right-panel-content .accordion-section:not(:last-child) {
-    border-bottom: 1px solid var(--border-primary); /* Add border between accordions */
-}
-.ops-right-panel-content .accordion-header {
-    padding: var(--space-md); /* Consistent padding with panel-header */
-}
-.ops-right-panel-content .accordion-content {
-    padding: var(--space-sm) var(--space-md) var(--space-md) var(--space-md);
-}
-.ops-plugin-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
-}
-.ops-plugin-list li button {
-    width: 100%;
-    text-align: left;
-    padding: var(--space-sm) var(--space-md);
+.deploy-environments-container .accordion-header:hover {
     background-color: var(--bg-tertiary);
-    border: 1px solid var(--border-primary);
-    border-radius: var(--border-radius-sm);
-    color: var(--text-primary);
 }
-.ops-plugin-list li button:hover {
-    border-color: var(--text-accent);
-    background-color: var(--bg-accent);
+.deploy-environments-container .accordion-header .accordion-title {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
 }
+.deploy-environments-container .accordion-content {
+  padding: 0 var(--space-md) var(--space-sm) var(--space-md); /* Indent list items */
+  background-color: var(--bg-primary); /* Ensure content area matches */
+}
+/* deploy-list, deploy-list-item, deploy-status styles from script 22 should still apply well */
+.deploy-list { list-style: none; padding: 0; margin: 0; }
+.deploy-list-item { display: flex; align-items: center; padding: var(--space-sm) 0; border-bottom: 1px solid var(--border-secondary); font-size: var(--font-size-sm); gap: var(--space-md); }
+.deploy-list-item:last-child { border-bottom: none; }
+.deploy-name { font-weight: 500; color: var(--text-primary); flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.deploy-status { padding: 3px 10px; border-radius: var(--border-radius-pill); font-size: 0.75rem; font-weight: 500; text-transform: capitalize; flex-shrink: 0; text-align: center; min-width: 70px; }
+.deploy-status.running { background-color: #CEEAD6; color: #0D652D; }
+.deploy-status.pending { background-color: #FEEFC3; color: #514100; }
+.deploy-status.failed { background-color: #FAD2D2; color: #A50E0E; }
+.deploy-replicas, .deploy-time { color: var(--text-secondary); font-size: 0.8rem; flex-shrink: 0; white-space: nowrap; }
+.deploy-action-button { background: none; border: none; color: var(--text-secondary); cursor: pointer; padding: var(--space-xs); border-radius: 50%; width: 28px; height: 28px; flex-shrink: 0; margin-left: auto; }
+.deploy-action-button:hover { background-color: var(--bg-tertiary); }
+.no-deployments-in-env { padding: var(--space-md); font-style: italic; color: var(--text-secondary); text-align: center; }
 
-
-/* Make sure drawer styles are present from previous steps */
-.drawer-content-placeholder { /* Style for help/feedback content */
-  /* ... */
-}
-.feedback-form { /* Style for feedback form */
-  /* ... */
-}
-
-/* Chat Action Buttons specific to SpaceDetailPage */
-.chat-action-buttons {
+/* Styles for chat action buttons (if they are specific to this page's context) */
+.chat-action-buttons { /* This was defined in SpaceDetailPage.css before */
     padding: var(--space-sm) var(--space-md);
     border-top: 1px solid var(--border-primary);
-    background-color: var(--bg-primary); /* Or var(--bg-tertiary) */
+    background-color: var(--bg-primary);
     display: flex;
     gap: var(--space-sm);
-    flex-shrink: 0; /* Prevent shrinking */
+    flex-shrink: 0;
 }
 .chat-action-buttons button {
     background-color: var(--bg-tertiary);
@@ -169,175 +118,9 @@
     padding: var(--space-sm) var(--space-md);
     font-size: var(--font-size-sm);
     color: var(--text-secondary);
-    flex-grow: 1; /* Distribute space */
+    flex-grow: 1;
 }
 .chat-action-buttons button:hover {
     border-color: var(--text-secondary);
-    background-color: var(--border-primary); /* Slight change */
-}
-
-
-/* --- Styles for Dev Space Right Panel (Deployments - Added by script 19) --- */
-.deploy-environments-container {
-  flex-grow: 1;
-  overflow-y: auto;
-  /* No top padding, panel-header has it. Padding for accordions handled by accordion itself or studio-content style */
-}
-
-.ops-right-panel-content .accordion-section, /* For Ops panel too */
-.deploy-environments-container .accordion-section {
-  /* border-bottom: none; */ /* Handled by accordion if it's the last one */
-  /* margin-bottom: 0; */
-}
-.ops-right-panel-content .accordion-section:not(:last-child),
-.deploy-environments-container .accordion-section:not(:last-child) {
-  border-bottom: 1px solid var(--border-primary);
-}
-
-.environment-accordion-header .accordion-title {
-  /* Custom styling for environment titles if needed */
-  font-weight: 500;
-}
-
-.deploy-list { /* Already styled, ensure it works within accordion */
-  padding: var(--space-sm) var(--space-md); /* Padding inside accordion content */
-}
-
-.no-deployments-in-env {
-    padding: var(--space-md);
-    font-style: italic;
-    color: var(--text-secondary);
-    text-align: center;
-}
-
-/* Adjustments if panel-header is used inside the column for Deployments */
-.right-column > .panel-header {
-    /* This is the main header for the Deployments panel */
-    background-color: var(--bg-primary); /* Ensure it matches left panel */
-}
-
-/* --- Refinements for Dev Space Panels (SpaceDetailPage.css - script 22) --- */
-
-/* Ensure all columns use the global panel header style correctly */
-.column > .panel-header { /* This targets the direct child panel-header in each column */
-  /* Styles are now expected to be globally defined in index.css or App.css */
-  /* This selector ensures they apply if not already specific enough */
-  background-color: var(--bg-primary);
-  /* padding: var(--space-md); */ /* Global now */
-  /* border-bottom: 1px solid var(--border-primary); */ /* Global now */
-}
-.column > .panel-header .panel-title {
-    /* font-size: 1rem; */ /* Global now */
-    /* font-weight: 500; */ /* Global now */
-}
-.column > .panel-header .panel-header-button {
-    /* Styles for settings/action buttons in panel headers */
-}
-
-
-/* Dev Right Panel - Deployments Container */
-.deploy-environments-container {
-  flex-grow: 1;
-  overflow-y: auto;
-  padding: var(--space-sm) 0; /* Add some padding around accordions */
-}
-
-.deploy-environments-container .accordion-section {
-  /* No border between accordions, let accordion itself handle top/bottom if needed */
-   border-bottom: none;
-}
-.deploy-environments-container .accordion-section:not(:first-child) {
-   /* border-top: 1px solid var(--border-secondary); */ /* If separation is desired */
-}
-
-
-.deploy-environments-container .accordion-header { /* Targeting headers of accordions *inside* deploy envs */
-  padding: var(--space-sm) var(--space-md); /* Less padding for these nested headers */
-  background-color: var(--bg-tertiary); /* Slightly different background */
-  border-bottom: 1px solid var(--border-secondary);
-}
-.deploy-environments-container .accordion-header:hover {
     background-color: var(--border-primary);
 }
-
-.deploy-environments-container .accordion-header .accordion-title {
-  font-size: var(--font-size-sm); /* Smaller title for env names */
-  font-weight: 500;
-}
-.deploy-environments-container .accordion-content {
-    padding: 0; /* List will handle its own padding */
-}
-
-
-.deploy-list {
-  list-style: none;
-  padding: 0 var(--space-md) var(--space-sm) var(--space-md); /* Indentation for items */
-  margin: 0;
-}
-
-.deploy-list-item {
-  display: flex;
-  align-items: center;
-  /* justify-content: space-between; */ /* Let flex properties handle spacing */
-  padding: var(--space-sm) 0; /* Vertical padding, horizontal by container */
-  border-bottom: 1px solid var(--border-secondary);
-  font-size: var(--font-size-sm);
-  gap: var(--space-md); /* Gap between elements in the item */
-}
-.deploy-list-item:last-child {
-  border-bottom: none;
-}
-
-.deploy-name {
-  font-weight: 500;
-  color: var(--text-primary);
-  flex-grow: 1; /* Takes most space */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.deploy-status {
-  padding: 3px 10px; /* More padding for status */
-  border-radius: var(--border-radius-pill);
-  font-size: 0.75rem; /* Smaller status text */
-  font-weight: 500;
-  text-transform: capitalize;
-  flex-shrink: 0; /* Prevent shrinking */
-  text-align: center;
-  min-width: 70px; /* Ensure some width for status */
-}
-/* deploy-status colors are already defined */
-
-.deploy-replicas, .deploy-time {
-  color: var(--text-secondary);
-  font-size: 0.8rem;
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-
-.deploy-action-button {
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  cursor: pointer;
-  padding: var(--space-xs);
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  flex-shrink: 0;
-  margin-left: auto; /* Push action button to the far right */
-}
-.deploy-action-button:hover {
-  background-color: var(--bg-tertiary);
-}
-
-.no-deployments-in-env {
-  padding: var(--space-md);
-  font-style: italic;
-  color: var(--text-secondary);
-  text-align: center;
-}
-
-/* Add a class for better targeting, if needed by script */
-.dev-right-panel-specific-padding {}
-

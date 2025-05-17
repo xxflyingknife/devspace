@@ -1,0 +1,209 @@
+// frontend/src/components/FileTreeViewer.js
+import React, { useState, useEffect } from 'react';
+import LoadingSpinner from './LoadingSpinner';
+import Modal from './Modal'; // Make sure Modal is imported
+import './FileTreeViewer.css';
+
+// Helper component for tree items (to handle recursion and state)
+const TreeItem = ({ node, depth, onToggle, isExpanded, expandedFoldersState }) => { // Added expandedFoldersState
+  const isFolder = node.type === 'folder';
+  const indent = depth * 20;
+
+  let icon;
+  if (isFolder) {
+    icon = isExpanded ? '▼' : '▶';
+  } else {
+    icon = '📄';
+  }
+
+  const handleNodeClick = () => {
+    if (isFolder) {
+      onToggle(node.id);
+    } else {
+      console.log("File clicked:", node.name);
+    }
+  };
+
+  return (
+    <>
+      <li
+        className={`tree-node ${isFolder ? 'folder' : 'file'} ${isExpanded ? 'expanded' : ''}`}
+        style={{ paddingLeft: `${indent}px` }}
+        onClick={handleNodeClick}
+      >
+        <span className={`node-icon ${isFolder ? 'toggle-icon' : 'file-icon'}`}>
+            {icon}
+        </span>
+        <span className="node-name" title={node.name}>
+            {node.name}
+        </span>
+      </li>
+      {isFolder && isExpanded && node.children && node.children.length > 0 && (
+         node.children.map(childNode => (
+          <TreeItem
+            key={childNode.id}
+            node={childNode}
+            depth={depth + 1}
+            onToggle={onToggle}
+            // For the child, its 'isExpanded' status comes from the shared 'expandedFoldersState'
+            isExpanded={!!expandedFoldersState[childNode.id]}
+            expandedFoldersState={expandedFoldersState} // Pass it down for further recursion
+          />
+        ))
+      )}
+    </>
+  );
+};
+
+
+
+function FileTreeViewer({ repoId }) {
+  const [treeData, setTreeData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [currentBranch, setCurrentBranch] = useState('main');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [expandedFolders, setExpandedFolders] = useState({});
+  const [showGitSettingsModal, setShowGitSettingsModal] = useState(false);
+  const [gitRepoUrl, setGitRepoUrl] = useState('https://github.com/user/repo.git'); // Mock
+
+  const branches = ['main', 'develop', 'feature/new-ui']; // Mock
+
+  useEffect(() => {
+    if (!repoId) return;
+    const fetchTreeData = async () => {
+      setIsLoading(true); setError(null); setTreeData(null); setExpandedFolders({});
+      console.log(`Fetching file tree for repo: ${repoId}, branch: ${currentBranch}`);
+      await new Promise(resolve => setTimeout(resolve, 700));
+      try {
+        const mockData = [ /* Your existing mock data */
+          { id: 'root-backend', name: 'backend', type: 'folder', children: [
+            { id: 'backend-app', name: 'app', type: 'folder', children: [
+              { id: 'backend-app-main', name: 'main.py', type: 'file' },
+              { id: 'backend-app-db', name: 'database.py', type: 'file' },
+            ]},
+            { id: 'backend-dockerfile', name: 'Dockerfile', type: 'file' },
+          ]},
+          { id: 'root-frontend', name: 'frontend', type: 'folder', children: [
+             { id: 'frontend-src', name: 'src', type: 'folder', children: [
+               { id: 'frontend-src-app', name: 'App.js', type: 'file' },
+               { id: 'frontend-src-index', name: 'index.js', type: 'file' },
+             ]},
+             { id: 'frontend-pkgjson', name: 'package.json', type: 'file' },
+          ]},
+          { id: 'root-kubernetes', name: 'kubernetes', type: 'folder', children: [
+              { id: 'kube-be-deploy', name: 'backend-deployment.yaml', type: 'file'},
+              { id: 'kube-be-svc', name: 'backend-service.yaml', type: 'file'},
+              { id: 'kube-fe-deploy', name: 'frontend-deployment.yaml', type: 'file'},
+              { id: 'kube-fe-svc', name: 'frontend-service.yaml', type: 'file'},
+              { id: 'kube-ns', name: 'namespace.yaml', type: 'file'},
+          ]},
+          { id: 'root-gitignore', name: '.gitignore', type: 'file' },
+          { id: 'root-readme', name: 'README.md', type: 'file' },
+          { id: 'root-deploy', name: 'deploy.sh', type: 'file' },
+          { id: 'root-pkg-lock', name: 'package-lock.json', type: 'file' },
+        ];
+        setTreeData(mockData);
+        const initialExpanded = {};
+        mockData.filter(node => node.type === 'folder').slice(0,1).forEach(node => {
+             initialExpanded[node.id] = true;
+        });
+        setExpandedFolders(initialExpanded);
+      } catch (err) {
+        console.error("Error fetching file tree:", err); setError("Failed to load file tree.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchTreeData();
+  }, [repoId, currentBranch]);
+
+  const handleBranchChange = (event) => setCurrentBranch(event.target.value);
+  const handleSearchChange = (event) => setSearchTerm(event.target.value);
+  const toggleFolder = (folderId) => setExpandedFolders(prev => ({ ...prev, [folderId]: !prev[folderId] }));
+
+  // Corrected recursive render for TreeItem
+  const renderTreeNodes = (nodes, depth = 0) => {
+    if (!nodes) return null;
+    return nodes.map(node => (
+      <TreeItem
+        key={node.id}
+        node={node}
+        depth={depth}
+        onToggle={toggleFolder}
+        isExpanded={!!expandedFolders[node.id]} // This node's expanded state
+        expandedFoldersState={expandedFolders}   // Pass the whole map for children to look up their state
+      />
+    ));
+  };
+
+
+
+  return (
+    <div className="file-tree-viewer-container">
+      {/* === THIS IS THE CORRECTED HEADER SECTION === */}
+      <div className="panel-header file-tree-panel-header"> {/* Use global .panel-header and specific .file-tree-panel-header if needed */}
+        <span className="panel-title">Files</span>
+         <button className="panel-header-button" onClick={() => setShowGitSettingsModal(true)} title="Configure Git Repo Path">⚙️</button>
+        <button className="panel-header-button" title="Refresh Files">🔄</button>
+      </div>
+      {/* === END OF CORRECTED HEADER SECTION === */}
+
+      <div className="file-tree-sub-controls">
+        <div className="branch-selector-container">
+          <span className="branch-icon">[git-branch]</span>
+          <select value={currentBranch} onChange={handleBranchChange} className="branch-select">
+            {branches.map(branch => (
+              <option key={branch} value={branch}>{branch}</option>
+            ))}
+          </select>
+        </div>
+        <div className="action-buttons">
+          <button className="action-button" title="Add new file/folder">[+]</button>
+        </div>
+      </div>
+
+      <div className="search-bar-container">
+        <span className="search-icon-input">[🔍]</span>
+        <input
+          type="text"
+          placeholder="Go to file"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          className="search-input"
+        />
+        <span className="shortcut-hint">t</span>
+      </div>
+
+      <div className="file-tree-list-container">
+        {isLoading && <LoadingSpinner />}
+        {error && <p className="error-message">{error}</p>}
+        {!isLoading && !error && treeData && (
+          <ul className="file-tree">
+            {renderTreeNodes(treeData)}
+          </ul>
+        )}
+        {!isLoading && !error && !treeData && <p>No file data available.</p>}
+      </div>
+
+      {showGitSettingsModal && (
+        <Modal isOpen={showGitSettingsModal} onClose={() => setShowGitSettingsModal(false)} title="Configure Git Repository">
+          <form onSubmit={(e) => { e.preventDefault(); alert('Git settings saved: ' + gitRepoUrl); setShowGitSettingsModal(false); }}>
+            <div className="form-group">
+              <label htmlFor="gitRepoUrlFileTree">Git Repository URL:</label> {/* Changed id to avoid conflict */}
+              <input type="url" id="gitRepoUrlFileTree" value={gitRepoUrl} onChange={(e) => setGitRepoUrl(e.target.value)} required />
+            </div>
+            <div className="modal-form-actions">
+              <button type="button" className="modal-button secondary" onClick={() => setShowGitSettingsModal(false)}>Cancel</button>
+              <button type="submit" className="modal-button primary">Save</button>
+            </div>
+          </form>
+        </Modal>
+      )}
+    </div>
+  );
+}
+
+export default FileTreeViewer;
+
+

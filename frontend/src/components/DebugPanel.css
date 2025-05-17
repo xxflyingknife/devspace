@@ -1,0 +1,71 @@
+/* frontend/src/components/DebugPanel.css */
+
+.debug-panel-content { /* Main wrapper for this panel's content */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--bg-primary);
+}
+
+/* Panel Header styles are global from index.css / App.css */
+/* .debug-panel-content > .panel-header { ... } */
+/* .debug-panel-content > .panel-header .panel-title { ... } */
+/* .debug-panel-content > .panel-header .panel-header-actions { ... } */
+/* .dev-env-status-indicator already styled in DevRightPanel.css (can be moved to global if preferred) */
+
+.debug-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); /* Adjust minmax for button size */
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  flex-grow: 1; /* Allow grid to take space BUT not necessarily scroll if buttons have fixed height and don't overflow */
+  overflow-y: auto; /* Allow scrolling ONLY if many buttons overflow the allocated space */
+  align-content: flex-start; /* Start packing buttons from the top */
+}
+
+.debug-tool-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xs); /* Reduced padding */
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius-md);
+  color: var(--text-secondary);
+  font-size: 0.75rem; /* Smaller font */
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+  height: 70px; /* FIXED HEIGHT for buttons */
+  min-width: 90px; /* Ensure some width */
+  text-align: center;
+  word-break: keep-all; /* Try to prevent ugly word breaks on short labels */
+  overflow: hidden; /* In case label is extremely long */
+}
+.debug-tool-button:hover {
+  background-color: var(--bg-accent);
+  border-color: var(--text-accent);
+  color: var(--text-accent);
+}
+
+.debug-tool-icon {
+  font-size: 1.3rem; /* Slightly smaller icon */
+  margin-bottom: 3px; /* Less space */
+}
+
+.add-more-tools-button {
+  /* Can have slightly different style if needed */
+  /* border-style: dashed; */
+}
+.add-more-tools-button .debug-tool-icon {
+  /* font-size: 1.1rem; */
+}
+
+/* Styles for Dev Environment Control Modal Content */
+/* These can remain in DevRightPanel.css or be moved to a more global modal form style */
+.dev-env-controls-modal-content p { /* ... */ }
+.dev-env-action-buttons { /* ... */ }
+.dev-env-action-buttons .modal-button.action { /* ... */ }
+
+

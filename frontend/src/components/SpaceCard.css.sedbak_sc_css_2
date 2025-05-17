@@ -1,0 +1,132 @@
+.space-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  height: 100%;
+}
+
+.space-card {
+  border-radius: var(--border-radius-lg); /* More rounded like NotebookLM */
+  padding: var(--space-lg); /* 24px */
+  height: 200px; /* Adjusted height */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  transition: box-shadow 0.25s ease, transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
+  border: 1px solid var(--border-secondary); /* Softer border */
+  background-color: var(--bg-primary); transition: box-shadow 0.25s ease, transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease; /* Card background */
+  overflow: hidden;
+}
+.space-card:hover {
+  box-shadow: var(--shadow-md); /* Use theme shadow */
+  transform: translateY(-4px);
+  border-color: var(--border-primary);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Align icon to top, badge to top */
+    margin-bottom: var(--space-md);
+}
+
+.card-icon {
+  font-size: 1.8rem;
+  width: 48px; /* Slightly larger */
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-md);
+  background-color: rgba(0,0,0,0.05); /* Placeholder icon background */
+  color: var(--text-secondary);
+}
+/* Individual card colors will be set via inline style on space-card div */
+
+.card-type-badge {
+    font-size: 0.75rem; /* 12px */
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: var(--border-radius-pill);
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-primary);
+}
+
+/* Remove or comment out .card-type-badge if it was specifically for the header */
+/* .card-type-badge { ... } */
+
+.card-meta {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0;
+  display: flex; /* To align items if needed */
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.card-type-meta-badge {
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.75rem; /* Slightly smaller */
+}
+.card-type-meta-badge.type-dev {
+  background-color: #E3F2FD; /* Light blue */
+  color: #0D47A1; /* Darker blue */
+}
+.card-type-meta-badge.type-ops {
+  background-color: #E8F5E9; /* Light green */
+  color: #1B5E20; /* Darker green */
+}
+
+.card-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* Push title and meta towards bottom */
+}
+
+.card-title {
+  font-size: 1rem; /* 16px */
+  font-weight: 500;
+  margin: 0 0 var(--space-xs) 0;
+  color: var(--text-primary);
+  line-height: 1.4;
+  max-height: 2.8em; /* Approx 2 lines */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+
+.card-menu-container {
+    position: absolute;
+    top: var(--space-sm); /* 8px from top */
+    right: var(--space-sm); /* 8px from right */
+}
+
+.card-menu-button {
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-secondary);
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+  font-size: 1.25rem; /* For the three dots icon */
+}
+.space-card:hover .card-menu-button {
+  opacity: 1;
+}
+.card-menu-button:hover {
+  background-color: var(--bg-tertiary); /* Use theme variable if exists */
+}

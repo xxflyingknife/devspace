@@ -1,0 +1,130 @@
+/* frontend/src/components/AppBlueprintView.css */
+.app-blueprint-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* THIS IS THE TOOLBAR FOR THIS VIEW */
+.app-bp-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md); /* Match FileTreeViewer's .file-tree-controls-bar */
+  border-bottom: 1px solid var(--border-primary);
+  background-color: var(--bg-tertiary); /* Match FileTreeViewer's .file-tree-controls-bar */
+  flex-shrink: 0;
+  margin-bottom: var(--space-sm); /* Space before content below */
+}
+
+/* Version selector styled to match FileTreeViewer's branch selector */
+.app-bp-version-selector {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius-sm);
+  padding: 4px var(--space-sm); /* Match FileTreeViewer's branch selector padding */
+  flex-shrink: 0;
+}
+.app-bp-version-selector .version-icon {
+  margin-right: 6px;
+  color: var(--text-secondary);
+  font-size: 0.9em;
+  font-weight: normal;
+}
+.app-bp-version-selector select {
+  background-color: transparent;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  padding-right: var(--space-xs);
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.app-bp-version-selector select:focus { outline: none; }
+.app-bp-version-selector select:disabled { opacity:0.7; cursor:not-allowed; }
+
+.app-bp-view-toggle {
+  display: flex;
+  /* Using global .control-button for styling these view toggles */
+}
+.app-bp-view-toggle .control-button {
+  margin-left: 0;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--border-primary);
+  padding: 6px var(--space-sm);
+  font-size: 0.8rem;
+}
+.app-bp-view-toggle .control-button:not(:last-child) {
+  /* No border-right if only one button or if using a segmented control style later */
+}
+
+
+.app-bp-json-view {
+  flex-grow: 1;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  padding: var(--space-md);
+  border-radius: var(--border-radius-sm);
+  overflow: auto;
+  font-family: monospace;
+  font-size: 0.8em;
+  white-space: pre-wrap;
+  word-break: break-all;
+  border: 1px solid var(--border-primary);
+}
+html[data-theme="dark"] .app-bp-json-view {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-secondary);
+}
+
+.app-bp-accordion-view {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-left: var(--space-xs);
+  padding-right: var(--space-xs);
+}
+.app-bp-accordion-view .accordion-section {
+  margin-bottom: var(--space-sm);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+}
+.app-bp-accordion-view .accordion-header {
+  background-color: var(--bg-tertiary);
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--border-secondary);
+}
+.app-bp-accordion-view .accordion-section.closed .accordion-header{
+  border-bottom: none;
+}
+.app-bp-accordion-view .accordion-header:hover { background-color: var(--bg-secondary); }
+.app-bp-accordion-view .accordion-title { font-size: 0.9rem; }
+.app-bp-accordion-view .accordion-content {
+  padding: var(--space-md);
+  background-color: var(--bg-primary);
+  font-size: var(--font-size-sm);
+}
+.app-bp-accordion-view .accordion-content ul { list-style-type: disc; padding-left: var(--space-lg); margin: 0; }
+.app-bp-accordion-view .accordion-content li { margin-bottom: var(--space-xs); line-height: 1.5; }
+.app-bp-accordion-view .accordion-content li strong { color: var(--text-primary); }
+.app-bp-accordion-view .accordion-content pre { font-size: 0.9em; background-color: var(--bg-secondary); padding: var(--space-sm); border-radius: var(--border-radius-sm); overflow-x: auto; margin-top: var(--space-xs); }
+.app-bp-accordion-view .bp-empty-section em { color: var(--text-secondary); font-style: italic; }
+
+.app-bp-loading,
+.app-blueprint-view > .select-version-prompt {
+  display: flex; align-items: center; justify-content: center; gap: var(--space-sm);
+  padding: var(--space-lg); color: var(--text-secondary); font-style: italic; text-align: center;
+  flex-grow: 1;
+}
+
+

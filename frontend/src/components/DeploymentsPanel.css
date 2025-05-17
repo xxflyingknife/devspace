@@ -1,0 +1,62 @@
+/* frontend/src/components/DeploymentsPanel.css */
+
+.deployments-panel-content { /* Main wrapper for this panel's content */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--bg-primary);
+}
+
+/* Panel Header styles are global from index.css / App.css */
+/* .deployments-panel-content > .panel-header { ... } */
+/* .deployments-panel-content > .panel-header .panel-title { ... } */
+
+.deploy-environments-container { /* Scrollable area for accordions */
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: var(--space-sm) 0; /* Padding around the group of accordions */
+}
+
+/* Accordion styles for environments - aiming for AppBlueprintView consistency */
+.deploy-environments-container .accordion-section {
+  margin: 0 var(--space-md) var(--space-sm) var(--space-md); /* Margin around each accordion */
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden; /* Clip content to rounded corners */
+}
+.deploy-environments-container .accordion-header.environment-accordion-header {
+  padding: var(--space-sm) var(--space-md);
+  background-color: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-secondary); /* Separator if open */
+}
+.deploy-environments-container .accordion-section.closed .accordion-header.environment-accordion-header {
+    border-bottom: none;
+}
+.deploy-environments-container .accordion-header.environment-accordion-header:hover {
+  background-color: var(--bg-secondary);
+}
+.deploy-environments-container .accordion-header.environment-accordion-header .accordion-title {
+  font-size: var(--font-size-sm); /* Smaller title for env names */
+  font-weight: 500;
+}
+.deploy-environments-container .accordion-content {
+  padding: 0 var(--space-md) var(--space-sm) var(--space-md); /* Indent list items */
+  background-color: var(--bg-primary);
+}
+
+/* deploy-list, deploy-list-item, deploy-status styles as before */
+.deploy-list { list-style: none; padding: 0; margin: 0; }
+.deploy-list-item { display: flex; align-items: center; padding: var(--space-sm) 0; border-bottom: 1px solid var(--border-secondary); font-size: var(--font-size-sm); gap: var(--space-md); }
+.deploy-list-item:last-child { border-bottom: none; }
+.deploy-name { font-weight: 500; color: var(--text-primary); flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.deploy-status { padding: 3px 10px; border-radius: var(--border-radius-pill); font-size: 0.75rem; font-weight: 500; text-transform: capitalize; flex-shrink: 0; text-align: center; min-width: 70px; }
+.deploy-status.running { background-color: #CEEAD6; color: #0D652D; }
+.deploy-status.pending { background-color: #FEEFC3; color: #514100; }
+.deploy-status.failed { background-color: #FAD2D2; color: #A50E0E; }
+.deploy-replicas, .deploy-time { color: var(--text-secondary); font-size: 0.8rem; flex-shrink: 0; white-space: nowrap; }
+.deploy-action-button { background: none; border: none; color: var(--text-secondary); cursor: pointer; padding: var(--space-xs); border-radius: 50%; width: 28px; height: 28px; flex-shrink: 0; margin-left: auto; }
+.deploy-action-button:hover { background-color: var(--bg-tertiary); }
+.no-deployments-in-env { padding: var(--space-md); font-style: italic; color: var(--text-secondary); text-align: center; }
+
+

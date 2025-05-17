@@ -1,4 +1,6 @@
-/* --- FileTreeViewer.css - Refined for v3 Dev Space --- */
+/* frontend/src/components/FileTreeViewer.css */
+/* Contains NEW header/controls bar styles + REVERTED tree list styles */
+
 .file-tree-viewer-container {
   display: flex;
   flex-direction: column;
@@ -7,146 +9,117 @@
   font-family: var(--font-family-sans);
   font-size: 13px;
   color: var(--text-primary);
-  /* border-right: 1px solid var(--border-primary); Removed, handled by .left-column */
 }
 
-/* Using global .panel-header styles, defined in index.css or SpaceDetailPage.css */
-/* .file-tree-panel-header class can be used if specific overrides are needed,
-   but ideally, it should inherit from the global .panel-header style.
-   The JSX uses <div className="file-tree-panel-header">, ensure this uses global styles.
-   If panel-header is already globally styled, this specific class might not need much.
-*/
-.file-tree-panel-header {
-  /* This ensures it uses the global panel-header look if defined */
-  /* If .panel-header is not globally available or needs override: */
-  /* display: flex; */
-  /* justify-content: space-between; */
-  /* align-items: center; */
-  /* padding: var(--space-md); */ /* From global panel-header */
-  /* border-bottom: 1px solid var(--border-primary); */ /* From global panel-header */
-  /* flex-shrink: 0; */
+/* --- NEW Panel Header for "Code" --- */
+.file-tree-panel-header.panel-header {
+  /* Uses global .panel-header styles from index.css for:
+     display: flex; justify-content: space-between; align-items: center;
+     padding: var(--space-md); border-bottom: 1px solid var(--border-primary);
+     flex-shrink: 0; background-color: var(--bg-primary);
+  */
+  /* Specific overrides for file-tree-panel-header if any, otherwise global styles apply */
 }
-.file-tree-panel-header .panel-title { /* Inherits from global .panel-title */ }
-.file-tree-panel-header .panel-header-button { /* Inherits from global .panel-header-button */ }
-
-
-.file-tree-sub-controls {
+.file-tree-panel-header .panel-title {
+  /* Inherits global .panel-title */
+}
+.file-tree-panel-header .panel-header-actions { /* Wrapper for settings/refresh icons */
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-xs);
+}
+.file-tree-panel-header .panel-header-button {
+  /* Inherits global .panel-header-button */
+}
+
+
+/* --- NEW Combined Controls Bar (Branch, Search, Add Button) --- */
+.file-tree-controls-bar {
+  display: flex;
   align-items: center;
   padding: var(--space-sm) var(--space-md);
   border-bottom: 1px solid var(--border-primary);
   background-color: var(--bg-tertiary);
   flex-shrink: 0;
+  gap: var(--space-md);
 }
 
-.branch-selector-container {
+.file-tree-controls-bar .branch-selector-container {
   display: flex;
   align-items: center;
   background-color: var(--bg-primary);
   border: 1px solid var(--border-primary);
   border-radius: var(--border-radius-sm);
   padding: 4px var(--space-sm);
-}
-
-.branch-icon {
-  margin-right: 6px;
-  color: var(--text-secondary);
-  font-size: 0.9em;
-}
-
-.branch-select {
-  background-color: transparent;
-  border: none;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-primary);
-  padding-right: var(--space-md);
-  cursor: pointer;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-}
-.branch-select:focus {
-  outline: none;
-}
-
-.file-tree-viewer-container .action-buttons { /* Target action-buttons within this component */
-  display: flex;
-  gap: var(--space-sm);
-}
-.file-tree-viewer-container .action-buttons .action-button { /* More specific */
-  background-color: var(--bg-primary); /* Match GitHub more closely */
-  border: 1px solid var(--border-primary);
-  border-radius: var(--border-radius-sm);
-  color: var(--text-primary); /* Darker icon color */
-  width: 30px;
-  height: 30px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0; /* Remove padding if icon fills it */
-  font-size: 1em; /* For text icons like [+] */
-}
-.file-tree-viewer-container .action-buttons .action-button:hover {
-  border-color: var(--text-secondary);
-  background-color: var(--bg-tertiary);
-}
-
-
-.search-bar-container {
-  display: flex;
-  align-items: center;
-  padding: var(--space-sm) var(--space-md);
-  border-bottom: 1px solid var(--border-primary);
   flex-shrink: 0;
+}
+.file-tree-controls-bar .branch-icon { margin-right: 6px; color: var(--text-secondary); font-size: 0.9em; }
+.file-tree-controls-bar .branch-select {
+  background-color: transparent; border: none; font-size: 13px; font-weight: 500;
+  color: var(--text-primary); padding-right: var(--space-xs);
+  cursor: pointer; -webkit-appearance: none; -moz-appearance: none; appearance: none;
+  max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.file-tree-controls-bar .branch-select:focus { outline: none; }
+
+.file-tree-controls-bar .search-bar-container.file-tree-search {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
   position: relative;
+  padding: 0;
+  border-bottom: none;
 }
-
-.search-icon-input { /* For the icon inside the input */
-  position: absolute;
-  left: calc(var(--space-md) + 8px);
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-secondary);
-  pointer-events: none;
-  font-size: 0.9em; /* For [🔍] icon */
-}
-
-.search-input {
+.file-tree-controls-bar .search-input {
   width: 100%;
-  padding: 7px var(--space-sm) 7px 32px; /* Adjusted padding for consistency */
+  padding: 7px var(--space-sm) 7px 30px; /* Left padding for icon */
   font-size: 13px;
   border: 1px solid var(--border-primary);
   border-radius: var(--border-radius-sm);
-  background-color: var(--bg-primary); /* GitHub style input */
+  background-color: var(--bg-primary);
   color: var(--text-primary);
 }
-.search-input::placeholder { color: var(--text-secondary); opacity: 0.7; }
-.search-input:focus {
+.file-tree-controls-bar .search-input::placeholder { color: var(--text-secondary); opacity: 0.7; }
+.file-tree-controls-bar .search-input:focus {
   background-color: var(--bg-primary);
   border-color: var(--text-accent);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+  box-shadow: 0 0 0 2px var(--bg-accent);
 }
-
-.shortcut-hint {
-  position: absolute;
-  right: calc(var(--space-md) + 8px);
-  top: 50%;
-  transform: translateY(-50%);
+.file-tree-controls-bar .search-icon-input {
+  position: absolute; left: 8px; top: 50%; transform: translateY(-50%);
+  color: var(--text-secondary); pointer-events: none; font-size: 0.9em;
+}
+.file-tree-controls-bar .shortcut-hint {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  font-size: 12px; border: 1px solid var(--border-primary); padding: 1px 5px;
+  border-radius: var(--border-radius-sm); background-color: var(--bg-primary);
   color: var(--text-secondary);
-  font-size: 12px;
-  border: 1px solid var(--border-primary);
-  padding: 1px 5px; /* Slightly smaller */
-  border-radius: var(--border-radius-sm);
-  background-color: var(--bg-primary);
 }
 
+.file-tree-controls-bar .action-buttons {
+  display: flex;
+  flex-shrink: 0;
+}
+.file-tree-controls-bar .action-buttons .action-button {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius-sm);
+  color: var(--text-primary);
+  width: 30px; height: 30px;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0; font-size: 1em;
+}
+.file-tree-controls-bar .action-buttons .action-button:hover {
+  border-color: var(--text-secondary); background-color: var(--bg-tertiary);
+}
+
+
+/* --- REVERTED/STABLE Tree List Styles --- */
 .file-tree-list-container {
   flex-grow: 1;
   overflow-y: auto;
-  padding: var(--space-sm) var(--space-md); /* Padding top/bottom for the list itself */
+  padding: var(--space-sm) var(--space-md); /* Padding for the list itself - gives side indentation */
 }
 
 .file-tree {
@@ -155,53 +128,64 @@
   margin: 0;
 }
 
-.tree-node {
+.tree-node { /* Style for each li item */
   display: flex;
   align-items: center;
-  padding: 5px var(--space-md) 5px 0; /* Remove right padding, rely on item content */
-  /* Dynamic padding-left is applied inline by TreeItem component */
+  padding: 5px 0; /* Vertical padding. Horizontal padding comes from container and inline style for depth. */
   cursor: pointer;
-  font-size: 13px;
-  color: var(--text-secondary);
+  font-size: 13px; /* Original size */
+  color: var(--text-secondary); /* Default text color for items */
   transition: background-color 0.1s ease;
-  min-height: 28px; /* Ensure consistent row height */
+  min-height: 28px; /* Consistent row height */
+  /* padding-left is applied inline by TreeItem component for indentation */
 }
 .tree-node:hover {
-  background-color: var(--bg-accent);
-}
-.tree-node.folder .node-name {
-  color: var(--text-primary);
+  background-color: var(--bg-accent); /* Or var(--bg-tertiary) for a more subtle hover */
 }
 
-.node-toggle-icon {
+.tree-node.folder .node-name { /* Make folder names slightly more prominent */
+  color: var(--text-primary);
+  /* font-weight: 500; /* Optional: slightly bolder folders */
+}
+
+.node-icon { /* Common class for toggle and file icons if needed for spacing */
+  width: 16px; /* Ensure icons align */
+  text-align: center;
+  flex-shrink: 0;
+  line-height: 1; /* Better vertical centering */
+}
+
+.node-toggle-icon { /* Specific for folder toggle icons (▶ ▼) */
+  composes: node-icon; /* Inherits from node-icon if you use CSS Modules, or just copy styles */
   margin-right: 4px;
   color: var(--text-secondary);
-  width: 16px;
-  text-align: center;
-  flex-shrink: 0;
-  font-size: 0.7em; /* Chevrons */
-  line-height: 1; /* Ensure vertical centering */
-  user-select: none; /* Prevent text selection on icon */
+  font-size: 0.7em; /* Make chevrons smaller */
+  user-select: none;
 }
 
-.node-file-icon {
-  margin-right: 6px;
-  color: var(--text-secondary); /* GitHub file icon color */
-  width: 16px;
-  text-align: center;
-  flex-shrink: 0;
-  line-height: 1;
+.node-file-icon { /* Specific for file icons (📄) */
+  composes: node-icon;
+  margin-right: 6px; /* Slightly more space for file icon */
+  color: var(--text-secondary);
 }
 
 .node-name {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding-left: 2px;
-  line-height: 1.5; /* Adjust for better vertical centering with icons */
+  padding-left: 2px; /* Small space from icon */
+  line-height: 1.5; /* Vertical centering of text with icons */
 }
 
-.error-message {
-  color: #cf222e; /* GitHub error red */
+.error-message,
+.no-repo-configured-message { /* Error/placeholder messages within the tree area */
+  color: var(--text-secondary); /* Use secondary text color */
   padding: var(--space-md);
+  font-style: italic;
+  text-align: center;
 }
+.error-message {
+  color: #cf222e; /* Specific error color */
+}
+
+

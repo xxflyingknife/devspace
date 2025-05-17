@@ -1,0 +1,280 @@
+:root {
+  /* Colors */
+  --primary-color: #1a73e8; /* Google Blue */
+  --primary-light: #e8f0fe;
+  --text-color-primary: #202124;
+  --text-color-secondary: #5f6368;
+  --text-color-light: #ffffff;
+  --background-light: #ffffff;
+  --background-medium: #f1f3f4; /* Light gray */
+  --background-dark: #202124;
+  --border-color: #dadce0;
+
+  /* Pastel Card Colors (Examples) */
+  --card-color-1: #e0f7fa; /* Cyan */
+  --card-color-2: #fff9c4; /* Yellow */
+  --card-color-3: #e8f5e9; /* Green */
+  --card-color-4: #fce4ec; /* Pink */
+  --card-color-5: #ede7f6; /* Purple */
+  --card-color-6: #fff3e0; /* Orange */
+  --card-color-7: #e3f2fd; /* Blue */
+  --card-color-8: #f1f8e9; /* Lime */
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  /* Borders */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 16px;
+  --border-radius-pill: 999px;
+
+  /* Fonts */
+  --font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-md: 1rem;    /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+}
+
+/* Apply base styles */
+body {
+  margin: 0;
+  font-family: var(--font-family-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-medium); /* Use a default background */
+  color: var(--text-color-primary);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+}
+
+/* Generic button styles (can be overridden) */
+.control-button {
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--background-light);
+    color: var(--text-color-secondary);
+    font-size: var(--font-size-sm);
+    margin-left: var(--space-sm);
+    transition: background-color 0.2s ease;
+}
+.control-button:hover {
+    background-color: #eee; /* Slightly darker */
+}
+.control-button.active {
+    background-color: var(--primary-light);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* background-color: #f9f9f9; Set a base background color */
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* --- Theme Variables --- */
+:root {
+  /* Light Theme (default) */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f1f3f4; /* Light gray for side panels, etc. */
+  --bg-tertiary: #f8f9fa; /* Even lighter gray or off-white for elements */
+  --bg-accent: #e8f0fe; /* Light blue for active/hover states */
+
+  --text-primary: #202124; /* Dark gray for main text */
+  --text-secondary: #5f6368; /* Medium gray for secondary text */
+  --text-accent: #1a73e8; /* Blue for links, interactive elements */
+  --text-on-primary-bg: #ffffff; /* Text on primary color buttons */
+
+  --border-primary: #dadce0; /* Standard border */
+  --border-secondary: #e0e0e0; /* Lighter border */
+
+  --header-bg: #ffffff;
+  --header-border: var(--border-primary);
+
+  --button-primary-bg: var(--text-accent);
+  --button-primary-text: var(--text-on-primary-bg);
+  --button-secondary-bg: var(--bg-tertiary);
+  --button-secondary-text: var(--text-primary);
+  --button-secondary-border: var(--border-primary);
+
+  --shadow-sm: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+  --shadow-md: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+}
+
+html[data-theme="dark"] {
+  --bg-primary: #202124; /* Dark gray */
+  --bg-secondary: #2d2e30; /* Slightly lighter dark gray */
+  --bg-tertiary: #3c4043; /* For cards or interactive elements */
+  --bg-accent: #89b4f8; /* Lighter blue for dark mode */
+
+  --text-primary: #e8eaed; /* Light gray for main text */
+  --text-secondary: #bdc1c6; /* Medium light gray */
+  --text-accent: #89b4f8; /* Lighter blue */
+  --text-on-primary-bg: #202124; /* Text on primary color buttons (dark) */
+
+  --border-primary: #5f6368; /* Darker border */
+  --border-secondary: #4a4a4a;
+
+  --header-bg: var(--bg-secondary);
+  --header-border: var(--border-primary);
+
+  --button-primary-bg: var(--text-accent);
+  --button-primary-text: var(--text-on-primary-bg); /* Should be dark text on light blue */
+  --button-secondary-bg: var(--bg-tertiary);
+  --button-secondary-text: var(--text-primary);
+  --button-secondary-border: var(--border-primary);
+}
+
+body {
+  background-color: var(--bg-secondary); /* Default page background */
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Global Styles */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+  margin-top: 0;
+}
+
+a {
+  color: var(--text-accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Utility Classes */
+.loading-fullpage, .error-fullpage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    font-size: 1.2em;
+    color: var(--text-secondary);
+}
+.error-fullpage {
+    color: #d93025; /* Error red */
+}
+
+.form-group {
+    margin-bottom: var(--space-md);
+}
+.form-group label {
+    display: block;
+    margin-bottom: var(--space-sm);
+    font-weight: 500;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+.form-group input[type="text"],
+.form-group input[type="url"],
+.form-group input[type="email"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-md);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--text-accent);
+    box-shadow: 0 0 0 2px var(--bg-accent);
+}
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.add-new-button {
+    display: block;
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    margin-top: var(--space-md);
+    background-color: var(--bg-tertiary);
+    border: 1px dashed var(--border-primary);
+    color: var(--text-secondary);
+    border-radius: var(--border-radius-sm);
+    text-align: center;
+}
+.add-new-button:hover {
+    background-color: var(--border-primary);
+    color: var(--text-primary);
+}
+
+/* Specific Panel Headers to look like NotebookLM */
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-md) var(--space-md); /* Consistent padding */
+    border-bottom: 1px solid var(--border-primary);
+    background-color: var(--bg-primary); /* Panel header background */
+    flex-shrink: 0;
+}
+
+.panel-title {
+    font-size: 1rem; /* 16px like NotebookLM side panel titles */
+    font-weight: 500;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.panel-header-button {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    padding: var(--space-xs);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: right;
+    align-items: right;
+    justify-content: right;
+    cursor: pointer;
+}
+.panel-header-button:hover {
+    background-color: var(--bg-secondary);
+}
+.panel-header-button.primary {
+    background-color: var(--button-primary-bg);
+    color: var(--button-primary-text);
+    padding: 6px 12px;
+    border-radius: var(--border-radius-sm);
+    width: auto;
+    height: auto;
+    font-size: var(--font-size-sm);
+}
+.panel-header-button.primary:hover {
+    opacity: 0.9;
+}
+

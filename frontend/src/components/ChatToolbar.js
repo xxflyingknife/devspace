@@ -119,7 +119,7 @@ function ChatToolbar({ spaceType, onToolSubmit, spaceId /* For settings context 
                 onClick={() => setShowBackendSettingsModal(true)}
                 title="Space Backend Settings"
             >
-                [⚙️] {/* Settings Icon */}
+                ⚙️ {/* Settings Icon */}
             </button>
         </div>
       </div>

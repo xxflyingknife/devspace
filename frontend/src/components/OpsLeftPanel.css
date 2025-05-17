@@ -1,6 +1,10 @@
-/* Styles specific to OpsLeftPanel, if any beyond .panel-header and .ops-workload-list-container */
+/* frontend/src/components/OpsLeftPanel.css */
 
-.ops-workload-list-container { /* Ensure this class is used in OpsLeftPanel.js */
+.ops-left-panel-header.panel-header { /* Target specific header */
+  /* panel-header global styles apply, add overrides if needed */
+}
+
+.ops-workload-list-container {
   flex-grow: 1;
   overflow-y: auto;
   padding: 0 var(--space-md) var(--space-md) var(--space-md);
@@ -15,20 +19,24 @@
 .ops-workload-item {
   display: flex;
   align-items: center;
-  padding: var(--space-sm) 0; /* Less horizontal padding, handled by container */
+  padding: var(--space-sm) 0; /* Vertical padding */
   border-bottom: 1px solid var(--border-secondary);
   font-size: var(--font-size-sm);
   gap: var(--space-sm);
+  transition: background-color 0.15s ease;
+}
+.ops-workload-item:hover {
+    background-color: var(--bg-tertiary);
 }
 .ops-workload-item:last-child {
   border-bottom: none;
 }
 
 .workload-icon {
-  width: 24px; /* Consistent icon width */
+  width: 24px;
   text-align: center;
   color: var(--text-secondary);
-  font-size: 1.1em; /* Slightly larger for icons */
+  font-size: 1.1em;
   flex-shrink: 0;
 }
 
@@ -42,31 +50,93 @@
 }
 
 .workload-status {
-  padding: 2px 8px;
+  padding: 3px 10px; /* More padding */
   border-radius: var(--border-radius-pill);
-  font-size: 0.75rem; /* Smaller status text */
+  font-size: 0.75rem;
   font-weight: 500;
   text-transform: capitalize;
   flex-shrink: 0;
+  min-width: 75px; /* Ensure some width */
+  text-align: center;
 }
-/* Status colors are defined in SpaceDetailPage.css or global styles */
-.workload-status.healthy { background-color: #CEEAD6; color: #0D652D;}
-.workload-status.scaling { background-color: #FEEFC3; color: #514100;}
-.workload-status.degraded { background-color: #FAD2D2; color: #A50E0E;}
-.workload-status.pending { background-color: #D1E7FD; color: #0A58CA;} /* Added pending */
-.workload-status.scheduled { background-color: #E8EAF6; color: #303F9F;} /* Added scheduled */
-
+/* Specific status colors (can be moved to a global spot if reused often) */
+.workload-status.healthy { background-color: #CEEAD6; color: #0D652D;} /* Light Green */
+.workload-status.scaling { background-color: #FFF9C4; color: #F57F17;} /* Light Yellow/Orange */
+.workload-status.degraded, .workload-status.error { background-color: #FFCDD2; color: #B71C1C;} /* Light Red */
+.workload-status.pending { background-color: #D1E7FD; color: #0D47A1;} /* Light Blue */
+.workload-status.scheduled, .workload-status.monitoring { background-color: #E8EAF6; color: #1A237E;} /* Light Indigo/GreyBlue */
 
 .workload-count {
   color: var(--text-secondary);
   font-size: 0.85rem;
-  min-width: 30px; /* Some space for count */
+  min-width: 30px;
   text-align: right;
   flex-shrink: 0;
 }
 .no-workloads-message {
-    text-align: center;
-    padding: var(--space-xl);
-    color: var(--text-secondary);
-    font-style: italic;
+  text-align: center;
+  padding: var(--space-xl);
+  color: var(--text-secondary);
+  font-style: italic;
 }
+
+/* Styles for "Add Workload" Modal Form */
+.add-workload-form .form-group {
+    margin-bottom: var(--space-lg);
+}
+.add-workload-form .resource-selection-group {
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--border-radius-sm);
+    padding: var(--space-md);
+    max-height: 200px; /* Make it scrollable */
+    overflow-y: auto;
+    background-color: var(--bg-tertiary);
+}
+.add-workload-form .resource-selection-group label { /* The main label for the group */
+    font-weight: 500;
+    margin-bottom: var(--space-md);
+}
+
+.resource-checkbox-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.resource-checkbox-list li {
+    display: flex;
+    align-items: center;
+    padding: var(--space-xs) 0;
+}
+.resource-checkbox-list input[type="checkbox"] {
+    margin-right: var(--space-sm);
+    height: 16px; width: 16px;
+}
+.resource-checkbox-list label { /* Label for each checkbox item */
+    font-weight: normal;
+    font-size: var(--font-size-sm);
+    margin-bottom: 0; /* Override form-group label margin */
+    cursor: pointer;
+}
+
+/* Styles for "Discover Workloads" Modal */
+.discover-button {
+    display: block; /* Make it full width or align as needed */
+    width: 100%;
+    margin-top: var(--space-sm);
+}
+.discovered-workloads-results {
+    margin-top: var(--space-lg);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--border-secondary);
+}
+.discovered-workloads-results h4 {
+    margin-bottom: var(--space-md);
+    font-size: var(--font-size-md);
+}
+.discovered-workloads-results .resource-checkbox-list em { /* For the 'reason' */
+    font-size: 0.9em;
+    color: var(--text-secondary);
+    margin-left: var(--space-sm);
+}
+
+

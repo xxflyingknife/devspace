@@ -13,6 +13,10 @@
     border-bottom: none;
 }
 
+.space-list-row-link:hover {
+  text-decoration: none; /* Remove underline on hover */
+}
+
 .space-list-row-link {
   flex-grow: 1;
   display: flex;

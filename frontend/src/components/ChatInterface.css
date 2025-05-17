@@ -1,188 +1,298 @@
-/* Styles for Added Chat Header */
-.chat-header-section {
-    padding: var(--space-md);
-    border-bottom: 1px solid var(--border-color);
-    background-color: var(--background-light); /* Match other headers */
-}
-
-.chat-title-area {
-    display: flex;
-    align-items: center;
-    margin-bottom: var(--space-sm);
-}
-
-.chat-header-icon {
-    /* Style your icon placeholder */
-    margin-right: var(--space-sm);
-    font-size: 1.5em;
-}
-
-.chat-header-title {
-    margin: 0;
-    font-size: 1.1em;
-    font-weight: 500;
-    color: var(--text-color-primary);
-}
-
-.chat-meta-area {
-    display: flex;
-    align-items: center;
-    font-size: var(--font-size-sm);
-    color: var(--text-color-secondary);
-    gap: var(--space-md); /* Space between items */
-}
-
-.chat-header-button {
-    background: none;
-    border: none;
-    color: var(--text-color-secondary);
-    padding: var(--space-xs);
-    cursor: pointer;
-    border-radius: var(--border-radius-sm);
-}
-.chat-header-button:hover {
-    background-color: var(--background-medium);
-}
-
-.chat-action-buttons {
-    padding: var(--space-sm) var(--space-md);
-    border-top: 1px solid var(--border-color);
-    background-color: var(--background-light);
-    display: flex;
-    gap: var(--space-sm);
-}
-.chat-action-buttons button {
-    background-color: var(--background-medium);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-md);
-    padding: var(--space-sm) var(--space-md);
-    font-size: var(--font-size-sm);
-}
-.chat-action-buttons button:hover {
-    border-color: #bbb;
-}
-
-
-/* --- Original Chat Styles Below --- */
+/* frontend/src/components/ChatInterface.css - REFINED FOR LAYOUT */
 
 .chat-interface-container {
   display: flex;
   flex-direction: column;
-  height: 100%; /* Fill the middle column */
-  background-color: var(--bg-tertiary);
+  height: 100%; /* CRUCIAL: Fill the parent .middle-column */
+  background-color: var(--bg-tertiary); /* Chat area background */
+  overflow: hidden; /* Prevent container itself from scrolling */
+}
+
+.token-info-bar {
+  padding: var(--space-xs) var(--space-md);
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  text-align: center;
+  border-bottom: 1px solid var(--border-primary);
+  flex-shrink: 0; /* Should not shrink */
 }
 
 .message-list {
-  flex-grow: 1; /* Take available space */
-  overflow-y: auto; /* Allow scrolling */
-  padding: 15px;
+  flex-grow: 1; /* CRUCIAL: Takes up available vertical space */
+  overflow-y: auto; /* Allows messages to scroll */
+  padding: var(--space-md);
   display: flex;
   flex-direction: column;
-  gap: 12px; /* Space between messages */
+  gap: var(--space-md);
 }
 
 .message {
   display: flex;
-  max-width: 80%; /* Messages don't span the entire width */
-  word-wrap: break-word; /* Break long words */
+  max-width: 85%; /* Max width of a message bubble */
+  word-wrap: break-word;
 }
 
 .message-content {
-  padding: 10px 15px;
-  border-radius: 18px; /* Rounded bubbles */
-  line-height: 1.4;
+  padding: var(--space-sm) var(--space-md); /* 8px 16px */
+  border-radius: 18px;
+  line-height: 1.45;
+  color: var(--text-primary);
+  box-shadow: 0 1px 1px rgba(0,0,0,0.05);
 }
 
 .message.user {
-  align-self: flex-end; /* Align user messages to the right */
+  align-self: flex-end;
 }
 .message.user .message-content {
-  background-color: #007bff; /* Blue for user messages */
-  color: white;
-  border-bottom-right-radius: 4px; /* Slightly flatten corner */
+  background-color: var(--text-accent); /* Blue for user */
+  color: var(--text-on-primary-bg); /* White text on blue */
+  border-bottom-right-radius: var(--border-radius-sm); /* Flatten one corner */
+}
+html[data-theme="dark"] .message.user .message-content {
+  background-color: var(--text-accent); /* Ensure dark theme accent is suitable */
+  /* color might need adjustment if --text-on-primary-bg doesn't contrast well with dark accent */
 }
 
-.message.assistant {
-  align-self: flex-start; /* Align assistant messages to the left */
-}
+
 .message.assistant .message-content {
-  background-color: #e9e9eb; /* Light grey for assistant */
-  color: #333;
-  border-bottom-left-radius: 4px; /* Slightly flatten corner */
+  align-self: flex-start;
+  background-color: var(--bg-primary); /* White/Dark Primary for assistant */
+  color: var(--text-primary);
+  border: 1px solid var(--border-secondary);
+  border-bottom-left-radius: var(--border-radius-sm);
+}
+
+/* ToolInfo messages (for tool execution blocks) */
+.message.toolInfo {
+    align-self: stretch; /* Allow tool info blocks to take more width if needed */
+    max-width: 100%;
+}
+.message.toolInfo .message-content {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  width: 100%;
 }
 
 .typing-indicator {
-    padding: 5px 15px;
-    font-style: italic;
-    color: #888;
-    font-size: 0.9em;
+  padding: var(--space-sm) var(--space-md);
+  font-style: italic;
+  color: var(--text-secondary);
+  font-size: 0.85em;
+  text-align: left; /* Or center */
+  flex-shrink: 0;
 }
+
+/* ChatToolbar already has .chat-tools-bar with flex-shrink: 0 */
+/* Ensure ChatToolbar.css is correctly styling .chat-tools-bar */
 
 .message-input-form {
   display: flex;
-  padding: 10px;
-  border-top: 1px solid #ddd;
-  background-color: #fff; /* White background for input area */
+  padding: var(--space-md);
+  border-top: 1px solid var(--border-primary);
+  background-color: var(--bg-primary); /* Background for the input area */
+  flex-shrink: 0; /* Should not shrink */
+  align-items: center; /* Align input and button vertically */
 }
 
 .message-input-form input {
   flex-grow: 1;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 20px; /* Pill shape */
-  margin-right: 10px;
-  font-size: 1em;
+  padding: 10px 15px;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius-pill);
+  margin-right: var(--space-sm);
+  font-size: var(--font-size-md);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+.message-input-form input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+.message-input-form input:focus {
+  background-color: var(--bg-primary);
+  border-color: var(--text-accent);
+  box-shadow: 0 0 0 2px var(--bg-accent);
+  outline: none;
 }
 
 .message-input-form button {
   padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-text);
   border: none;
-  border-radius: 20px; /* Pill shape */
+  border-radius: var(--border-radius-pill);
   cursor: pointer;
-  font-size: 1em;
-  transition: background-color 0.2s;
+  font-size: var(--font-size-md);
+  font-weight: 500;
+  transition: background-color 0.2s, opacity 0.2s;
+  flex-shrink: 0; /* Prevent send button from shrinking */
 }
-
-.message-input-form button:hover {
-  background-color: #0056b3;
-}
-
+.message-input-form button:hover { opacity: 0.85; }
 .message-input-form button:disabled {
-  background-color: #a0cfff;
+  background-color: var(--text-secondary);
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* --- Styles for Chat Tools Bar (Added by script 19) --- */
-.chat-tools-bar {
-  display: flex;
-  flex-wrap: wrap; /* Allow tools to wrap on smaller screens */
-  gap: var(--space-sm);
+/* Styles for Tool Execution Blocks (if not already present or need refinement) */
+.tool-execution-block {
+  margin-top: var(--space-sm);
+  margin-bottom: var(--space-sm);
   padding: var(--space-sm) var(--space-md);
-  border-top: 1px solid var(--border-primary);
-  background-color: var(--bg-primary); /* Or --bg-tertiary */
-  order: 1; /* Ensure it's visually above the input form if input form has order:2 */
-  flex-shrink: 0; /* Prevent shrinking */
-}
-
-.tool-button {
-  padding: var(--space-xs) var(--space-md); /* 4px 16px */
-  background-color: var(--bg-tertiary);
+  border-radius: var(--border-radius-sm);
+  font-size: 0.85rem;
   border: 1px solid var(--border-primary);
-  border-radius: var(--border-radius-sm); /* 4px */
-  color: var(--text-secondary);
-  font-size: var(--font-size-sm); /* 14px */
-  cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s;
 }
-.tool-button:hover {
-  background-color: var(--border-primary); /* Slightly darker */
-  border-color: var(--text-secondary);
+.tool-execution-block.status-success { /* ... styles as before ... */ }
+.tool-execution-block.status-error { /* ... styles as before ... */ }
+.tool-execution-block.status-unknown { /* ... styles as before ... */ }
+.tool-execution-header { /* ... styles as before ... */ }
+.tool-execution-details p { /* ... styles as before ... */ }
+.tool-execution-details pre { /* ... styles as before ... */ }
+
+
+/* frontend/src/components/ChatInterface.css */
+/* ... (existing styles) ... */
+
+.message-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+
+  /* --- Scrollbar Styling for WebKit browsers (Chrome, Safari, Edge) --- */
+  /* Make scrollbar track transparent */
+  scrollbar-width: thin; /* For Firefox - 'auto', 'thin', or 'none' */
+  scrollbar-color: rgba(0,0,0,0.2) transparent; /* For Firefox - thumb color, track color */
 }
 
-/* Adjust input form to be visually below tools bar */
-.message-input-form {
-    order: 2; /* Place below tools bar */
-    /* Keep existing styles for message-input-form */
+.message-list::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
 }
+
+.message-list::-webkit-scrollbar-track {
+  background: transparent; /* Make track invisible */
+  border-radius: 4px;
+}
+
+.message-list::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0); /* Thumb invisible by default */
+  border-radius: 4px;
+  border: 2px solid transparent; /* Creates padding around thumb */
+  background-clip: content-box; /* Important for the border "padding" effect */
+}
+
+.message-list:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.3); /* Thumb visible on hover of the message-list */
+}
+
+.message-list::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0,0,0,0.5); /* Thumb darker when hovered directly */
+}
+
+/* --- For Firefox (partial support for visibility on hover) --- */
+/* Firefox doesn't allow direct styling of thumb visibility based on container hover via pure CSS.
+   The scrollbar-color property makes it always somewhat visible if scrollable.
+   To achieve true hover-only visibility on Firefox, JavaScript solutions are often needed to toggle a class
+   that changes scrollbar-color, or more complex overlay scrollbar libraries.
+   For now, we'll use the standard properties which give a less obtrusive scrollbar.
+*/
+html[data-theme="dark"] .message-list {
+    scrollbar-color: rgba(255,255,255,0.2) transparent;
+}
+html[data-theme="dark"] .message-list:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255,0.3);
+}
+html[data-theme="dark"] .message-list::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255,255,255,0.5);
+}
+
+
+/* frontend/src/components/ChatInterface.css */
+/* ... (all existing styles from the previous response) ... */
+
+/* Styles for Clamped Message Content */
+.message-content.clamped {
+  overflow: hidden;
+  position: relative; /* For absolute positioning of an overlay/fade if desired */
+  /* max-height is set via inline style in JS for initial clamping */
+  /* Add a subtle fade at the bottom if text is clamped */
+  /* -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%); */
+  /* mask-image: linear-gradient(to bottom, black 60%, transparent 100%); */
+}
+
+.expand-collapse-button {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-secondary);
+  color: var(--text-accent);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--border-radius-sm);
+  font-size: 0.75rem; /* Smaller text */
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: var(--space-xs); /* Space between message and button */
+  align-self: flex-start; /* Align to the start of the message bubble (for assistant) */
+  /* If you want it centered under the message: margin-left: auto; margin-right: auto; display: block; */
+  transition: background-color 0.2s;
+}
+.message.user .expand-collapse-button {
+    align-self: flex-end; /* Align to the end for user messages */
+}
+
+.expand-collapse-button:hover {
+  background-color: var(--bg-accent);
+  /* color: var(--text-on-primary-bg); */ /* If background becomes dark accent */
+}
+
+html[data-theme="dark"] .expand-collapse-button {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-primary);
+    color: var(--text-accent);
+}
+html[data-theme="dark"] .expand-collapse-button:hover {
+    background-color: var(--bg-tertiary); /* Darker hover */
+}
+
+/* In frontend/src/components/ChatInterface.css */
+/* ... (other styles) ... */
+
+.tool-execution-block.status-success {
+  background-color: #e6ffed; /* Light green */
+  border-left: 4px solid #28a745; /* Green accent */
+  color: #155724; /* Slightly darker green text for better contrast */
+}
+html[data-theme="dark"] .tool-execution-block.status-success {
+  background-color: #122e1a; /* Darker green background */
+  border-left-color: #34d058; /* Lighter green accent */
+  color: #a6d9b3; /* Lighter green text */
+}
+
+/* CHANGED "error" TO YELLOW THEME */
+.tool-execution-block.status-error { /* This class is still used if backend sends "error" */
+  background-color: #fffbeb; /* Light yellow */
+  border-left: 4px solid #ffc107; /* Yellow accent (Bootstrap warning yellow) */
+  color: #856404; /* Dark yellow/brown text */
+}
+html[data-theme="dark"] .tool-execution-block.status-error {
+  background-color: #332701; /* Dark yellow background */
+  border-left-color: #ffd733; /* Lighter yellow accent */
+  color: #fff3cd; /* Light yellow text */
+}
+
+.tool-execution-block.status-unknown {
+  background-color: var(--bg-tertiary);
+  border-left: 4px solid var(--text-secondary);
+  color: var(--text-primary); /* Ensure text is visible */
+}
+html[data-theme="dark"] .tool-execution-block.status-unknown {
+  background-color: var(--bg-secondary); /* Darker tertiary */
+  border-left-color: var(--text-secondary);
+  color: var(--text-primary);
+}
+
+/* ... (tool-execution-header, tool-execution-details, pre styles as before) ... */

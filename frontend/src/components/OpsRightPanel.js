@@ -21,7 +21,7 @@ function OpsRightPanel({ spaceId }) {
     <>
       <div className="panel-header">
         <span className="panel-title">AIOps Studio</span>
-        <button className="panel-header-button" title="Manage Studio Plugins">[+]</button>
+        <button className="panel-header-button" title="Manage Studio Plugins">+</button>
       </div>
       <div className="ops-right-panel-content"> {/* Scrollable container */}
         <Accordion title="AIOps 技能插件" initialOpen={true}>

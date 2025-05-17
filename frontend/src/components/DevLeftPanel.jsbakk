@@ -1,0 +1,332 @@
+// frontend/src/components/DevLeftPanel.js
+import React, { useState, useEffect } from 'react';
+import FileTreeViewer from './FileTreeViewer';
+import TaskArea from './TaskArea'; // <--- IMPORT NEW COMPONENT
+import Modal from './Modal'; // For "Create New Project" and "Set Existing"
+import LoadingSpinner from './LoadingSpinner';
+import './DevLeftPanel.css'; // Create this new CSS file
+
+// Mock function - replace with actual API call
+//const mockFetchDevSpaceConfig = async (spaceId) => {
+//  console.log(`DEV_LEFT_PANEL: Fetching dev config for space ${spaceId}`);
+//  await new Promise(resolve => setTimeout(resolve, 300));
+  // Simulate different scenarios:
+//  if (spaceId === "new-empty-dev-space") { // An ID you can test the wizard with
+//    return { git_repo_url: null, default_branch: 'main' };
+//  }
+//  return { git_repo_url: `https://github.com/mock-user/${spaceId}-repo.git`, default_branch: 'main' };
+//};
+
+
+
+const fetchDevSpaceConfigFromAPI = async (spaceId) => {
+  console.log(`DevLeftPanel: Fetching REAL dev config for space ${spaceId}`);
+  try {
+    // This endpoint should return the 'type' and if 'dev', then 'git_repo_url' etc.
+    // We might need to adjust if this comes from the main /details endpoint
+    // For now, let's assume the main /details endpoint gives us what we need.
+    const response = await fetch(`http://localhost:5001/api/spaces/${spaceId}/details`);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: response.statusText }));
+      throw new Error(`Backend error: ${response.status} - ${errorData.message || 'Failed to fetch space config'}`);
+    }
+    const data = await response.json();
+    console.log("DevLeftPanel: Received config from backend:", data);
+    // The data should ideally contain { git_repo_url: "...", default_branch: "..." } if type is dev
+    // and the repo is configured. If type is dev but no URL, git_repo_url will be null.
+    return data; // Return the whole space detail object
+  } catch (error) {
+    console.error("DevLeftPanel: Error in fetchDevSpaceConfigFromAPI:", error);
+    throw error;
+  }
+};
+
+// Mock function for project types
+const mockFetchProjectTypes = async () => {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    return [
+        { id: "react-vite-ts", name: "React + Vite (TypeScript)", description: "Modern frontend with Vite and TS." },
+        { id: "python-flask-api", name: "Python Flask API", description: "Basic Flask API backend." },
+        { id: "express-nodejs", name: "Node.js Express App", description: "Simple Express.js application." },
+    ];
+};
+
+// Mock function for scaffolding - this would be a complex backend call
+const mockScaffoldAndPushProject = async (spaceId, projectTypeId, projectName, gitProvider, repoName, isPrivate) => {
+    console.log("MOCK SCAFFOLD:", { spaceId, projectTypeId, projectName, gitProvider, repoName, isPrivate });
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Simulate success and return the new repo URL
+    return { success: true, repoUrl: `https://github.com/mock-user/${repoName}.git` };
+};
+
+
+function DevLeftPanel({ spaceId }) {
+  const [devConfig, setDevConfig] = useState(null);
+  const [devSpaceDetails, setDevSpaceDetails] = useState(null);
+  const [isLoadingConfig, setIsLoadingConfig] = useState(true);
+  const [errorConfig, setErrorConfig] = useState(null);
+
+  const [showCreateProjectModal, setShowCreateProjectModal] = useState(false);
+  const [showSetExistingRepoModal, setShowSetExistingRepoModal] = useState(false);
+
+  // State for Create Project Modal
+  const [projectTypes, setProjectTypes] = useState([]);
+  const [selectedProjectType, setSelectedProjectType] = useState('');
+  const [newProjectName, setNewProjectName] = useState('');
+  const [gitProvider, setGitProvider] = useState('github'); // github, gitlab
+  const [newRepoName, setNewRepoName] = useState('');
+  const [isRepoPrivate, setIsRepoPrivate] = useState(true);
+  const [gitToken, setGitToken] = useState(''); // User's PAT or mechanism for OAuth
+  const [isScaffolding, setIsScaffolding] = useState(false);
+
+
+  // State for Set Existing Repo Modal (can reuse some state from FileTreeViewer if moved here)
+  const [existingRepoUrl, setExistingRepoUrl] = useState('');
+ 
+  // --- NEW STATE for selected APP-BP version ---
+  const [currentAppBlueprintVersion, setCurrentAppBlueprintVersion] = useState(null);
+
+
+
+const fetchConfig = () => {
+    setIsLoadingConfig(true);
+    setErrorConfig(null);
+    console.log("DevLeftPanel: fetchConfig called. Current devSpaceDetails:", devSpaceDetails); // <-- ADD THIS
+    fetchDevSpaceConfigFromAPI(spaceId) // <--- USE NEW API CALL
+      .then(details => {
+        if (details && details.type === 'dev') {
+          setDevSpaceDetails(details); // Store the fetched details
+        } else if (details && details.type !== 'dev') {
+          setErrorConfig("This is not a Dev space."); // Or handle gracefully
+          setDevSpaceDetails(null); // Clear any old dev config
+        } else {
+          setErrorConfig("Failed to load space configuration or invalid space type.");
+          setDevSpaceDetails(null);
+        }
+      })
+      .catch(err => {
+        console.error("Error fetching dev space config in DevLeftPanel:", err);
+        setErrorConfig(err.message || "Failed to load Git configuration.");
+        setDevSpaceDetails(null);
+      })
+      .finally(() => setIsLoadingConfig(false));
+  };
+
+  useEffect(() => {
+    console.log("DevLeftPanel: useEffect (fetchConfig) triggered for spaceId:", spaceId);
+     fetchConfig();
+  }, [spaceId]);
+
+
+
+
+  useEffect(() => {
+    if (showCreateProjectModal) {
+      mockFetchProjectTypes().then(setProjectTypes);
+    }
+  }, [showCreateProjectModal]);
+
+
+  const handleCreateProjectSubmit = async (e) => {
+    e.preventDefault();
+    // ... (existing validation) ...
+    setIsScaffolding(true);
+    try {
+        const result = await mockScaffoldAndPushProject( /* ...params... */ );
+        if (result.success) {
+            alert(`Project created! Reloading config...`);
+            fetchConfig(); // Re-fetch to get the new git_repo_url
+            setShowCreateProjectModal(false);
+            // ... (reset form fields) ...
+        } else { /* ... */ }
+    } catch (err) { /* ... */ }
+    finally { setIsScaffolding(false); }
+  };
+
+
+  const handleSetExistingRepoSubmit = async (e) => {
+     e.preventDefault();
+     if (!existingRepoUrl.trim()) {
+         alert("Git repository URL cannot be empty.");
+         return;
+     }
+     console.log("DevLeftPanel: Attempting to set existing repo URL:", existingRepoUrl, "for spaceId:", spaceId);
+     setIsLoadingConfig(true); // Indicate loading while saving/validating
+
+     try {
+         const response = await fetch(`http://localhost:5001/api/dev/${spaceId}/git-config`, { // Use the new endpoint
+             method: 'POST',
+             headers: {
+                 'Content-Type': 'application/json',
+             },
+             body: JSON.stringify({ git_repo_url: existingRepoUrl }),
+         });
+         const result = await response.json();
+
+         if (!response.ok) {
+             throw new Error(result.error || `Failed to update Git config: ${response.statusText}`);
+         }
+
+         alert(result.message || 'Git repository URL updated successfully!');
+         // Crucially, trigger a re-fetch of the space details to get the new config
+         // The fetchConfig() in DevLeftPanel's useEffect will re-run if spaceId changes,
+         // but here the config for the *same* spaceId changes. So, call fetchConfig directly.
+         fetchConfig(); // This will update devSpaceDetails and re-render
+         setShowSetExistingRepoModal(false);
+         setExistingRepoUrl('');
+     } catch (err) {
+         console.error("Error setting existing repo URL:", err);
+         alert("Error: " + err.message);
+         // Optionally, clear devSpaceDetails.git_repo_url if save failed, to keep showing wizard
+         // setDevSpaceDetails(prev => ({...prev, git_repo_url: null}));
+     } finally {
+         setIsLoadingConfig(false);
+     }
+   };
+
+
+  if (isLoadingConfig) {
+    return (
+      <div className="panel-loading-container">
+        <LoadingSpinner />
+        <p>Loading Git Configuration...</p>
+      </div>
+    );
+  }
+
+  if (errorConfig) {
+    return <div className="panel-error-container"><p>{errorConfig}</p></div>;
+  }
+
+  // --- Conditional Rendering Logic ---
+  //if (!devConfig || !devConfig.git_repo_url) {
+  if (!devSpaceDetails || !devSpaceDetails.git_repo_url) {
+    
+
+    // No Git Repo Configured - Show Wizard
+    return (
+      <div className="dev-left-panel-wizard">
+        <div className="panel-header">
+            <span className="panel-title">Files</span>
+            {/* No settings icon here yet, as there's nothing to configure until a repo is chosen */}
+        </div>
+        <div className="wizard-content">
+          <h4>你还没有关联开发项目</h4>
+          <p>选择一个操作开始:</p>
+          <button className="wizard-button primary" onClick={() => setShowCreateProjectModal(true)}>
+            [+] 创建新项目
+          </button>
+          <p>根据向导选择项目类型、初始化代码库并推送到你的 Git 提供商。</p>
+          <hr />
+          <button className="wizard-button secondary" onClick={() => {
+              setExistingRepoUrl(devConfig?.git_repo_url || ''); // Pre-fill if any old value exists
+              setShowSetExistingRepoModal(true);
+          }}>
+            [⚙️] 设置已有项目
+          </button>
+          <p>如果你已经有一个 Git 仓库，请在此处配置其地址。</p>
+        </div>
+
+        {/* Create New Project Modal */}
+        {showCreateProjectModal && (
+          <Modal isOpen={showCreateProjectModal} onClose={() => setShowCreateProjectModal(false)} title="创建新开发项目">
+            <form onSubmit={handleCreateProjectSubmit} className="modal-form create-project-form">
+              <div className="form-group">
+                <label htmlFor="projectName">项目名称:</label>
+                <input type="text" id="projectName" value={newProjectName} onChange={(e) => setNewProjectName(e.target.value)} required placeholder="e.g., my-awesome-app"/>
+              </div>
+              <div className="form-group">
+                <label htmlFor="projectType">项目类型:</label>
+                <select id="projectType" value={selectedProjectType} onChange={(e) => setSelectedProjectType(e.target.value)} required>
+                  <option value="">-- 选择类型 --</option>
+                  {projectTypes.map(pt => <option key={pt.id} value={pt.id}>{pt.name}</option>)}
+                </select>
+              </div>
+              <hr/>
+              <h4>Git Repository Configuration</h4>
+              <div className="form-group">
+                <label htmlFor="gitProvider">Git 提供商:</label>
+                <select id="gitProvider" value={gitProvider} onChange={(e) => setGitProvider(e.target.value)}>
+                    <option value="github">GitHub</option>
+                    <option value="gitlab">GitLab</option>
+                    {/* Add other providers */}
+                </select>
+              </div>
+              <div className="form-group">
+                <label htmlFor="newRepoName">{gitProvider === 'github' ? 'GitHub' : 'GitLab'} 仓库名称:</label>
+                <input type="text" id="newRepoName" value={newRepoName} onChange={(e) => setNewRepoName(e.target.value)} required placeholder="e.g., new-app-repo"/>
+              </div>
+               <div className="form-group checkbox-wrapper">
+                <input type="checkbox" id="isRepoPrivate" checked={isRepoPrivate} onChange={(e) => setIsRepoPrivate(e.target.checked)} />
+                <label htmlFor="isRepoPrivate" className="checkbox-label">创建为私有仓库</label>
+              </div>
+              <div className="form-group">
+                <label htmlFor="gitToken">{gitProvider === 'github' ? 'GitHub' : 'GitLab'} Personal Access Token (PAT):</label>
+                <input type="password" id="gitToken" value={gitToken} onChange={(e) => setGitToken(e.target.value)} required placeholder="具有 repo 创建权限的 Token"/>
+                <small>此 Token 不会永久存储，仅用于本次仓库创建和初始推送。</small>
+              </div>
+
+              <div className="modal-form-actions">
+                <button type="button" className="modal-button secondary" onClick={() => setShowCreateProjectModal(false)}>取消</button>
+                <button type="submit" className="modal-button primary" disabled={isScaffolding}>
+                    {isScaffolding ? '创建中...' : '创建并推送'}
+                </button>
+              </div>
+            </form>
+          </Modal>
+        )}
+
+        {/* Set Existing Repo Modal (Simplified version of FileTreeViewer's old settings modal) */}
+        {showSetExistingRepoModal && (
+            <Modal isOpen={showSetExistingRepoModal} onClose={() => setShowSetExistingRepoModal(false)} title="设置现有 Git 仓库">
+                <form onSubmit={handleSetExistingRepoSubmit} className="modal-form">
+                    <div className="form-group">
+                        <label htmlFor="existingRepoUrl">Git 仓库 URL (HTTPS or SSH):</label>
+                        <input
+                            type="url"
+                            id="existingRepoUrl"
+                            value={existingRepoUrl}
+                            onChange={(e) => setExistingRepoUrl(e.target.value)}
+                            required
+                            placeholder="e.g., https://github.com/username/my-repo.git"
+                        />
+                    </div>
+                    <div className="modal-form-actions">
+                        <button type="button" className="modal-button secondary" onClick={() => setShowSetExistingRepoModal(false)}>取消</button>
+                        <button type="submit" className="modal-button primary">保存</button>
+                    </div>
+                </form>
+            </Modal>
+        )}
+      </div>
+    );
+  }
+
+
+// --- Conditional Rendering Logic based on devSpaceDetails.git_repo_url ---
+  if (!devSpaceDetails || !devSpaceDetails.git_repo_url) {
+    // No Git Repo Configured - Show Wizard
+    console.log("DevLeftPanel: Condition for WIZARD is TRUE. devSpaceDetails:", devSpaceDetails, "git_repo_url:", devSpaceDetails?.git_repo_url); // <-- Log why wizard is showing
+    return (
+      <div className="dev-left-panel-wizard">
+        {/* ... (Wizard JSX remains mostly the same) ... */}
+        {/* In "Set Existing Repo" modal, pre-fill with devSpaceDetails?.git_repo_url (which would be null/empty) */}
+         <button className="wizard-button secondary" onClick={() => {
+          setExistingRepoUrl(devSpaceDetails?.git_repo_url || ''); // Use current value if exists
+          setShowSetExistingRepoModal(true);
+        }}>
+          [⚙️] 设置已有项目
+        </button>
+        {/* ... (rest of wizard and its modals) ... */}
+      </div>
+    );
+  }
+
+
+  // Git Repo is Configured - Show FileTreeViewer
+  // FileTreeViewer now internally manages its own Git Settings modal, branch selection, search, and tree display
+  //return <FileTreeViewer repoId={spaceId} initialRepoUrl={devConfig.git_repo_url} />;
+  return <FileTreeViewer repoId={spaceId} initialRepoUrl={devSpaceDetails.git_repo_url} />;
+}
+
+export default DevLeftPanel;

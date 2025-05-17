@@ -1,5 +1,53 @@
 // frontend/src/config/toolConfigs.js
 
+
+export const debugToolsConfig = {
+  // Generic tools available for any configured project
+  generic: [
+    { id: 'frontendLogs', label: 'Frontend Logs', icon: '📄F', drawerTitle: 'Frontend Application Logs' },
+    { id: 'backendLogs', label: 'Backend Logs', icon: '📄B', drawerTitle: 'Backend Application Logs' },
+  ],
+  // Project-type specific default tools
+  projectTypeDefaults: {
+    'react-vite-ts': [ // Matches projectTypeId from DevLeftPanel wizard
+      'frontendLogs', // ID from generic tools
+      'variableInspector', // New tool
+    ],
+    'python-flask-api': [
+      'backendLogs',
+      'dbViewer',
+      'variableInspector', // New tool
+    ],
+    // Add more project types and their default debug tool IDs
+  },
+  // All available debug tools (for "Add More Tools" functionality)
+  allAvailable: [
+    { id: 'frontendLogs', label: 'Frontend Logs', icon: '📄F', drawerTitle: 'Frontend Application Logs', description: "View client-side application logs." },
+    { id: 'backendLogs', label: 'Backend Logs', icon: '📄B', drawerTitle: 'Backend Application Logs', description: "View server-side application logs." },
+    { id: 'variableInspector', label: 'Variable Inspector', icon: '{x}', drawerTitle: 'Variable Inspector', description: "Inspect runtime variables (requires debug session)." },
+    { id: 'dbViewer', label: 'DB Viewer', icon: '🛢️', drawerTitle: 'Database Viewer', description: "Browse and query connected database." },
+    { id: 'cacheViewer', label: 'Cache Viewer', icon: '⚡', drawerTitle: 'Cache Viewer', description: "Inspect cache keys and values." },
+    { id: 'networkMonitor', label: 'Network Monitor', icon: '📡', drawerTitle: 'Network Monitor', description: "View and analyze network requests." },
+  ],
+};
+
+
+// We need a new structure for Plugin Market plugins
+export const marketPlugins = [
+  // Platform Function Plugins
+  { id: 'scaffold-vue', name: 'Vue.js Project Scaffolder', category: '平台功能插件', subCategory: '开发项目类型', targetSpaceType: 'dev', description: 'Adds a Vue.js + Vite project template for quickstarts.', version: '1.0.2', author: 'Community Contributors', installed: false, icon: '🏗️' },
+  { id: 'debug-aws-fargate', name: 'AWS Fargate Debug Adapter', category: '平台功能插件', subCategory: 'Debug 环境', targetSpaceType: 'dev', description: 'Integrates debugging for AWS Fargate tasks.', version: '0.9.0', author: 'PluginCorp LLC', installed: true, icon: '🐛' },
+  { id: 'deploy-lambda', name: 'AWS Lambda Deployment', category: '平台功能插件', subCategory: '部署环境', targetSpaceType: 'dev', description: 'Enables direct deployment to AWS Lambda.', version: '1.1.0', author: 'PluginCorp LLC', installed: false, icon: '🚀' },
+  { id: 'workload-ecs', name: 'AWS ECS Workload Viewer', category: '平台功能插件', subCategory: 'Workload 类型', targetSpaceType: 'ops', description: 'View and manage AWS ECS services.', version: '1.0.0', author: 'Community Contributors', installed: true, icon: '🚢' },
+  { id: 'debug-logs-enhanced', name: 'Enhanced Log Viewer', category: '平台功能插件', subCategory: 'Debug 面板工具', targetSpaceType: 'all', description: 'Advanced filtering for log viewing.', version: '1.3.0', author: 'ToolDevs Inc.', installed: false, icon: '🔍' },
+
+  // AI Smart Plugins
+  { id: 'agent-custom-rag', name: 'Custom RAG Agent for Docs', category: 'AI 智能插件', subCategory: 'LLM Agents', targetSpaceType: 'all', description: 'A specialized RAG agent for knowledge bases.', version: '1.2.0', author: 'AI Solutions Ltd.', installed: true, icon: '🧠' },
+  { id: 'mcp-jenkins', name: 'Jenkins MCP Adapter', category: 'AI 智能插件', subCategory: 'MCP Server Adapters', targetSpaceType: 'all', description: 'Connects to Jenkins for CI/CD jobs.', version: '1.0.0', author: 'Community CI', installed: false, icon: '🤖' },
+  { id: 'aiops-timeseries', name: 'Timeseries Anomaly Skill', category: 'AI 智能插件', subCategory: 'AIOps 技能', targetSpaceType: 'ops', description: 'Advanced time-series anomaly detection.', version: '2.1.0', author: 'AI Solutions Ltd.', installed: true, icon: '📈' },
+];
+
+
 export const devTools = [
   {
     id: 'gitPush',

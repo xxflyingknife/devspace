@@ -278,3 +278,64 @@ a:hover {
     opacity: 0.9;
 }
 
+/* Action button group in panel headers (script 24) */
+.panel-header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs); /* Or var(--space-sm) */
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-primary); /* Canvas background (e.g., light gray) */
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+
+/* In index.css (or a global styles file) */
+.panel-header {
+  display: flex;
+  justify-content: space-between; /* Key for title left, actions right */
+  align-items: center;
+  padding: var(--space-sm) var(--space-md); /* COMPACT PADDING */
+  border-bottom: 1px solid var(--border-primary);
+  background-color: var(--bg-primary); /* Or var(--bg-tertiary) if you prefer a slightly off-white header */
+  flex-shrink: 0; /* Header should not shrink */
+}
+
+.panel-title {
+  font-size: 0.9rem; /* Smaller, compact title */
+  font-weight: 600;  /* Bolder title */
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.panel-header-actions { /* Wrapper for buttons on the right of a panel header */
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.panel-header-button { /* For icon buttons in panel headers */
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  padding: var(--space-xs);
+  border-radius: 50%;
+  width: 28px; /* Consistent size */
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem; /* Adjust for icon size */
+}
+.panel-header-button:hover {
+  background-color: var(--bg-tertiary);
+}
+
+

@@ -1,12 +1,15 @@
-/* Keep existing styles or replace/add */
+/* frontend/src/App.css */
+
+/* In App.css */
 .App {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  /* Remove background if pages handle it */
+  /* No background-color here, let body or specific pages handle it */
 }
 
-/* Add global keyframes if using LoadingSpinner */
+
+/* Global keyframes for any spinners */
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -15,3 +18,9 @@
     transform: rotate(360deg);
   }
 }
+
+/* Full page loading/error states if rendered directly in App.js,
+   otherwise page-specific components handle this.
+   The .loading-fullpage and .error-fullpage are better placed in index.css
+   as global utility classes or within specific page components.
+*/

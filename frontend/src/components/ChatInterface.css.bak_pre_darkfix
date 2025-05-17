@@ -1,0 +1,188 @@
+/* Styles for Added Chat Header */
+.chat-header-section {
+    padding: var(--space-md);
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--background-light); /* Match other headers */
+}
+
+.chat-title-area {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--space-sm);
+}
+
+.chat-header-icon {
+    /* Style your icon placeholder */
+    margin-right: var(--space-sm);
+    font-size: 1.5em;
+}
+
+.chat-header-title {
+    margin: 0;
+    font-size: 1.1em;
+    font-weight: 500;
+    color: var(--text-color-primary);
+}
+
+.chat-meta-area {
+    display: flex;
+    align-items: center;
+    font-size: var(--font-size-sm);
+    color: var(--text-color-secondary);
+    gap: var(--space-md); /* Space between items */
+}
+
+.chat-header-button {
+    background: none;
+    border: none;
+    color: var(--text-color-secondary);
+    padding: var(--space-xs);
+    cursor: pointer;
+    border-radius: var(--border-radius-sm);
+}
+.chat-header-button:hover {
+    background-color: var(--background-medium);
+}
+
+.chat-action-buttons {
+    padding: var(--space-sm) var(--space-md);
+    border-top: 1px solid var(--border-color);
+    background-color: var(--background-light);
+    display: flex;
+    gap: var(--space-sm);
+}
+.chat-action-buttons button {
+    background-color: var(--background-medium);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--font-size-sm);
+}
+.chat-action-buttons button:hover {
+    border-color: #bbb;
+}
+
+
+/* --- Original Chat Styles Below --- */
+
+.chat-interface-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Fill the middle column */
+  background-color: var(--bg-tertiary);
+}
+
+.message-list {
+  flex-grow: 1; /* Take available space */
+  overflow-y: auto; /* Allow scrolling */
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Space between messages */
+}
+
+.message {
+  display: flex;
+  max-width: 80%; /* Messages don't span the entire width */
+  word-wrap: break-word; /* Break long words */
+}
+
+.message-content {
+  padding: 10px 15px;
+  border-radius: 18px; /* Rounded bubbles */
+  line-height: 1.4;
+}
+
+.message.user {
+  align-self: flex-end; /* Align user messages to the right */
+}
+.message.user .message-content {
+  background-color: #007bff; /* Blue for user messages */
+  color: white;
+  border-bottom-right-radius: 4px; /* Slightly flatten corner */
+}
+
+.message.assistant {
+  align-self: flex-start; /* Align assistant messages to the left */
+}
+.message.assistant .message-content {
+  background-color: #e9e9eb; /* Light grey for assistant */
+  color: #333;
+  border-bottom-left-radius: 4px; /* Slightly flatten corner */
+}
+
+.typing-indicator {
+    padding: 5px 15px;
+    font-style: italic;
+    color: #888;
+    font-size: 0.9em;
+}
+
+.message-input-form {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  background-color: #fff; /* White background for input area */
+}
+
+.message-input-form input {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 20px; /* Pill shape */
+  margin-right: 10px;
+  font-size: 1em;
+}
+
+.message-input-form button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 20px; /* Pill shape */
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.2s;
+}
+
+.message-input-form button:hover {
+  background-color: #0056b3;
+}
+
+.message-input-form button:disabled {
+  background-color: #a0cfff;
+  cursor: not-allowed;
+}
+
+/* --- Styles for Chat Tools Bar (Added by script 19) --- */
+.chat-tools-bar {
+  display: flex;
+  flex-wrap: wrap; /* Allow tools to wrap on smaller screens */
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-top: 1px solid var(--border-primary);
+  background-color: var(--bg-primary); /* Or --bg-tertiary */
+  order: 1; /* Ensure it's visually above the input form if input form has order:2 */
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+.tool-button {
+  padding: var(--space-xs) var(--space-md); /* 4px 16px */
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius-sm); /* 4px */
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm); /* 14px */
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.tool-button:hover {
+  background-color: var(--border-primary); /* Slightly darker */
+  border-color: var(--text-secondary);
+}
+
+/* Adjust input form to be visually below tools bar */
+.message-input-form {
+    order: 2; /* Place below tools bar */
+    /* Keep existing styles for message-input-form */
+}

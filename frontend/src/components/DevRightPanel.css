@@ -1,0 +1,35 @@
+/* frontend/src/components/DevRightPanel.css */
+
+.dev-right-panel-container {
+  display: flex;
+  flex-direction: column; /* Stack Deployments (top) and Debug (bottom) */
+  height: 100%;
+  overflow: hidden; /* Main container itself does not scroll */
+}
+
+.dev-right-panel-top-section { /* For DeploymentsPanel */
+  flex: 0 0 40%; /* Deployments takes 40% height */
+  min-height: 0; /* Allow shrinking below content size if necessary */
+  display: flex; /* Allow DeploymentsPanel component to fill this space */
+  flex-direction: column;
+  overflow: hidden; /* Its child (.deployments-panel-content) will scroll */
+  border-bottom: 1px solid var(--border-primary); /* Separator */
+}
+
+.dev-right-panel-bottom-section { /* For DebugPanel */
+  flex: 0 0 60%; /* Debug takes 60% height */
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Its child (.debug-panel-content) will scroll */
+}
+
+/* Ensure the direct children (.deployments-panel-content and .debug-panel-content) fill these sections */
+.dev-right-panel-top-section > .deployments-panel-content,
+.dev-right-panel-bottom-section > .debug-panel-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+

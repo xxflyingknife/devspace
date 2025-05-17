@@ -1,0 +1,55 @@
+/* frontend/src/components/TaskArea.css */
+.task-area-container { /* Or rename to .develop-area-container */
+  display: flex;
+  flex-direction: column;
+  height: 100%; 
+  overflow: hidden;
+  background-color: var(--bg-primary);
+  /* border-top: 1px solid var(--border-primary); /* Removed - DevLeftPanel.css handles separator */
+}
+
+.develop-area-header.panel-header { /* Target this specific header */
+  /* Uses global .panel-header styles for flex, padding, border-bottom */
+  padding: var(--space-sm) var(--space-md); /* Compact header */
+  flex-shrink: 0;
+}
+.develop-area-header .panel-title {
+  font-size: 0.9rem; /* Smaller title to match "Code" */
+  font-weight: 600; /* Match "Code" title weight */
+}
+
+.develop-view-toggle-tabs { /* Renamed from task-view-toggle-capsules */
+  display: flex;
+  align-items: center;
+}
+
+.view-tab-button { /* Renamed from capsule-tab-button */
+  padding: 5px var(--space-sm); /* Smaller tabs */
+  border: none;
+  border-bottom: 2px solid transparent;
+  background-color: transparent;
+  color: var(--text-secondary);
+  font-size: 0.8rem; /* Smaller font for tabs */
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  margin-left: var(--space-md);
+  border-radius: 0;
+}
+.view-tab-button:first-child {
+  margin-left: 0;
+}
+.view-tab-button:hover {
+  color: var(--text-accent);
+}
+.view-tab-button.active {
+  color: var(--text-accent);
+  border-bottom-color: var(--text-accent);
+  font-weight: 600;
+}
+
+.develop-area-content { /* Renamed from task-area-content */
+  flex-grow: 1;
+  overflow-y: auto;
+  background-color: var(--bg-primary);
+}

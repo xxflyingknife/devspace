@@ -1,0 +1,100 @@
+/* frontend/src/components/DevLeftPanel.css */
+
+
+
+
+/* Wizard styles */
+.dev-left-panel-wizard {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--bg-primary);
+}
+.dev-left-panel-wizard .panel-header {
+   padding: var(--space-md);
+   flex-shrink: 0;
+   border-bottom: 1px solid var(--border-primary); /* Add border to wizard header too */
+}
+.dev-left-panel-wizard .panel-header .panel-title {
+  font-size: 1rem;
+}
+.wizard-content {
+  text-align: center;
+  padding: var(--space-xl) var(--space-lg);
+  flex-grow: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.wizard-content h4 { font-size: 1.1rem; color: var(--text-primary); margin-bottom: var(--space-xs); }
+.wizard-content p { font-size: var(--font-size-sm); color: var(--text-secondary); margin-bottom: var(--space-md); max-width: 300px; margin-left: auto; margin-right: auto; line-height: 1.5;}
+.wizard-button { display: block; width: 100%; max-width: 280px; margin: 0 auto var(--space-md) auto; padding: var(--space-sm) var(--space-md); font-size: var(--font-size-sm); border-radius: var(--border-radius-sm); font-weight: 500; transition: opacity 0.2s ease; }
+.wizard-button:hover { opacity: 0.85; }
+.wizard-button.primary { background-color: var(--button-primary-bg); color: var(--button-primary-text); border: none; }
+.wizard-button.secondary { background-color: var(--button-secondary-bg); color: var(--button-secondary-text); border: 1px solid var(--button-secondary-border); }
+.wizard-content hr { border: none; border-top: 1px solid var(--border-secondary); margin: var(--space-lg) auto; width: 70%; }
+.wizard-content .error-message { color: #d93025; background-color: #fce8e6; border: 1px solid #d93025; padding: var(--space-sm); border-radius: var(--border-radius-sm); margin-bottom: var(--space-md); }
+
+/* Loading/Error for DevLeftPanel initial config fetch */
+.panel-loading-container,
+.panel-error-container {
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  height: 100%; padding: var(--space-lg); text-align: center; color: var(--text-secondary);
+  background-color: var(--bg-primary);
+}
+.panel-error-container p { color: #d93025; }
+
+.task-area-placeholder { /* Renamed from "Task Area" to "Develop Area" implicitly */
+  display: flex; align-items: center; justify-content: center; height: 100%;
+  padding: var(--space-lg); text-align: center; font-style: italic;
+  color: var(--text-secondary); background-color: var(--bg-secondary);
+  /* border-top: 1px solid var(--border-primary); Removed, added to top-half bottom */
+}
+.task-area-placeholder p { max-width: 80%; line-height: 1.5; }
+
+
+/* frontend/src/components/DevLeftPanel.css */
+.dev-left-panel-split-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+}
+
+.dev-left-panel-top-half {
+  flex: 1 1 40%; /* Each takes 50% of the available space */
+  min-height: 0; /* Allows flex items to shrink below their content size if necessary */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dev-left-panel-bottom-half {
+  flex: 1 1 60%; /* Each takes 50% of the available space */
+  min-height: 0; /* Allows flex items to shrink below their content size if necessary */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dev-left-panel-top-half {
+  border-bottom: 1px solid var(--border-primary); /* Keep separator */
+}
+/* No border-top needed for bottom-half if top-half has border-bottom */
+
+
+/* Ensure FileTreeViewer and TaskArea direct children fill their half */
+/* These rules should already be correct from the previous script */
+.dev-left-panel-top-half > .file-tree-viewer-container,
+.dev-left-panel-bottom-half > .task-area-container { /* Assuming TaskArea's main div has this class or similar */
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+/* ... (Wizard styles, Panel Loading/Error styles, Task Area Placeholder as before) ... */
+
+

@@ -1,3 +1,4 @@
+/* frontend/src/components/Modal.css */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -10,31 +11,36 @@
   align-items: center;
   z-index: 1000; /* High z-index */
   opacity: 0;
-  animation: fadeIn 0.3s forwards;
+  animation: fadeIn 0.2s forwards; /* Faster fade-in */
 }
 
 .modal-content {
   background-color: var(--bg-primary);
-  padding: var(--space-xl); /* 32px */
+  padding: 0; /* Remove padding here, sections will have their own */
   border-radius: var(--border-radius-md); /* 8px */
   box-shadow: var(--shadow-md);
   width: 100%;
-  max-width: 500px; /* Max width for modals */
-  transform: scale(0.95);
-  animation: scaleUp 0.3s forwards;
+  max-width: 500px; /* Default Max width for modals */
+  display: flex; /* Added for flex-direction column */
+  flex-direction: column; /* So body can grow and footer stays at bottom */
+  max-height: 90vh; /* Prevent modal from being too tall */
+  opacity: 0;
+  transform: scale(0.95) translateY(-10px); /* Slight initial offset */
+  animation: scaleUpDropIn 0.25s forwards; /* Faster combined animation */
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--space-lg);
-  padding-bottom: var(--space-md);
-  border-bottom: 1px solid var(--border-secondary);
+  padding: var(--space-md) var(--space-lg); /* Consistent padding */
+  /* margin-bottom: var(--space-lg); Removed, body will have padding */
+  border-bottom: 1px solid var(--border-primary); /* Use primary border */
+  flex-shrink: 0; /* Header should not shrink */
 }
 
 .modal-title {
-  font-size: 1.25rem; /* 20px */
+  font-size: 1.125rem; /* 18px */
   font-weight: 500;
   color: var(--text-primary);
   margin: 0;
@@ -44,10 +50,10 @@
   background: none;
   border: none;
   font-size: 1.8rem;
-  font-weight: 300;
+  font-weight: 300; /* Thinner 'x' */
   color: var(--text-secondary);
   cursor: pointer;
-  padding: 0;
+  padding: 0 var(--space-xs); /* Make it easier to click */
   line-height: 1;
 }
 .modal-close-button:hover {
@@ -55,52 +61,57 @@
 }
 
 .modal-body {
-  margin-bottom: var(--space-lg);
-  /* max-height: 60vh; */
-  /* overflow-y: auto; */ /* If content can be very long */
+  padding: var(--space-lg); /* Add padding to body */
+  overflow-y: auto; /* Allow body content to scroll if it overflows */
+  flex-grow: 1; /* Allow body to take available space */
 }
 
 .modal-footer {
   display: flex;
-  justify-content: flex-end;
-  gap: var(--space-md);
-  padding-top: var(--space-md);
-  border-top: 1px solid var(--border-secondary);
+  justify-content: flex-end; /* Pushes buttons to the right */
+  gap: var(--space-sm); /* Reduced gap */
+  padding: var(--space-md) var(--space-lg); /* Consistent padding */
+  flex-shrink: 0; /* Footer should not shrink */
+  background-color: var(--bg-primary); /* Slight contrast for footer */
+  border-radius: var(--border-radius-md);
 }
 
 .modal-button {
-    padding: var(--space-sm) var(--space-lg); /* 8px 24px */
-    border-radius: var(--border-radius-sm);
-    font-weight: 500;
-    font-size: var(--font-size-sm);
-    transition: opacity 0.2s ease;
+  padding: var(--space-sm) var(--space-md); /* Slightly smaller buttons */
+  border-radius: var(--border-radius-sm);
+  font-weight: 500;
+  font-size: var(--font-size-sm);
+  transition: opacity 0.2s ease;
+  border: 1px solid transparent; /* Base border */
 }
 .modal-button.primary {
-    background-color: var(--button-primary-bg);
-    color: var(--button-primary-text);
-    border: none;
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-text);
+  border-color: var(--button-primary-bg);
 }
 .modal-button.primary:hover { opacity: 0.85; }
 
 .modal-button.secondary {
-    background-color: var(--button-secondary-bg);
-    color: var(--button-secondary-text);
-    border: 1px solid var(--button-secondary-border);
+  background-color: var(--button-secondary-bg);
+  color: var(--button-secondary-text);
+  border-color: var(--button-secondary-border);
 }
-.modal-button.secondary:hover { background-color: var(--border-secondary); }
+.modal-button.secondary:hover { background-color: var(--border-primary); } /* Darken on hover */
 
 
-/* Modal Form specific styles */
-.modal-form .form-group {
-    /* Use global form-group styles */
-}
-.modal-form-actions { /* Alternative to modal-footer if form has its own actions */
-    display: flex;
-    justify-content: flex-end;
-    gap: var(--space-md);
-    margin-top: var(--space-lg);
-}
+/* Modal Form specific styles if form is direct child of modal-body */
+.modal-form .form-group { /* Assuming global .form-group styles are used */ }
 
+.modal-form-actions { /* If actions are NOT in footerContent but in children */
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes scaleUp { from { transform: scale(0.95); opacity: 0.8; } to { transform: scale(1); opacity: 1; } }
+@keyframes scaleUpDropIn { /* Combined animation */
+  from { transform: scale(0.95) translateY(-10px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+

@@ -1,0 +1,113 @@
+/* frontend/src/components/AppBuildView.css */
+.app-build-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.app-build-controls { /* This is the "toolbar" for this view */
+  display: flex;
+  justify-content: flex-start; /* Only version selector for now */
+  align-items: center;
+  padding: var(--space-sm) var(--space-md); /* Match FileTreeViewer's controls-bar */
+  border-bottom: 1px solid var(--border-primary);
+  background-color: var(--bg-tertiary); /* Match FileTreeViewer's controls-bar */
+  flex-shrink: 0;
+  margin-bottom: var(--space-sm);
+}
+/* Using .app-bp-version-selector class from AppBlueprintView.css for consistency */
+/* Ensure AppBlueprintView.css is imported or these styles are global/copied */
+.app-build-controls .app-bp-version-selector {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius-sm);
+  padding: 4px var(--space-sm);
+}
+.app-build-controls .app-bp-version-selector .version-icon {
+  margin-right: 6px; color: var(--text-secondary); font-size: 0.9em; font-weight: normal;
+}
+.app-build-controls .app-bp-version-selector select {
+  background-color: transparent; border: none; font-size: 13px; font-weight: 500;
+  color: var(--text-primary); padding-right: var(--space-xs); cursor: pointer;
+  -webkit-appearance: none; -moz-appearance: none; appearance: none;
+  max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.app-build-controls .app-bp-version-selector select:focus { outline: none; }
+.app-build-controls .app-bp-version-selector select:disabled { opacity:0.7; cursor:not-allowed;}
+
+
+.app-build-view > .build-view-placeholder {
+  padding: var(--space-lg); color: var(--text-secondary); font-style: italic;
+  text-align: center; flex-grow: 1; display: flex; align-items: center; justify-content: center;
+}
+
+.timeline {
+  list-style: none;
+  padding: 0 var(--space-xs) 0 calc(var(--space-xs) + 20px + 10px);
+  margin: 0;
+  position: relative;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+.timeline::before { /* ... as before ... */ }
+.timeline-item {
+  position: relative;
+  padding: 0;
+  margin-bottom: var(--space-sm); /* Reduced margin for tighter list */
+}
+.timeline-item:last-child { margin-bottom: 0; }
+.timeline-marker {
+  position: absolute;
+  left: -30px; /* (line_pos - (marker_width/2)) */
+  top: 6px; /* Align marker better with first line of text in content */
+  width: 24px;
+  height: 24px;
+  /* ... other marker styles as before ... */
+  border-radius: 50%; background-color: var(--bg-primary); border: 2px solid var(--border-primary);
+  display:flex; align-items:center; justify-content:center; font-size:0.8em; z-index:1;
+  box-shadow: 0 0 0 3px var(--bg-primary);
+}
+/* ... (timeline-item.status-* .timeline-marker styles as before) ... */
+
+.timeline-content {
+  background-color: var(--bg-primary);
+  padding: var(--space-sm) var(--space-md); /* Reduced padding for compactness */
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--border-secondary);
+  display: flex; /* Keep flex for details and (removed) actions */
+  justify-content: space-between;
+  align-items: center;
+  min-height: 40px; /* Ensure a minimum height */
+}
+.timeline-item:hover .timeline-content { border-color: var(--border-primary); box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
+
+.task-details {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 2px;
+  margin-right: var(--space-sm); /* Minimal margin */
+  overflow: hidden;
+}
+.task-name {
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.task-status-text { /* ... as before ... */ }
+.task-progress-bar { height: 5px; background-color: var(--bg-tertiary); border-radius: 3px; overflow: hidden; margin-top: 3px; width: 80px; }
+.task-progress-bar span { display: block; height: 100%; background-color: var(--text-accent); border-radius: 3px; transition: width 0.3s ease; }
+.task-dependencies { font-size: 0.7rem; color: var(--text-secondary); font-style: italic; margin-top: 1px; }
+
+/* .task-actions were removed */
+
+.app-build-loading { /* ... as before ... */ }
+/* @keyframes pulseMarker { ... as before ... } */
+
+
