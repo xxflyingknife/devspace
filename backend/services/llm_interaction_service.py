@@ -2,7 +2,8 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.agents import AgentExecutor, create_tool_calling_agent # If using standard agent
 # from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder # For history
-# from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
+from langchain_core.messages import AIMessage, HumanMessage, ToolMessage # SystemMessage if needed
+from langchain.memory import ConversationBufferWindowMemory # <--- IMPORT MEMORY
 
 from config import config as app_config
 from tools.dev_tools import get_all_dev_tools # Import the function that returns tool list
@@ -20,7 +21,8 @@ class LLMInteractionService:
     def _get_or_create_agent_executor(self, space_id: str, space_type: str):
         cache_key = f"{space_id}_{space_type}"
         if cache_key in self.agent_executors_cache:
-            return self.agent_executors_cache[cache_key]
+            #return self.agent_executors_cache[cache_key]
+            return self.agent_executors_cache[cache_key]["executor"], self.agent_executors_cache[cache_key]["memory"] 
 
         print(f"SERVICE-LLM: Creating new agent executor for space {space_id}, type {space_type}")
         
@@ -49,7 +51,22 @@ class LLMInteractionService:
 
         if not tools_for_agent:
             print(f"WARNING: No tools configured for space type {space_type}")
-
+        
+        # --- MEMORY SETUP ---
+        # k=5 means it remembers the last 5 turns (user + AI = 1 turn)
+        # `memory_key` must match the `MessagesPlaceholder` variable_name for chat history
+        # `input_key` tells memory what the user's input variable is named in the chain.
+        # `output_key` (optional for some agents) tells memory where the AI's final response is.
+        # `return_messages=True` ensures memory stores and returns LangChain message objects.
+        memory = ConversationBufferWindowMemory(
+            k=10, # Remember last 10 interactions (user + AI)
+            memory_key="chat_history", 
+            input_key="input", # Matches the key in agent_executor.invoke
+            output_key="output", # Matches the key in agent_executor response
+            return_messages=True
+        )
+        # --- END MEMORY SETUP ---
+        
         # TODO: Define a more robust prompt, possibly with system messages based on space context
         # For now, a simple one allowing tool usage.
         # Ensure your LLM (Gemini Pro via API) supports system prompts correctly or adapt.
@@ -66,20 +83,22 @@ class LLMInteractionService:
         agent_executor = AgentExecutor(
             agent=agent,
             tools=tools_for_agent,
+            memory=memory, # <--- PASS MEMORY TO EXECUTOR
             verbose=True, # Very helpful for debugging agent steps
             handle_parsing_errors="Please reformat your tool call or response.", # Custom message
             max_iterations=app_config.AGENT_MAX_ITERATIONS,
             # return_intermediate_steps=True # If you want to see thoughts/tool calls
         )
-        self.agent_executors_cache[cache_key] = agent_executor
-        return agent_executor
+        self.agent_executors_cache[cache_key] = {"executor": agent_executor, "memory": memory}
+        return agent_executor, memory
+        #self.agent_executors_cache[cache_key] = agent_executor
+        #return agent_executor
 
     def process_message_with_llm_and_tools(self, user_message: str, space_id: str, space_type: str, chat_history_list: list = None):
-        print(f"SERVICE-LLM: Processing (real agent): '{user_message}' for space {space_id} ({space_type})")
-        
+        print(f"SERVICE-LLM: Processing (with memory): '{user_message}' for space {space_id} ({space_type})")
         try:
-            agent_executor = self._get_or_create_agent_executor(space_id, space_type)
-            
+            #agent_executor = self._get_or_create_agent_executor(space_id, space_type)
+            agent_executor, memory = self._get_or_create_agent_executor(space_id, space_type)   
             # Format chat history for LangChain if provided
             lc_chat_history = []
             if chat_history_list:

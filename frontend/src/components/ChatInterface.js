@@ -35,21 +35,54 @@ const ToolExecutionBlock = ({ execution }) => {
 const LONG_MESSAGE_LINE_THRESHOLD = 3;
 const MAX_INITIAL_MESSAGE_HEIGHT = '3.5em'; // Approx 3 lines for line-height: 1.5
 
-function ChatInterface({ spaceId, spaceType }) {
-//  const [messages, setMessages] = useState([
-//    // Initial message with a unique ID
-//    { type: 'assistant', id: `msg-init-${Date.now()}-${Math.random()}`, content: 'Hello! How can I help you with your DevOps tasks today?' }
-//  ]);
+function ChatInterface({ spaceId, spaceType,initialAssistantMessage }) {
+  const [messages, setMessages] = useState(() => { // Initialize with initial message if provided
+    const initialMessages = [];
+    if (initialAssistantMessage && initialAssistantMessage.content) {
+      initialMessages.push({
+        type: 'assistant',
+        id: initialAssistantMessage.id || `init-msg-${Date.now()}`, // Ensure ID
+        content: initialAssistantMessage.content
+      });
+    } else { // Default if no initial message
+      initialMessages.push({
+        type: 'assistant',
+        id: `default-init-${Date.now()}`,
+        content: `Hello! I am your Vibe DevOps Assistant for this ${spaceType} space. How can I help you today?`
+      });
+    }
+    return initialMessages;
+  });
 
-  const [messages, setMessages] = useState([
-    { type: 'assistant', id: `msg-init-${Date.now()}-${Math.random()}`, content: `Hello! I am your **Vibe DevOps Assistant** for this *${spaceType}* space. How can I help you today?\n\nHere are some things I can do:\n- Execute Git commands\n- Manage Kubernetes deployments\n- Provide information based on your configured sources.\n\n\`\`\`python\n# Example code block\ndef greet():\n  print("Hello from Markdown!")\ngreet()\n\`\`\`` },
-    { type: 'assistant', id: `msg-long-${Date.now()}-${Math.random()}`, content: 'This is a **longer message** that should *ideally* demonstrate the expand and collapse functionality. It needs to be significantly longer than two or three lines to really see the effect in action. Let us add even more text to ensure that the clamping and the button work as expected. The quick brown fox jumps over the lazy dog near the bank of the river with great agility and speed, showcasing its remarkable acrobatic skills for all onlookers to admire and applaud with great enthusiasm during the sunny afternoon festival.' }
-  ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [tokenInfo, setTokenInfo] = useState(null);
   const messagesEndRef = useRef(null);
   const [expandedMessages, setExpandedMessages] = useState({});
+
+
+  useEffect(() => {
+    // This effect might be redundant if SpaceChatOrchestrator handles initial message setting
+    // by remounting ChatInterface (due to key change) or by passing new initial message.
+    // For now, this will ensure the initial message is set.
+    if (initialAssistantMessage && initialAssistantMessage.content) {
+        // Check if this initial message is already the first message to avoid duplicates on re-renders
+        if (messages.length === 0 || messages[0].id !== (initialAssistantMessage.id || messages[0].id) ) {
+             setMessages([{
+                type: 'assistant',
+                id: initialAssistantMessage.id || `init-msg-${Date.now()}-${Math.random()}`,
+                content: initialAssistantMessage.content
+            }]);
+        }
+    } else if (messages.length === 0 && spaceType) { // Default if no initial message and messages are empty
+        setMessages([{
+            type: 'assistant',
+            id: `default-init-${Date.now()}-${Math.random()}`,
+            content: `Welcome to this ${spaceType} space! How can I assist you?`
+        }]);
+    }
+  }, [initialAssistantMessage, spaceType]); // Add spaceType if used in default message
+
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

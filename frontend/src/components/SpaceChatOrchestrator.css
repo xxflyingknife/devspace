@@ -1,0 +1,112 @@
+/* frontend/src/components/SpaceChatOrchestrator.css */
+
+.orchestrator-loading { /* For initial blueprint status check */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%; /* Fill the middle column if that's its parent */
+  padding: var(--space-xl);
+  text-align: center;
+  color: var(--text-secondary);
+  background-color: var(--bg-tertiary); /* Match chat interface background */
+}
+.orchestrator-loading p {
+  margin-top: var(--space-md);
+  font-style: italic;
+}
+
+.blueprint-mode-selection-container {
+  display: flex; /* Use flex to center content */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%; /* Fill available space */
+  padding: var(--space-xl);
+  background-color: var(--bg-primary); /* Or --bg-secondary */
+  overflow-y: auto; /* In case content overflows on very small screens */
+}
+
+.blueprint-mode-selection-content {
+    max-width: 900px; /* Limit width of the wizard content */
+    width: 100%;
+    text-align: center;
+}
+
+.blueprint-mode-selection-content h2 {
+  font-size: 1.8rem; /* Prominent title */
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+  font-weight: 500;
+}
+.blueprint-mode-selection-content .wizard-subtitle {
+  font-size: var(--font-size-md);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-xxl); /* More space before options e.g. 48px */
+}
+
+
+.mode-options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-lg);
+  width: 100%;
+}
+
+.mode-option-button {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-lg);
+  text-align: left;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 160px; /* Consistent height */
+}
+.mode-option-button:hover {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-3px);
+  border-color: var(--text-accent);
+}
+html[data-theme="dark"] .mode-option-button {
+    background-color: var(--bg-tertiary); /* Darker cards in dark mode */
+}
+
+
+.mode-option-button .mode-icon {
+  font-size: 2.2rem;
+  margin-bottom: var(--space-md);
+  color: var(--text-accent);
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+}
+
+.mode-option-button h3 {
+  font-size: 1.05rem; /* Slightly smaller than h2 */
+  color: var(--text-primary);
+  margin: 0 0 var(--space-sm) 0;
+  font-weight: 500;
+}
+
+.mode-option-button p {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+
+/* Modal form styling (can reuse global .modal-form, .form-group if defined well) */
+.modal-form .form-group label { /* Ensure labels are visible */
+    color: var(--text-secondary);
+}
+/* Ensure modal form actions are styled correctly */
+.modal-form-actions { /* Defined in global/Modal.css */ }
+
+

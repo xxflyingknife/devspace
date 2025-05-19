@@ -23,7 +23,7 @@ function Header({
 }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
-
+  const [userActionsOpen, setUserActionsOpen] = useState(false); // Renamed from userOpen for clarity
   const location = useLocation();
   const params = useParams();
 
@@ -42,28 +42,32 @@ function Header({
 
   const isDetailPage = location.pathname.startsWith('/space/');
 
-
-  const settingsMenuItems = [
-    { label: '帮助', onClick: onShowHelp },
-    { label: '反馈', onClick: onShowFeedback },
+  
+   // --- COMBINED MENU ITEMS ---
+  const combinedUserMenuItems = [
+    { label: '个人资料', onClick: () => { alert('View Profile clicked'); setUserActionsOpen(false); } },
+    { label: 'API 密钥', onClick: () => { alert('API Keys clicked'); setUserActionsOpen(false); } },
     { type: 'divider' },
+    // Platform Settings now part of this menu
+    { label: '帮助', onClick: () => { onShowHelp(); setUserActionsOpen(false); } },
+    { label: '反馈', onClick: () => { onShowFeedback(); setUserActionsOpen(false); } },
     {
       label: '页面模式',
-      alignSubmenu: 'left', // For submenu to open left
+      alignSubmenu: 'left',
       subMenu: [
-        { label: '浅色模式', onClick: () => onToggleTheme('light') },
-        { label: '深色模式', onClick: () => onToggleTheme('dark') },
-        { label: '跟随系统', onClick: () => onToggleTheme('system') },
+        { label: '浅色模式', onClick: () => { onToggleTheme('light'); /* setUserActionsOpen(false); */ } }, // Keep menu open for theme change
+        { label: '深色模式', onClick: () => { onToggleTheme('dark'); /* setUserActionsOpen(false); */ } },
+        { label: '跟随系统', onClick: () => { onToggleTheme('system'); /* setUserActionsOpen(false); */ } },
       ]
     },
+    // Optionally add Plugin Market here too if desired
+    // { type: 'divider' },
+    // { label: '插件市场', onClick: () => { onShowPluginMarket(); setUserActionsOpen(false); } },
+    { type: 'divider' },
+    { label: '退出登录', onClick: () => { alert('Logout clicked'); setUserActionsOpen(false); } },
   ];
 
-  const userMenuItems = [
-    { label: '个人资料', onClick: () => alert('View Profile clicked') },
-    { label: 'API 密钥', onClick: () => alert('API Keys clicked') },
-    { type: 'divider' },
-    { label: '退出登录', onClick: () => alert('Logout clicked') },
-  ];
+
 
   return (
     <header className="app-header">
@@ -109,17 +113,6 @@ function Header({
         </button>
         <div className="dropdown-container">
           <button
-            className="header-icon-button"
-            onClick={() => setSettingsOpen(!settingsOpen)}
-            aria-label="Settings"
-            title="设置"
-          >
-            ⚙️
-          </button>
-          {settingsOpen && <DropdownMenu items={settingsMenuItems} onClose={() => setSettingsOpen(false)} align="right" />}
-        </div>
-        <div className="dropdown-container">
-          <button
             className="header-icon-button user-avatar-button"
             onClick={() => setUserOpen(!userOpen)}
             aria-label="User Profile"
@@ -127,7 +120,7 @@ function Header({
           >
             👤
           </button>
-          {userOpen && <DropdownMenu items={userMenuItems} onClose={() => setUserOpen(false)} align="right"/>}
+          {userOpen && <DropdownMenu items={combinedUserMenuItems} onClose={() => setUserOpen(false)} align="right"/>}
         </div>
       </div>
     </header>

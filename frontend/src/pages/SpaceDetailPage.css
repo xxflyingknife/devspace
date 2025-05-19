@@ -42,7 +42,6 @@
 
 .right-column {
   flex: 0 0 320px;
-  border-left: 1px solid var(--border-primary);
 }
 
 /* Panel content containers for scrolling (re-confirming these from script 22) */

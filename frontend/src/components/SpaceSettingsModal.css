@@ -1,95 +1,184 @@
-/* frontend/src/components/SpaceSettingsModal.css */
-.modal-content.space-settings-modal.wide .modal-body {
-    /* The modal body itself will contain accordions, allow it to scroll */
-    padding: 0; /* Accordions will provide their own padding */
-    max-height: calc(80vh - 120px); /* Adjust based on header/footer height */
-    overflow-y: auto;
+/* frontend/src/components/SpaceSettingsModal.css - CONSOLIDATED FOR STICKY FOOTER & SCROLL */
+
+/* --- Main Modal Structure & Dimensions --- */
+/* Ensures the Modal component itself uses a class like 'extra-wide' via modalClassName prop */
+.modal-content.space-settings-modal.extra-wide {
+  max-width: 95vw; /* Responsive max width */
+  width: 1000px;   /* Target width, adjust as needed */
+  height: 85vh;   /* Target height */
+  max-height: 750px; /* Max height constraint */
+  display: flex;
+  flex-direction: column; /* Modal overall stacks: Header, Body */
+  padding: 0; /* No padding on the outermost content div, handled by sections */
+  overflow: hidden; /* CRUCIAL for child flex layouts and border-radius */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  border-radius: var(--border-radius-lg);
+  background-color: var(--bg-primary);
 }
 
+/* Modal Header (Title "空间设置" + Close Button) */
+.modal-content.space-settings-modal.extra-wide .modal-header {
+  padding: var(--space-md) var(--space-lg);
+  flex-shrink: 0; /* Header does not shrink */
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal-content.space-settings-modal.extra-wide .modal-header .modal-title {
+  color: var(--text-primary);
+  font-weight: 500;
+  font-size: 1.1rem; /* Consistent title size */
+}
+.modal-content.space-settings-modal.extra-wide .modal-header .modal-close-button {
+  color: var(--text-secondary);
+  font-size: 1.8rem;
+}
+.modal-content.space-settings-modal.extra-wide .modal-header .modal-close-button:hover {
+  color: var(--text-primary);
+}
+
+/* Modal Body (This contains the .space-settings-layout) */
+.modal-content.space-settings-modal.extra-wide .modal-body {
+  padding: 0; /* Body itself has no padding */
+  display: flex; /* This allows .space-settings-layout to fill it */
+  flex-direction: row; /* Not strictly needed here if layout child is 100% width/height */
+  flex-grow: 1; /* Body takes all remaining vertical space in the modal */
+  overflow: hidden; /* Body itself does not scroll, its children will */
+}
+
+/* --- Layout with Sidebar (Inside Modal Body) --- */
+.space-settings-layout {
+  display: flex;
+  flex-direction: row; /* Sidebar left, form content right */
+  width: 100%;
+  height: 100%; /* Fill the modal-body */
+  overflow: hidden; /* This layout container does not scroll */
+}
+
+.space-settings-sidebar {
+  flex: 0 0 200px; /* Fixed width for settings tabs */
+  background-color: var(--bg-secondary);
+  border-right: 1px solid var(--border-primary);
+  padding: var(--space-md) 0; /* Top/bottom padding for the ul */
+  overflow-y: auto; /* Sidebar scrolls if too many tabs */
+  height: 100%; /* Takes full height of .space-settings-layout */
+}
+
+.settings-tab-button {
+  display: block;
+  width: calc(100% - var(--space-lg)); /* Full width minus some margin */
+  margin: 0 var(--space-sm) var(--space-xs) var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  text-align: left;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--border-radius-sm);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.settings-tab-button:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+.settings-tab-button.active {
+  background-color: var(--primary-light);
+  color: var(--text-accent);
+  font-weight: 600;
+}
+
+/* Form now wraps the main scrollable content AND the fixed footer */
 .space-settings-form {
-    /* No specific padding needed if accordions handle it */
+  flex-grow: 1; /* Takes remaining width next to sidebar */
+  display: flex;
+  flex-direction: column; /* Stacks scrollable content and fixed footer */
+  overflow: hidden; /* Form itself does not scroll */
+  background-color: var(--bg-primary); /* Main background for form area */
+  height: 100%; /* Fill its parent in .space-settings-layout */
 }
 
-.space-settings-form .accordion-section {
-    margin-bottom: 0; /* Stack accordions tightly */
-    border-left: none;
-    border-right: none;
-    border-radius: 0;
-}
-.space-settings-form .accordion-section:first-child {
-    border-top: none; /* No top border for the first accordion in the list */
-}
-.space-settings-form .accordion-section:last-child {
-     border-bottom: none; /* No bottom border for the last accordion before footer */
+.space-settings-main-content { /* The scrollable area with accordions */
+  flex-grow: 1; /* KEY: Takes all available vertical space above the footer */
+  overflow-y: auto; /* THIS AREA SCROLLS */
+  /* Padding is now within .settings-tab-content below */
 }
 
-
-.space-settings-form .accordion-header {
-    background-color: var(--bg-primary);
-    padding: var(--space-md) var(--space-lg); /* Match modal header padding */
-    border-bottom: 1px solid var(--border-primary); /* Always show border for header */
+.settings-tab-content {
+  flex-shrink: 0; /* CRUCIAL: Footer does not shrink */
+  padding: var(--space-lg); /* Padding for the actual content within the scrollable area */
 }
-.space-settings-form .accordion-section.closed .accordion-header {
-    border-bottom: 1px solid var(--border-primary); /* Keep border even when closed */
-}
-.space-settings-form .accordion-section:not(:first-child) .accordion-header{
-    /* border-top: 1px solid var(--border-primary); */ /* Optional top border for non-first headers */
-}
-
-
-.space-settings-form .accordion-title {
-    font-size: 1rem; /* Slightly larger accordion titles */
-    font-weight: 500;
-}
-
-.space-settings-form .accordion-content {
-    padding: var(--space-lg); /* Generous padding inside accordion */
-    background-color: var(--bg-secondary); /* Slight contrast for content area */
-}
-
-.space-settings-form .form-group {
-    margin-bottom: var(--space-lg); /* More space between form groups */
-}
-.space-settings-form .form-group:last-child {
-    margin-bottom: 0;
-}
-.space-settings-form .form-group label {
-    font-weight: 500;
-    color: var(--text-primary); /* Stronger label color */
-}
-.space-settings-form .form-group small { /* Help text for API keys etc. */
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    display: block;
-    margin-top: var(--space-xs);
-}
+/* ... (accordion, form-group, tool-enable-list, tool-config-fieldset styles as previously defined) ... */
+.space-settings-form .accordion-section { margin-bottom: var(--space-md); border: 1px solid var(--border-secondary); border-radius: var(--border-radius-sm); overflow: hidden; }
+.space-settings-form .accordion-header { background-color: var(--bg-tertiary); padding: var(--space-md); border-bottom: 1px solid var(--border-secondary); }
+.space-settings-form .accordion-section.closed .accordion-header { border-bottom: none; }
+.space-settings-form .accordion-title { font-size: 1rem; font-weight: 500; }
+.space-settings-form .accordion-content { padding: var(--space-lg); background-color: var(--bg-primary); }
+.space-settings-form .form-group { margin-bottom: var(--space-lg); }
+.space-settings-form .form-group:last-child { margin-bottom: 0; }
+.space-settings-form .form-group label { font-weight: 500; color: var(--text-primary); display:block; margin-bottom:var(--space-xs); }
+.space-settings-form .form-group small { font-size: 0.75rem; color: var(--text-secondary); display: block; margin-top: var(--space-xs); }
+.tools-enable-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-sm); margin-top: var(--space-sm); }
+.tool-enable-item.checkbox-wrapper { padding: var(--space-xs); border-radius: var(--border-radius-sm); }
+.tool-enable-item.checkbox-wrapper input[type="checkbox"] { margin-top: 1px; }
+.tool-config-fieldset { border: 1px solid var(--border-secondary); border-radius: var(--border-radius-sm); padding: var(--space-md); margin-top: var(--space-md); }
+.tool-config-fieldset legend { font-weight: 500; padding: 0 var(--space-sm); font-size: var(--font-size-sm); color: var(--text-primary); }
 
 
+/* Footer for save/cancel buttons - STICKY FOOTER */
+.settings-save-footer.modal-form-actions {
+  padding: var(--space-md) var(--space-lg);
+  border-top: 1px solid var(--border-primary);
+  background-color: var(--bg-secondary); /* Footer background */
+  flex-shrink: 0; /* CRUCIAL: Footer does not shrink */
+  display: flex;
+  justify-content: flex-end; /* Align buttons to the right */
+  width: 100%; /* Ensure it spans the width of .space-settings-form */
+  box-sizing: border-box; /* Include padding in width calculation */
+}
+/* .modal-button styles are assumed to be global or from Modal.css */
+
+
+/* Loading and Error messages inside the modal */
 .modal-loading-overlay {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(255,255,255,0.7); /* Light overlay */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 10; /* Above form content */
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(255,255,255,0.8); /* Light overlay for light theme */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
 }
 html[data-theme="dark"] .modal-loading-overlay {
-    background-color: rgba(0,0,0,0.7);
+  background-color: rgba(0,0,0,0.7); /* Dark overlay for dark theme */
 }
 .modal-loading-overlay p {
-    margin-top: var(--space-sm);
-    font-style: italic;
+  margin-top: var(--space-sm);
+  font-style: italic;
+  color: var(--text-secondary); /* Ensure text is visible on overlay */
+}
+html[data-theme="dark"] .modal-loading-overlay p {
+  color: var(--text-primary); /* Lighter text for dark overlay */
 }
 
-.modal-error { /* For errors within the modal */
-    color: #d93025;
-    background-color: #fce8e6;
-    padding: var(--space-sm);
-    border-radius: var(--border-radius-sm);
-    margin-bottom: var(--space-md);
-    text-align: center;
+
+.modal-error {
+  color: #d93025; /* Error red */
+  background-color: #fce8e6; /* Light red background */
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--border-radius-sm);
+  margin: var(--space-md); /* Margin if it's in the scrollable content */
+  text-align: center;
+  border: 1px solid #d93025;
+}
+html[data-theme="dark"] .modal-error {
+    background-color: #3e2124; /* Darker red background */
+    color: #ffcdd2; /* Lighter red text */
+    border-color: #f97583;
 }
 
 

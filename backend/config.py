@@ -58,7 +58,8 @@ class Config:
 
     # --- Other Application Specific Configs ---
     # E.g., MCP Server URLs/Keys if globally configured, though per-space is better.
-
+    MCP_SERVER_URL = os.getenv("MCP_SERVER_URL", None)
+    MCP_SERVER_API_KEY = os.getenv("MCP_SERVER_API_KEY", None) # Or other auth method
 # Instantiate the config object
 config = Config()
 

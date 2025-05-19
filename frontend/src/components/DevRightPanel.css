@@ -7,22 +7,6 @@
   overflow: hidden; /* Main container itself does not scroll */
 }
 
-.dev-right-panel-top-section { /* For DeploymentsPanel */
-  flex: 0 0 40%; /* Deployments takes 40% height */
-  min-height: 0; /* Allow shrinking below content size if necessary */
-  display: flex; /* Allow DeploymentsPanel component to fill this space */
-  flex-direction: column;
-  overflow: hidden; /* Its child (.deployments-panel-content) will scroll */
-  border-bottom: 1px solid var(--border-primary); /* Separator */
-}
-
-.dev-right-panel-bottom-section { /* For DebugPanel */
-  flex: 0 0 60%; /* Debug takes 60% height */
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden; /* Its child (.debug-panel-content) will scroll */
-}
 
 /* Ensure the direct children (.deployments-panel-content and .debug-panel-content) fill these sections */
 .dev-right-panel-top-section > .deployments-panel-content,
@@ -32,4 +16,40 @@
     flex-direction: column;
 }
 
+.dev-right-panel-container {
+  display: flex; /* Important for PanelGroup */
+  flex-direction: column; /* Although PanelGroup is vertical */
+  height: 100%;
+  overflow: hidden;
+}
 
+/* Remove explicit flex-basis from old top/bottom section classes */
+.dev-right-panel-top-section, /* These classes might no longer be needed */
+.dev-right-panel-bottom-section {
+  /* flex: 0 0 40%; REMOVE */
+  /* min-height: 0; REMOVE */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* border properties for separator are now handled by PanelResizeHandle */
+}
+.dev-right-panel-top-section {
+  border-bottom: none; /* Resize handle provides separation */
+}
+
+
+/* New wrapper inside each <Panel> from react-resizable-panels */
+.panel-content-wrapper { /* Same class as in DevLeftPanel for consistency */
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+/* Ensure DeploymentsPanel and DebugPanel fill this wrapper */
+.panel-content-wrapper > .deployments-panel-content, /* Assuming this is root class of DeploymentsPanel */
+.panel-content-wrapper > .debug-panel-content {    /* Assuming this is root class of DebugPanel */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}

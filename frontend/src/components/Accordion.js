@@ -10,7 +10,7 @@ function Accordion({ title, children, initialOpen = false }) {
 
   return (
     <div className={`accordion-section ${isOpen ? 'open' : 'closed'}`}>
-      <button className="accordion-header" onClick={toggleOpen} aria-expanded={isOpen}>
+      <button type="button" className="accordion-header" onClick={toggleOpen} aria-expanded={isOpen}>
         <span className="accordion-title">{title}</span>
         <span className="accordion-icon">{isOpen ? '−' : '+'}</span> {/* Simple +/- icon */}
       </button>
@@ -22,5 +22,6 @@ function Accordion({ title, children, initialOpen = false }) {
     </div>
   );
 }
+
 
 export default Accordion;

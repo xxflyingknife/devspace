@@ -4,6 +4,7 @@ import FileTreeViewer from './FileTreeViewer';
 import TaskArea from './TaskArea'; // This component has "Develop" title and "蓝图"/"生成" tabs
 import Modal from './Modal';
 import LoadingSpinner from './LoadingSpinner';
+import { PanelGroup, Panel, PanelResizeHandle } from "react-resizable-panels"; // <--- IMPORT
 import './DevLeftPanel.css'; // Ensure this CSS handles the split layout correctly
 
 const API_BASE_URL = 'http://localhost:5001/api'; // Adjust if your backend URL is different
@@ -90,6 +91,10 @@ function DevLeftPanel({ spaceId }) {
   const [isRepoPrivate, setIsRepoPrivate] = useState(true);
   const [gitToken, setGitToken] = useState('');
   const [isScaffolding, setIsScaffolding] = useState(false);
+
+  const [topPanelSize, setTopPanelSize] = useState(50); // Default to 50%
+  const [bottomPanelSize, setBottomPanelSize] = useState(50); // Default to 50%
+
 
   const [currentAppBlueprintVersion, setCurrentAppBlueprintVersion] = useState(null);
 
@@ -211,7 +216,12 @@ function DevLeftPanel({ spaceId }) {
 
   return (
     <div className="dev-left-panel-split-container">
-      <div className="dev-left-panel-top-half">
+        <PanelGroup direction="vertical" onLayout={(sizes) => { setTopPanelSize(sizes[0]); setBottomPanelSize(sizes[1]); }}>
+        <Panel defaultSize={topPanelSize} collapsible={false} minSize={25}> {/* Top Half - Code */}
+          <div className="panel-content-wrapper"> {/* New wrapper for 100% height and overflow */}
+            {(!devSpaceDetails || !devSpaceDetails.git_repo_url) ? (
+              <div className="dev-left-panel-wizard">
+                  <div className="dev-left-panel-top-half">
         {(!devSpaceDetails || !devSpaceDetails.git_repo_url) ? (
           <div className="dev-left-panel-wizard">
              <div className="panel-header"><span className="panel-title">Code</span></div>
@@ -222,18 +232,30 @@ function DevLeftPanel({ spaceId }) {
              </div>
           </div>
         ) : (
-          <FileTreeViewer 
-            repoId={spaceId} 
+          <FileTreeViewer
+            repoId={spaceId}
             initialRepoUrl={devSpaceDetails.git_repo_url}
             onRepoUrlChange={loadDevSpaceConfiguration} // If FileTreeViewer updates URL itself and needs to notify parent
           />
         )}
       </div>
-
-      <div className="dev-left-panel-bottom-half">
+              </div>
+            ) : (
+              <FileTreeViewer
+                repoId={spaceId}
+                initialRepoUrl={devSpaceDetails.git_repo_url}
+                onRepoUrlChange={loadDevSpaceConfiguration}
+              />
+            )}
+          </div>
+        </Panel>
+        <PanelResizeHandle className="panel-resize-handle vertical-handle" />
+        <Panel defaultSize={bottomPanelSize} collapsible={false} minSize={25}> {/* Bottom Half - Develop (TaskArea) */}
+          <div className="panel-content-wrapper"> {/* New wrapper */}
+              <div className="dev-left-panel-bottom-half">
         {devSpaceDetails && devSpaceDetails.git_repo_url ? ( // Only show TaskArea if repo is configured
             <TaskArea
-                spaceId={spaceId} 
+                spaceId={spaceId}
                 currentAppBlueprintVersion={currentAppBlueprintVersion}
                 onAppBlueprintVersionChange={setCurrentAppBlueprintVersion}
             />
@@ -243,6 +265,9 @@ function DevLeftPanel({ spaceId }) {
             </div>
         )}
       </div>
+          </div>
+        </Panel>
+      </PanelGroup>
 
 {/* Create New Project Modal */}
       {showCreateProjectModal && (

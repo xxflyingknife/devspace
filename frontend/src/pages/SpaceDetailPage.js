@@ -7,6 +7,8 @@ import OpsLeftPanel from '../components/OpsLeftPanel';
 import OpsRightPanel from '../components/OpsRightPanel';
 import ChatInterface from '../components/ChatInterface';
 import LoadingSpinner from '../components/LoadingSpinner';
+import SpaceChatOrchestrator from '../components/SpaceChatOrchestrator'; // <--- IMPORT NEW
+// ...
 import './SpaceDetailPage.css';
 
 const API_BASE_URL = 'http://localhost:5001/api'; // Ensure this is correct
@@ -118,7 +120,12 @@ function SpaceDetailPage({ onSetHeaderProps }) { // Receive onSetHeaderProps as 
       </div>
 
       <div className="column middle-column">
-        <ChatInterface spaceId={spaceDetails.id} spaceType={spaceDetails.type} />
+        {spaceDetails && spaceDetails.type && ( // Ensure spaceDetails and type are loaded
+            <SpaceChatOrchestrator 
+                spaceId={spaceDetails.id} 
+                spaceType={spaceDetails.type} 
+            />
+        )}
       </div>
 
       <div className="column right-column">
