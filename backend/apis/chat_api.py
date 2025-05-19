@@ -1,52 +1,74 @@
 # devspace/backend/apis/chat_api.py
 from flask import Blueprint, request, jsonify
 from services.llm_interaction_service import LLMInteractionService
-from database.db_session import SessionLocal # Changed from get_db_session
+from services.chat_session_service import ChatSessionService # <--- IMPORT ChatSessionService
+from database.db_session import SessionLocal # <--- IMPORT SessionLocal
 
 chat_bp = Blueprint('chat_api', __name__)
-llm_service = LLMInteractionService() # Instantiate
+llm_service = LLMInteractionService()
+chat_session_service = ChatSessionService() # <--- INSTANTIATE ChatSessionService
 
-# Mock: Replace with actual current_user from your auth system
-def get_current_user_id_mock_for_chat():
-    # This should be consistent with the user seeded and used by plugin installs
-    return str(uuid.UUID('00000000-0000-0000-0000-000000000001')) # Ensure uuid is imported
-import uuid # Add this if not present
-
-@chat_bp.route('/', methods=['POST'])
+@chat_bp.route('/', methods=['POST']) # Assuming chat is mounted at /api/chat/ (note trailing slash)
 def handle_chat_api():
     data = request.json
     if not data or 'message' not in data:
         return jsonify({"error": "Missing 'message' in request body"}), 400
 
     user_message = data.get('message')
-    space_id = data.get('spaceId') # This is the string UUID from frontend
+    space_id_from_request = data.get('spaceId') # Use a distinct name from db variable
     space_type = data.get('spaceType')
-    chat_history_frontend = data.get('chat_history', []) # Simple list of {type, content}
+    session_id_from_request = data.get('sessionId') # Get session_id from frontend
 
-    user_id_str = get_current_user_id_mock_for_chat() # Get current user
+    if not space_id_from_request or not space_type:
+        return jsonify({"error": "Missing 'spaceId' or 'spaceType'"}), 400
 
-    if not user_id_str: return jsonify({"error": "User context not found"}), 500
-    if not space_id: return jsonify({"error": "Missing 'spaceId'"}), 400
-    if not space_type: return jsonify({"error": "Missing 'spaceType'"}), 400
-
-    db = SessionLocal()
+    db = SessionLocal() # <--- GET DATABASE SESSION
+    active_session_id = None # Initialize
     try:
-        response_data = llm_service.process_message_with_llm_and_tools(
-            # db=db, # Pass the session
-            # user_id_str=user_id_str,
-            space_id=space_id,
-            space_type=space_type,
-            user_message=user_message,
-            chat_history_list=chat_history_frontend
-        )
-        if response_data.get("error"):
-            return jsonify(response_data), 500 # Or a more appropriate error code
-        return jsonify(response_data), 200
-    except Exception as e:
-        import traceback
-        print(f"API CHAT UNHANDLED ERROR: {e}\n{traceback.format_exc()}")
-        return jsonify({"error": "Chat processing failed due to an unexpected internal server error."}), 500
-    finally:
-        db.close()
+        if session_id_from_request:
+            # Verify session exists and belongs to space, or refresh its last_accessed_at
+            session_obj = chat_session_service.get_session_by_id(db, session_id_from_request)
+            if session_obj and str(session_obj.space_id) == str(space_id_from_request): # Ensure space_id matches if it's string/int
+                active_session_id = session_obj.id
+            else:
+                # Session ID provided but invalid or doesn't match space, create/get default
+                print(f"Warning: Provided sessionId '{session_id_from_request}' invalid or mismatched for space '{space_id_from_request}'. Getting default.")
+                default_session = chat_session_service.get_or_create_default_session(db, space_id_from_request)
+                if default_session:
+                    active_session_id = default_session.id
+        else:
+            # No session_id from frontend, get or create default for the space
+            default_session = chat_session_service.get_or_create_default_session(db, space_id_from_request)
+            if default_session:
+                active_session_id = default_session.id
+        
+        if not active_session_id:
+            # This should ideally not happen if get_or_create_default_session works
+            return jsonify({"error": f"Could not establish a chat session for space {space_id_from_request}."}), 500
 
+        # chat_history = data.get('chat_history', []) # Frontend doesn't need to send history anymore
+
+        response_data = llm_service.process_message_with_llm_and_tools(
+            user_message=user_message,
+            space_id=space_id_from_request, # Pass the original spaceId from request
+            space_type=space_type,
+            session_id=active_session_id # Pass the determined active_session_id
+            # chat_history_from_frontend=chat_history # Not needed if LLM service loads from DB
+        )
+        
+        if response_data.get("error"):
+            return jsonify(response_data), 500
+        
+        # Ensure session_id is part of the response if it was newly created or confirmed
+        response_data_with_session = {**response_data, "session_id": active_session_id}
+        return jsonify(response_data_with_session), 200
+
+    except Exception as e:
+        print(f"API CHAT ERROR: Unhandled exception: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": "An unexpected error occurred in the chat API.", "details": str(e)}), 500
+    finally:
+        if db: # Ensure db was assigned
+            db.close() # <--- CLOSE DATABASE SESSION
 

@@ -85,17 +85,6 @@ def create_space_api():
         print(f"API ERROR in create_space: {str(e)}")
         return jsonify({"error": "An unexpected error occurred while creating the space."}), 500
 
-#@spaces_bp.route('/<int:space_id_num>/details', methods=['GET'])
-#def get_space_details_api(space_id_num):
-#    try:
-#        space = space_service.get_space_details_by_id(space_id_num)
-#        return jsonify(serialize_space_details(space)) # Use detailed serializer
-#    except SpaceServiceError as e:
-#        return jsonify({"error": str(e)}), e.status_code
-#    except Exception as e:
-#        print(f"API ERROR in get_space_details for {space_id_num}: {str(e)}")
-#        return jsonify({"error": "An unexpected error occurred."}), 500
-
 
 @spaces_bp.route('/<string:space_id>/details/', methods=['GET'])
 def get_space_details_api(space_id): # Renamed function to avoid conflict
@@ -110,57 +99,57 @@ def get_space_details_api(space_id): # Renamed function to avoid conflict
 
 
 
-@spaces_bp.route('/<int:space_id_num>', methods=['PUT'])
-def update_space_api(space_id_num):
+@spaces_bp.route('/<string:space_id>', methods=['PUT'])
+def update_space_api(space_id):
     data = request.json
     if not data or not data.get("name"): # Frontend only sends name for title edit for now
         return jsonify({"error": "Missing 'name' in request body for title update."}), 400
     
     try:
         # For now, only title update is implemented via this route by frontend
-        updated_space = space_service.update_space_title(space_id_num, data["name"])
+        updated_space = space_service.update_space_title(space_id, data["name"])
         return jsonify(serialize_space(updated_space))
     except SpaceServiceError as e:
         return jsonify({"error": str(e)}), e.status_code
     except Exception as e:
-        print(f"API ERROR in update_space for {space_id_num}: {str(e)}")
+        print(f"API ERROR in update_space for {space_id}: {str(e)}")
         return jsonify({"error": "An unexpected error occurred."}), 500
 
-@spaces_bp.route('/<int:space_id_num>', methods=['DELETE'])
-def delete_space_api(space_id_num):
+@spaces_bp.route('/<string:space_id>', methods=['DELETE'])
+def delete_space_api(space_id):
     try:
-        space_service.delete_space(space_id_num)
-        return jsonify({"message": f"Space {space_id_num} deleted successfully"}), 200 # Or 204 No Content
+        space_service.delete_space(space_id)
+        return jsonify({"message": f"Space {space_id} deleted successfully"}), 200 # Or 204 No Content
     except SpaceServiceError as e:
         return jsonify({"error": str(e)}), e.status_code
     except Exception as e:
-        print(f"API ERROR in delete_space for {space_id_num}: {str(e)}")
+        print(f"API ERROR in delete_space for {space_id}: {str(e)}")
         return jsonify({"error": "An unexpected error occurred."}), 500
 
-@spaces_bp.route('/<int:space_id_num>/backend-settings', methods=['GET'])
-def get_space_backend_settings_api(space_id_num):
+@spaces_bp.route('/<string:space_id>/backend-settings', methods=['GET'])
+def get_space_backend_settings_api(space_id):
     try:
-        settings = space_service.get_backend_settings(space_id_num)
+        settings = space_service.get_backend_settings(space_id)
         return jsonify(settings)
     except SpaceServiceError as e:
         return jsonify({"error": str(e)}), e.status_code
     except Exception as e:
-        print(f"API ERROR getting backend_settings for {space_id_num}: {str(e)}")
+        print(f"API ERROR getting backend_settings for {space_id}: {str(e)}")
         return jsonify({"error": "An unexpected error occurred."}), 500
 
-@spaces_bp.route('/<int:space_id_num>/backend-settings', methods=['POST', 'PUT'])
-def set_space_backend_settings_api(space_id_num):
+@spaces_bp.route('/<string:space_id>/backend-settings', methods=['POST', 'PUT'])
+def set_space_backend_settings_api(space_id):
     data = request.json
     if not data:
         return jsonify({"error": "Request body must be JSON."}), 400
     try:
-        space_service.set_backend_settings(space_id_num, data)
+        space_service.set_backend_settings(space_id, data)
         # Return the updated settings or just a success message
-        updated_settings = space_service.get_backend_settings(space_id_num)
+        updated_settings = space_service.get_backend_settings(space_id)
         return jsonify({"message": "Backend settings updated successfully", "settings": updated_settings})
     except SpaceServiceError as e:
         return jsonify({"error": str(e)}), e.status_code
     except Exception as e:
-        print(f"API ERROR setting backend_settings for {space_id_num}: {str(e)}")
+        print(f"API ERROR setting backend_settings for {space_id}: {str(e)}")
         return jsonify({"error": "An unexpected error occurred."}), 500
 

@@ -18,6 +18,14 @@ class LLMSourceEnum(enum.Enum):
     CHATGPT = "chatgpt"
     OTHER = "other"
 
+class ChatMessageRoleEnum(enum.Enum):
+    USER = "user"
+    ASSISTANT = "assistant"
+    SYSTEM = "system"
+    TOOL_CALL = "tool_call"
+    TOOL_RESULT = "tool_result"
+
+
 # Association table for User <-> Plugin (Many-to-Many)
 user_installed_plugins_table = Table("user_installed_plugins", Base.metadata,
     Column("user_id", UUIDType(binary=False), ForeignKey("users.id", ondelete="CASCADE"), primary_key=True), # <--- MODIFIED HERE
@@ -123,7 +131,37 @@ class OAuthAccount(Base):
         return f"<OAuthAccount(provider='{self.provider_name}', user_id={self.user_id})>"
 
 
+# --- Chat Session Model ---
+class ChatSession(Base):
+    __tablename__ = "chat_sessions"
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()), index=True) # Auto-generate UUID
+    space_id = Column(Integer, ForeignKey("spaces.id", ondelete="CASCADE"), nullable=False, index=True)
+    name = Column(String(255), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    last_accessed_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    summary = Column(Text, nullable=True)
+    llm_agent_config_snapshot_json = Column(Text, nullable=True)
+    
+    space = relationship("Space", back_populates="chat_sessions")
+    messages = relationship("ChatMessage", back_populates="session", cascade="all, delete-orphan", order_by="ChatMessage.timestamp")
 
+    def __repr__(self):
+        return f"<ChatSession(id='{self.id}', space_id={self.space_id}, name='{self.name}')>"
+
+# --- Chat Message Model ---
+class ChatMessage(Base):
+    __tablename__ = "chat_messages"
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    session_id = Column(String(36), ForeignKey("chat_sessions.id", ondelete="CASCADE"), nullable=False, index=True)
+    role = Column(SQLAlchemyEnum(ChatMessageRoleEnum), nullable=False)
+    content = Column(Text, nullable=False)
+    metadata_json = Column(Text, nullable=True) # For tool calls/results details
+    timestamp = Column(DateTime(timezone=True), server_default=func.now())
+    
+    session = relationship("ChatSession", back_populates="messages")
+
+    def __repr__(self):
+        return f"<ChatMessage(id={self.id}, role='{self.role.value}')>"
 
 
 
@@ -161,7 +199,7 @@ class Space(Base):
     dev_config = relationship("DevSpaceConfig", back_populates="space", uselist=False, cascade="all, delete-orphan")
     ops_config = relationship("OpsSpaceConfig", back_populates="space", uselist=False, cascade="all, delete-orphan")
     chat_session_notes = relationship("ChatSessionNote", back_populates="space", cascade="all, delete-orphan")
-
+    chat_sessions = relationship("ChatSession", back_populates="space", cascade="all, delete-orphan", lazy="dynamic") 
     # Add this line
     # installed_plugins = relationship("SpacePluginConfig", back_populates="space", cascade="all, delete-orphan", lazy="dynamic")
 

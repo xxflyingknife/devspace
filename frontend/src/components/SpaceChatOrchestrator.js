@@ -169,18 +169,16 @@ function SpaceChatOrchestrator({ spaceId, spaceType }) {
       </div>
     );
   }
-
-  // If blueprint exists or a mode has been selected, show the actual ChatInterface
-  return (
-    <ChatInterface
-      key={spaceId} // Ensure ChatInterface re-mounts or re-initializes if spaceId changes
-      spaceId={spaceId}
-      spaceType={spaceType}
-      initialAssistantMessage={initialChatMessage} // Pass the initial message
-    />
-  );
+// If blueprint wizard is NOT shown, render ChatInterface
+  if (!isLoadingBlueprintStatus && !showBlueprintModeSelection) {
+    return (
+      <ChatInterface
+        key={spaceId} // Important: force re-mount of ChatInterface when spaceId changes
+        spaceId={spaceId}
+        spaceType={spaceType}
+        initialAssistantMessage={initialChatMessage} // Pass this down
+      />
+    );
+  }
 }
-
 export default SpaceChatOrchestrator;
-
-

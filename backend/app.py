@@ -57,12 +57,14 @@ from apis.spaces_api import spaces_bp
 from apis.chat_api import chat_bp
 from apis.dev_space_api import dev_space_bp
 from apis.ops_space_api import ops_space_bp
+from apis.sessions_api import sessions_bp # <--- IMPORT NEW BLUEPRINT
 
 app.register_blueprint(plugins_bp, url_prefix='/api/plugins')
 app.register_blueprint(spaces_bp, url_prefix='/api/spaces')
 app.register_blueprint(chat_bp, url_prefix='/api/chat') # Or just /api if chat is the main interaction
 app.register_blueprint(dev_space_bp, url_prefix='/api/dev')
 app.register_blueprint(ops_space_bp, url_prefix='/api/ops')
+app.register_blueprint(sessions_bp, url_prefix='/api/sessions') # <--- REGISTER NEW BLUEPRINT
 
 
 # --- Basic Routes ---

@@ -10,6 +10,8 @@ import 'highlight.js/styles/github.css'; // <--- IMPORT a highlight.js CSS theme
 
 import './ChatInterface.css';
 
+const API_BASE_URL = 'http://localhost:5001/api'; // Centralize if not already
+
 // Helper to render tool execution blocks
 const ToolExecutionBlock = ({ execution }) => {
     return (
@@ -35,24 +37,54 @@ const ToolExecutionBlock = ({ execution }) => {
 const LONG_MESSAGE_LINE_THRESHOLD = 3;
 const MAX_INITIAL_MESSAGE_HEIGHT = '3.5em'; // Approx 3 lines for line-height: 1.5
 
-function ChatInterface({ spaceId, spaceType,initialAssistantMessage }) {
-  const [messages, setMessages] = useState(() => { // Initialize with initial message if provided
-    const initialMessages = [];
-    if (initialAssistantMessage && initialAssistantMessage.content) {
-      initialMessages.push({
-        type: 'assistant',
-        id: initialAssistantMessage.id || `init-msg-${Date.now()}`, // Ensure ID
-        content: initialAssistantMessage.content
-      });
-    } else { // Default if no initial message
-      initialMessages.push({
-        type: 'assistant',
-        id: `default-init-${Date.now()}`,
-        content: `Hello! I am your Vibe DevOps Assistant for this ${spaceType} space. How can I help you today?`
-      });
+
+// NEW function to fetch initial chat data
+const fetchInitialChatDataAPI = async (spaceId) => {
+    if (!spaceId) {
+        console.warn("ChatInterface: No spaceId, cannot fetch initial chat data.");
+        // Return a default structure so the component doesn't break
+        return {
+            session_id: `temp-session-${Date.now()}`, // Temporary session ID
+            session_name: "New Chat",
+            messages: [{ type: 'assistant', id: `init-${Date.now()}`, content: 'Please select or configure a space.' }],
+            token_info: { message: "No active session." }
+        };
     }
-    return initialMessages;
-  });
+    console.log(`ChatInterface: Fetching initial chat data for space ${spaceId}`);
+    try {
+        const response = await fetch(`${API_BASE_URL}/sessions/space/${spaceId}/active-chat`);
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: response.statusText }));
+            throw new Error(`Backend error: ${response.status} - ${errorData.error || 'Failed to fetch active session'}`);
+        }
+        const data = await response.json();
+        console.log("ChatInterface: Received initial chat data:", data);
+        return data;
+    } catch (error) {
+        console.error("ChatInterface: Error in fetchInitialChatDataAPI:", error);
+        throw error;
+    }
+};
+
+
+function ChatInterface({ spaceId, spaceType,initialAssistantMessage }) {
+  const [messages, setMessages] = useState([]);
+//    const initialMessages = [];
+//    if (initialAssistantMessage && initialAssistantMessage.content) {
+//      initialMessages.push({
+//        type: 'assistant',
+//        id: initialAssistantMessage.id || `init-msg-${Date.now()}`, // Ensure ID
+//        content: initialAssistantMessage.content
+//      });
+//    } else { // Default if no initial message
+//      initialMessages.push({
+//        type: 'assistant',
+//        id: `default-init-${Date.now()}`,
+//        content: `Hello! I am your Vibe DevOps Assistant for this ${spaceType} space. How can I help you today?`
+//      });
+//    }
+//    return initialMessages;
+//  });
 
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -60,33 +92,134 @@ function ChatInterface({ spaceId, spaceType,initialAssistantMessage }) {
   const messagesEndRef = useRef(null);
   const [expandedMessages, setExpandedMessages] = useState({});
 
+  const [activeSessionId, setActiveSessionId] = useState(null);
+  const [sessionName, setSessionName] = useState("Chat");
+  const [isLoadingChat, setIsLoadingChat] = useState(true); // For initial load
+  const [chatError, setChatError] = useState(null);
+  const [isSendingMessage, setIsSendingMessage] = useState(false); // Renamed from isLoading
 
+    // Effect to load initial chat session and messages
   useEffect(() => {
-    // This effect might be redundant if SpaceChatOrchestrator handles initial message setting
-    // by remounting ChatInterface (due to key change) or by passing new initial message.
-    // For now, this will ensure the initial message is set.
-    if (initialAssistantMessage && initialAssistantMessage.content) {
-        // Check if this initial message is already the first message to avoid duplicates on re-renders
-        if (messages.length === 0 || messages[0].id !== (initialAssistantMessage.id || messages[0].id) ) {
-             setMessages([{
-                type: 'assistant',
-                id: initialAssistantMessage.id || `init-msg-${Date.now()}-${Math.random()}`,
-                content: initialAssistantMessage.content
-            }]);
-        }
-    } else if (messages.length === 0 && spaceType) { // Default if no initial message and messages are empty
-        setMessages([{
-            type: 'assistant',
-            id: `default-init-${Date.now()}-${Math.random()}`,
-            content: `Welcome to this ${spaceType} space! How can I assist you?`
-        }]);
+    if (spaceId) {
+      setIsLoadingChat(true);
+      setChatError(null);
+      setMessages([]); // Clear previous messages
+      setActiveSessionId(null);
+
+          console.log("ChatInterface: useEffect for initial load/message. spaceId:", spaceId, "initialAssistantMessage:", initialAssistantMessage);
+
+      if (initialAssistantMessage && initialAssistantMessage.content) {
+        // If SpaceChatOrchestrator provided an initial message (e.g., after wizard), use that.
+        // This implies a new session might have just been effectively started by the wizard choice.
+        // We might still want to fetch the session_id for this new interaction.
+        console.log("ChatInterface: Using initialAssistantMessage from orchestrator.");
+        const welcomeMessageId = initialAssistantMessage.id || `init-msg-${Date.now()}-${Math.random()}`;
+        setMessages([{ ...initialAssistantMessage, id: welcomeMessageId }]);
+        // We still need a session ID for subsequent calls.
+        // The backend's get_or_create_default_session will handle creating one if it's truly new.
+        fetchInitialChatDataAPI(spaceId)
+            .then(data => {
+                if (data && data.session_id) {
+                    setActiveSessionId(data.session_id);
+                    setSessionName(data.session_name || `Session ${data.session_id.slice(0,8)}`);
+                    
+
+                  console.log("ChatInterface: useEffect for initial load/message. spaceId:", spaceId, "data.messages:", data.messages);
+                    const uiMessages = (data.messages || []).map((msg, index) => ({
+                  type: msg.role === 'tool_result' || msg.role === 'tool_call' ? 'toolInfo' : msg.role,
+                  id: msg.db_id || `hist-${data.session_id}-${msg.timestamp || index}-${Math.random()}`, // Use DB ID if available
+                  content: msg.role === 'tool_call' || msg.role === 'tool_result' ? 
+                           <ToolExecutionBlock execution={{ /* ... construct execution object ... */
+                               tool_name: msg.metadata?.tool_name || (msg.role === 'tool_call' ? 'Tool Call' : 'Tool Result'),
+                               tool_arguments: msg.metadata?.tool_args || (msg.role === 'tool_call' ? JSON.parse(msg.content || '{}') : {}),
+                               tool_output: msg.role === 'tool_result' ? JSON.parse(msg.content || '{}') : {message: "Executing..."}, // Default for tool_call
+                               status: msg.metadata?.status || (msg.role === 'tool_result' ? 'success' : 'pending')
+                           }} /> 
+                           : msg.content,
+              }));
+              
+              if (uiMessages.length > 0) {
+                  uiMessages.push([{ ...initialAssistantMessage, id: welcomeMessageId }]);
+                  setMessages(uiMessages);
+              } else {
+                  // No history, provide a default welcome for this existing/newly created session
+                  setMessages([{
+                      type: 'assistant',
+                      id: `welcome-${data.session_id}-${Date.now()}`,
+                      content: `Welcome to ${spaceType === 'dev' ? 'Dev' : 'Ops'} space '${sessionName}'. How can I assist?`
+                  },
+{ ...initialAssistantMessage, id: welcomeMessageId }
+]);
+              }
+
+
+
+                    setTokenInfo(data.token_info);
+                    // If history messages were returned AND we used an initialAssistantMessage, decide how to merge.
+                    // For now, the initialAssistantMessage takes precedence if provided.
+                } else {
+                     setChatError(data.error || "Failed to initialize session after wizard.");
+                }
+            })
+            .catch(err => setChatError(err.message || "Could not initialize session details."))
+            .finally(() => setIsLoadingChat(false));
+
+      } else {
+        // No initial message from orchestrator, so fetch existing session and its history.
+        console.log("ChatInterface: No initialAssistantMessage, fetching active session history.");
+        fetchInitialChatDataAPI(spaceId)
+          .then(data => {
+            if (data && data.session_id) {
+              setActiveSessionId(data.session_id);
+              setSessionName(data.session_name || `Session ${data.session_id.slice(0,8)}`);
+              
+              const uiMessages = (data.messages || []).map((msg, index) => ({
+                  type: msg.role === 'tool_result' || msg.role === 'tool_call' ? 'toolInfo' : msg.role,
+                  id: msg.db_id || `hist-${data.session_id}-${msg.timestamp || index}-${Math.random()}`, // Use DB ID if available
+                  content: msg.role === 'tool_call' || msg.role === 'tool_result' ? 
+                           <ToolExecutionBlock execution={{ /* ... construct execution object ... */
+                               tool_name: msg.metadata?.tool_name || (msg.role === 'tool_call' ? 'Tool Call' : 'Tool Result'),
+                               tool_arguments: msg.metadata?.tool_args || (msg.role === 'tool_call' ? JSON.parse(msg.content || '{}') : {}),
+                               tool_output: msg.role === 'tool_result' ? JSON.parse(msg.content || '{}') : {message: "Executing..."}, // Default for tool_call
+                               status: msg.metadata?.status || (msg.role === 'tool_result' ? 'success' : 'pending')
+                           }} /> 
+                           : msg.content,
+              }));
+              
+              if (uiMessages.length > 0) {
+                  setMessages(uiMessages);
+              } else {
+                  // No history, provide a default welcome for this existing/newly created session
+                  setMessages([{
+                      type: 'assistant',
+                      id: `welcome-${data.session_id}-${Date.now()}`,
+                      content: `Welcome to ${spaceType === 'dev' ? 'Dev' : 'Ops'} space '${sessionName}'. How can I assist?`
+                  }]);
+              }
+              setTokenInfo(data.token_info);
+            } else {
+              setChatError(data.error || "Failed to initialize chat session.");
+            }
+          })
+          .catch(err => {
+            console.error("ChatInterface: Main load error", err);
+            setChatError(err.message || "Could not load chat session.");
+          })
+          .finally(() => {
+            setIsLoadingChat(false);
+          });
+      }
     }
-  }, [initialAssistantMessage, spaceType]); // Add spaceType if used in default message
+  }, [spaceId, spaceType, initialAssistantMessage]); // Rerun if these key props change
 
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  useEffect(() => { // Scroll to bottom
+    if (!isLoadingChat) { // Only scroll after initial load
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, isLoadingChat]);
+
+
 
   const toggleMessageExpansion = (messageId) => {
     setExpandedMessages(prev => ({
@@ -95,30 +228,33 @@ function ChatInterface({ spaceId, spaceType,initialAssistantMessage }) {
     }));
   };
 
-  const addMessageToList = (type, content, toolExecutions = null) => {
-    const baseMessageId = `msg-${type}-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+
+  // Local add message, does not call backend (for UI updates before backend response)
+  const addMessageToListLocal = (type, content, toolExecutions = null, messageId = null) => {
+    const baseId = messageId || `msg-${type}-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
     const newMessagesPayload = [];
-
-    if (content || typeof content === 'string') { // Check if content is defined, even if empty string
-        newMessagesPayload.push({ type, content, id: baseMessageId });
+    if (content || typeof content === 'string') {
+        newMessagesPayload.push({ type, content, id: baseId });
     }
-
     if (toolExecutions && toolExecutions.length > 0) {
         toolExecutions.forEach((exec, index) => {
-            newMessagesPayload.push({
-                type: 'toolInfo',
-                id: `${baseMessageId}-tool-${index}`,
-                content: <ToolExecutionBlock execution={exec} />
-            });
+            newMessagesPayload.push({ type: 'toolInfo', id: `${baseId}-tool-${index}`, content: <ToolExecutionBlock execution={exec} /> });
         });
     }
     if (newMessagesPayload.length > 0) {
         setMessages(prev => [...prev, ...newMessagesPayload]);
     }
+    return baseId;
   };
+
 
   const processAndSendUserMessage = async (messageText, isToolInvocation = false, toolInvocationDetails = null) => {
     if (!messageText && !isToolInvocation) return;
+
+    if (!activeSessionId) {
+        alert("Chat session not active. Please try reloading the space.");
+        return;
+    }
 
     let userDisplayMessage = messageText;
     if (isToolInvocation && toolInvocationDetails) {
@@ -127,9 +263,10 @@ function ChatInterface({ spaceId, spaceType,initialAssistantMessage }) {
       // userDisplayMessage += ` with params ${JSON.stringify(toolInvocationDetails.formData)}`;
     }
     
-    const userMessageId = `msg-user-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
-    setMessages(prev => [...prev, { type: 'user', content: userDisplayMessage, id: userMessageId }]);
-    
+//    #const userMessageId = `msg-user-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+//    #setMessages(prev => [...prev, { type: 'user', content: userDisplayMessage, id: userMessageId }]);
+    const userMessageId = addMessageToListLocal('user', userDisplayMessage);
+
     if (!isToolInvocation) { // Clear input only if it was a typed message
         setInputValue('');
     }
@@ -141,6 +278,7 @@ function ChatInterface({ spaceId, spaceType,initialAssistantMessage }) {
         message: messageText, // The actual text prompt or tool invocation instruction
         spaceId,
         spaceType,
+        sessionId: activeSessionId,
         // chat_history: messages.filter(m => m.type === 'user' || m.type === 'assistant').slice(-10), // Example history
         // ...(isToolInvocation && { tool_invocation: toolInvocationDetails }) // Optional: more structured tool info
       };
@@ -159,15 +297,28 @@ function ChatInterface({ spaceId, spaceType,initialAssistantMessage }) {
         throw new Error(data.error || `Backend error: ${response.status}`);
       }
 
-      if (data.llm_message || (data.tool_executions && data.tool_executions.length > 0)) {
-        addMessageToList('assistant', data.llm_message, data.tool_executions);
-      } else if (data.error) {
-        addMessageToList('assistant', `Error from backend: ${data.error} ${data.details || ''}`);
-      } else if (!data.llm_message && (!data.tool_executions || data.tool_executions.length === 0)) {
-        // Handle cases where backend might return success but no explicit message or tool call (e.g. silent ack)
-        console.warn("Received success from backend but no LLM message or tool executions.", data);
-        // Optionally add a generic assistant message or do nothing
+//      #if (data.llm_message || (data.tool_executions && data.tool_executions.length > 0)) {
+//      #  addMessageToList('assistant', data.llm_message, data.tool_executions);
+//      #} else if (data.error) {
+//      #  addMessageToList('assistant', `Error from backend: ${data.error} ${data.details || ''}`);
+//      #} else if (!data.llm_message && (!data.tool_executions || data.tool_executions.length === 0)) {
+//      #  // Handle cases where backend might return success but no explicit message or tool call (e.g. silent ack)
+//      #  console.warn("Received success from backend but no LLM message or tool executions.", data);
+//      #  // Optionally add a generic assistant message or do nothing
+//      #}
+      const newAssistantMessages = [];
+      if (data.llm_message || typeof data.llm_message === 'string') {
+          newAssistantMessages.push({type: 'assistant', content: data.llm_message, id: `msg-assist-${Date.now()}`});
       }
+      if (data.tool_executions && data.tool_executions.length > 0) {
+          data.tool_executions.forEach((exec, idx) => {
+              newAssistantMessages.push({type: 'toolInfo', content: <ToolExecutionBlock execution={exec} />, id: `msg-tool-${Date.now()}-${idx}`});
+          });
+      }
+      if (newAssistantMessages.length > 0) {
+          setMessages(prev => [...prev, ...newAssistantMessages]);
+      }
+      
 
       if (data.token_info) {
         setTokenInfo(data.token_info);
@@ -176,7 +327,8 @@ function ChatInterface({ spaceId, spaceType,initialAssistantMessage }) {
 
     } catch (error) {
       console.error("Error sending/processing message:", error);
-      addMessageToList('assistant', `Sorry, I encountered an error: ${error.message}`);
+//      addMessageToList('assistant', `Sorry, I encountered an error: ${error.message}`);
+      addMessageToListLocal('assistant', `Sorry, I encountered an error: ${error.message}`);
       setIsLoading(false);
     }
   };
@@ -200,81 +352,72 @@ function ChatInterface({ spaceId, spaceType,initialAssistantMessage }) {
       return lineCount > LONG_MESSAGE_LINE_THRESHOLD || content.length > 200; // Adjust length
   };
 
-    return (
+
+
+  if (isLoadingChat) {
+    return <div className="chat-interface-container loading-chat-history"><LoadingSpinner /><p>Loading conversation...</p></div>;
+  }
+  if (chatError) {
+    return <div className="chat-interface-container error-chat-history"><p className="error-message">{chatError} <button onClick={() => {if(spaceId) fetchInitialChatDataAPI(spaceId).then( /* set states */ )}}>Retry</button></p></div>;
+  }
+
+
+  // Ensure the render part is correct, especially message mapping and keys
+  return (
     <div className="chat-interface-container">
-      {tokenInfo && <div className="token-info-bar">{tokenInfo.message}</div>}
-      <div className="message-list">
-        {messages.map((msg) => (
-          <div key={msg.id} className={`message ${msg.type}`}>
-            <div
-              className={`message-content ${
-                msg.type !== 'toolInfo' && typeof msg.content === 'string' && isMessageContentLong(msg.content) && !expandedMessages[msg.id] ? 'clamped' : ''
-              }`}
-              // Apply maxHeight for clamping only if it's a string and meets criteria
-              style={msg.type !== 'toolInfo' && typeof msg.content === 'string' && isMessageContentLong(msg.content) && !expandedMessages[msg.id] ? { maxHeight: MAX_INITIAL_MESSAGE_HEIGHT } : {}}
-            >
-              {/* === MARKDOWN RENDERING === */}
-              {msg.type === 'assistant' || msg.type === 'user' ? ( // Render user messages as MD too if desired
-                typeof msg.content === 'string' ? (
-                  <ReactMarkdown
-                    children={msg.content}
-                    remarkPlugins={[remarkGfm]} // Enable GFM (tables, etc.)
-                    rehypePlugins={[rehypeRaw, rehypeHighlight]} // Enable raw HTML and syntax highlighting
-                    // Optional: Custom components for rendering specific HTML elements
-                    // components={{
-                    //   code({node, inline, className, children, ...props}) {
-                    //     const match = /language-(\w+)/.exec(className || '')
-                    //     return !inline && match ? (
-                    //       <SyntaxHighlighter style={atomDark} language={match[1]} PreTag="div" {...props}>
-                    //         {String(children).replace(/\n$/, '')}
-                    //       </SyntaxHighlighter>
-                    //     ) : (
-                    //       <code className={className} {...props}>
-                    //         {children}
-                    //       </code>
-                    //     )
-                    //   }
-                    // }}
-                  />
-                ) : (
-                  msg.content // Render directly if already JSX (like ToolExecutionBlock)
-                )
-              ) : (
-                msg.content // For toolInfo or other types, render content directly (already JSX)
-              )}
-              {/* === END MARKDOWN RENDERING === */}
-            </div>
-            {msg.type !== 'toolInfo' && typeof msg.content === 'string' && isMessageContentLong(msg.content) && (
-              <button
-                className="expand-collapse-button"
-                onClick={() => toggleMessageExpansion(msg.id)}
-              >
-                {expandedMessages[msg.id] ? 'Show Less ↑' : 'Show More ↓'}
-              </button>
-            )}
+      {/* ... Token info bar ... */}
+      {/* ... Message list mapping `messages` state ... */}
+      {/* ... Loading indicator ... */}
+      {/* ... ChatToolbar ... */}
+      {/* ... Input form ... */}
+      {isLoadingChat ? (
+        <div className="chat-interface-container loading-chat-history"><LoadingSpinner /><p>Loading conversation...</p></div>
+      ) : chatError ? (
+        <div className="chat-interface-container error-chat-history"><p className="error-message">{chatError}</p></div>
+      ) : (
+        <>
+          {tokenInfo && <div className="token-info-bar">{tokenInfo.message}</div>}
+          <div className="message-list">
+            {messages.map((msg) => (
+              <div key={msg.id} className={`message ${msg.type}`}> {/* USE msg.id from state */}
+                <div
+                  className={`message-content ${
+                    msg.type !== 'toolInfo' && typeof msg.content === 'string' && isMessageContentLong(msg.content) && !expandedMessages[msg.id] ? 'clamped' : ''
+                  }`}
+                  style={msg.type !== 'toolInfo' && typeof msg.content === 'string' && isMessageContentLong(msg.content) && !expandedMessages[msg.id] ? { maxHeight: MAX_INITIAL_MESSAGE_HEIGHT } : {}}
+                >
+                  {/* Markdown Rendering Logic */}
+                  {(msg.type === 'assistant' || msg.type === 'user') && typeof msg.content === 'string' ? (
+                    <ReactMarkdown
+                      children={msg.content}
+                      remarkPlugins={[remarkGfm]}
+                      rehypePlugins={[rehypeRaw, rehypeHighlight]}
+                    />
+                  ) : (
+                    msg.content // Render directly if already JSX (ToolExecutionBlock) or non-string
+                  )}
+                </div>
+                {msg.type !== 'toolInfo' && typeof msg.content === 'string' && isMessageContentLong(msg.content) && (
+                  <button className="expand-collapse-button" onClick={() => toggleMessageExpansion(msg.id)}>
+                    {expandedMessages[msg.id] ? 'Show Less ↑' : 'Show More ↓'}
+                  </button>
+                )}
+              </div>
+            ))}
+            <div ref={messagesEndRef} />
           </div>
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
-      
-      {isLoading && <div className="typing-indicator">Assistant is thinking or tool is running...</div>}
-      
-      <ChatToolbar spaceType={spaceType} onToolSubmit={handleToolSubmission} spaceId={spaceId} />
-      
-      <form className="message-input-form" onSubmit={handleSendMessage}>
-        <input 
-            type="text" 
-            value={inputValue} 
-            onChange={handleInputChange} 
-            placeholder="Ask your DevOps assistant, or use a tool above..." 
-            disabled={isLoading} 
-        />
-        <button type="submit" disabled={isLoading}>Send</button>
-      </form>
+          
+          {isSendingMessage && <div className="typing-indicator">Assistant is thinking or tool is running...</div>}
+          
+          <ChatToolbar spaceType={spaceType} onToolSubmit={handleToolSubmission} spaceId={spaceId} />
+          
+          <form className="message-input-form" onSubmit={handleSendMessage}>
+            <input type="text" value={inputValue} onChange={handleInputChange} placeholder="Ask your DevOps assistant, or use a tool above..." disabled={isSendingMessage} />
+            <button type="submit" disabled={isSendingMessage}>Send</button>
+          </form>
+        </>
+      )}
     </div>
   );
 }
 export default ChatInterface;
-
-
-
