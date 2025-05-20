@@ -16,7 +16,7 @@ from services.space_service import SpaceService # To get space-specific settings
 from services.chat_session_service import ChatSessionService # <--- IMPORT
 from database.db_session import SessionLocal # For direct session use if needed for saving
 from database.models import ChatMessageRoleEnum # For saving messages with correct role
-
+from database.models import Space, SpaceTypeEnum, ChatMessage, ChatMessageRoleEnum
 
 
 # --- PROMPT TEMPLATE LOADING ---
